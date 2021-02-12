@@ -285,3 +285,4 @@ TSWLatexianTemp*
 *.pdf
 *.bbl
 *.blg
+*.aux
