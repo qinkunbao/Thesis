@@ -15,7 +15,13 @@ By observing program outputs or hardware behaviors, attackers can infer program
 execution flows that manipulate secrets and guess secrets such as encryption
 keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
 
-\section{Limitations of Existing Side Channel Vulnerability Detection Works}
+
+\section{Side-channel}
+
+\subsection{Attacks}
+
+\subsection{Defense}
+
 Regarding the root cause of software-based side channel attacks, many of them originate
 from two specific circumstances: data flow from secrets to load
 addresses and data flow from secrets to branch conditions. We refer to them as
@@ -144,7 +150,7 @@ In summary, we make the following contributions:
             reported vulnerabilities.
 \end{itemize}
 
-\section{Trace-oriented Binary Analysis}
+\section{Binary Analysis}
 Binary analysis is the process of automatically inferring program behaviors from
 the binary executable.
 It plays a critical role from a security viewpoint. For many programs, like malware, Commercial off-the-shelf (COTS) application, source code are typically not
@@ -197,6 +203,8 @@ engine, AST representation of X86 and binding for STP solvers. It run
 execution on the top X86 instructions and symbolically reason the program behaviours.
 Our preliminary results show that Phoenix has a better performance compared to 
 many existing works, which makes it scalable to real-world applications.
+
+
 
 
 \section{Dissertation Organization}
