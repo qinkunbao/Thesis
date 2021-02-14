@@ -1,4 +1,4 @@
-WHAT = main
+WHAT = Qinkun-Dissertation
 
 best: 
 	pdflatex $(WHAT).tex
