@@ -134,6 +134,9 @@
 
 \usepackage[english]{babel} % handle hyphenation
 \usepackage{url}
+\usepackage{fancybox}
+\usepackage{float}
+
 
 % http://www.tex.ac.uk/cgi-bin/texfaq2html?label=citesort
 \usepackage{cite}
@@ -141,6 +144,19 @@
 \usepackage{titlesec}
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\lstset{
+numbers=left,
+frame=single,
+language=C,
+basicstyle=\fontfamily{fvm}\scriptsize,
+showlines=true
+%xleftmargin=.2\textwidth, xrightmargin=.2\textwidth,
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Use of the hyperref package %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

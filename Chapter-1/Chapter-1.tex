@@ -3,24 +3,48 @@
 \chapter{Introduction} \label{chapter1:introduction}
 
 Side channels are inevitable in modern computer systems as the sensitive
-information may be leaked through many kinds of inadvertent behaviors, such as power,
-electromagnetic radiation, and even
+information may be leaked through many kinds of inadvertent behaviors, such as power, electromagnetic radiation, and even
 sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.
-Among them, software-based side channel attacks, such as cache attacks, memory page
-attacks, and controlled-channel attacks, are especially common and have been
-studied for
-years~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These
+Among them, address-based side channel attacks, such as cache attacks, memory page attacks, and controlled-channel attacks, are especially common and have been studied for years~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These
 attacks result from vulnerable software and shared hardware components.
 By observing program outputs or hardware behaviors, attackers can infer program
 execution flows that manipulate secrets and guess secrets such as encryption
 keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
 
+In this chapter, we first introduce two code patterns that can be exploited to retrieve sensitive information. After that, we discuss some common attacks and corresponding defense strategies. The limitations of existing work motivate the research in the dissertation. Finally, we summarize the contributions of the dissertation.
 
-\section{Side-channel}
+\section{Side-channel Attacks}
+\begin{figure}[tbp]
+\begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
+int secret[32];
+...
+while(i>0){
+    r = (r * r) % n;
+    if(secret[--i] == 1)
+        r = (r * x) % n;   
+}
+\end{lstlisting}
+\caption{Secret-dependent control-flow transfers}
+\label{fig:secret:cf}
+\end{figure}
 
-\subsection{Attack}
 
-\subsection{Defense}
+\begin{figure}[tbp]
+\begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
+static char FSb[256] = {...}
+... 
+uint32_t a = *RK++ ^ \ 
+(FSb[(secret)) ^
+(FSb[(secret >> 8)] << 8 ) ^
+(FSb[(secret >>16)] << 16 ) ^
+(FSb[(secret >>24)] << 24 );
+...
+\end{lstlisting}
+\caption{Secret-dependent data accesses}
+\label{fig:secret:da}
+\end{figure}
+
+\section{Current Defense}
 
 Regarding the root cause of software-based side channel attacks, many of them originate
 from two specific circumstances: data flow from secrets to load
@@ -205,6 +229,7 @@ Our preliminary results show that Phoenix has a better performance compared to
 many existing works, which makes it scalable to real-world applications.
 
 
+\section{Contribution}
 
 
 \section{Dissertation Organization}
