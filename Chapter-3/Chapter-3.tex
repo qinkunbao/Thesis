@@ -30,9 +30,155 @@ While there are several existing work on side-channel leakage detections, we fin
 \section{Examples}
 
 \section{Math Notations}
+e now discuss how to model observations ($O$), which are the direct information
+that an adversary can get during the attack.
 
+During the execution, a program ($\beta$) have many temporary values ($t_i \in
+T$). Once $\beta$ (program), $k$ (secret), and $m$ (message, public) are
+determined, $t_i$ is also fixed. Therefore, $ t_i = f_i(\beta, k, m)$, where $f_
+i$ is a function that maps between $t_i$ and ($\beta$, $k$, $m$).
+
+In the paper, we consider two code patterns that can be exploited by an attacker,
+\emph{secret-dependent control transfers} and \emph{secret-dependent data
+accesses}. In other words, an adversary has observations based on control-flows
+and data accesses.
+
+\subsection{Secret-dependent Control Transfers}
+We think a control-flow is secret-dependent if different input sensitive keys
+($K$) can lead to different branch conditions. Therefore,
+We define a branch is secret-dependent if:
+$$\exists k_{i1}, k_{i2} \in K, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m)$$
+
+An adversary can observe which branch the code executes, if the branch condition
+equals to $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
+the observation ($o$) on secret-dependent control-transfers.
+
+\subsection{Secret-dependent Data Accesses}
+Similar to secret-dependent control-flow transfers, a data access operation is
+secret-dependent if different input sensitive keys ($K$) can lead to different
+memory addresses. We use the model from CacheD~\cite{203878}. The low $L$ bits
+of the address are irrelevant in side-channels.
+
+We consider a data access is secret-dependent if:
+$$\exists k_{i1}, k_{i2} \in K, \,f_i(\beta, k_{i1}, m) >> L \neq f_i(\beta, k_{i2}, m) >> L$$
+
+If the memory access equals to $t_b$, we can use the constraint $c_i :
+f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
+data accesses.
+
+With the above definitions, we can model an attacker's observation by a series of math
+formulas. For example, in Figure~\ref{fig:side-channel}, if an attacker observes
+the code executes the branch 1, we have $c_5: k_1 + k_2 < 4$ to describe an
+attacker's knowledge and $K^{o5} = \{k_1,\, k_2\,|\, (k_1 + k_2) < 4\}$. If an
+attacker observes the code executes the branch 2, we have $c_8: k_1 - k_2 > 0$
+and $K^{o8} = \{k_1,\, k_2\,|\, (k_1 - k_2) > 0\}$.
 \section{Scalability}
+\subsection{Trace-oriented Symbolic Execution}
+While symbolic execution can capture fine-grained semantics of programs, it
+is also notorious for its unbearable performance cost. Previous trace-oriented
+symbolic execution based
+works~\cite{203878,Chattopadhyay:2017:QIL:3127041.3127044} all have large
+performance bottlenecks. As a result, those approaches either only apply to
+small-size programs~\cite{Chattopadhyay:2017:QIL:3127041.3127044} or apply some
+domain knowledge to simplify the analysis. 
+%Those tools interpret each
+%instruction and update memory cells and registers with formulas that
+%captured the semantics of the execution and search different input values that
+%can lead to different execution behaviors using constraint solver. 
+We implement
+the approach presented in \S\ref{sec:trace-qif} and model the side-channels as
+formulas. While the tool can finish analyzing some simple cases like AES, it can
+not handle complicated cases like RSA.
+We observe that finding side-channels using symbolic execution is different from
+traditional general symbolic execution and can be optimized to be as efficient
+as other methods with approaches below.
 
+\subsection{Interpret Instructions Symbolically}
+Existing binary analysis tools~\cite{shoshitaishvili2016state,
+10.1007/978-3-642-22110-1_37} usually translate machine instructions into
+intermediate languages (IR) to simplify analysis. 
+The reason is that the number of machine instructions is
+enormous, and the semantics of each instruction is complex. Intel Developer
+Manual~\cite{intelsys} introduces more than 1000 different x86 instructions. 
+IR typically has fewer instructions compared to the original machine ISA\@.
+However, the IR layer, which predigest the implementation
+and reduce the workload of those tools, is not suitable for side-channels 
+analysis. Memory-based side-channels are very low issues. So, in general,
+IR-based or source code side-channels analyses are not accurate enough.
+In many cases, compilers can use conditional moves or bitwise operations to eliminate
+branches. Also, as some IRs are not a superset or a subset of ISA, 
+it is hard to rule out conditional jumps introduced by IR and add real branches 
+eliminated by IR transformations.
+
+Moreover, the IR design introduces significant overhead~\cite{217563}.
+Transferring machine instructions into IR is time-consuming. For example,
+REIL IR~\cite{dullien2009reil}, adopted in CacheS~\cite{236338}, has multiple
+transform processes, from binary to VEX IR, BAP IR, and finally REIL IR\@. 
+Also, IR increases the total number of instructions. For example, x86
+instruction \textit{test eax, eax} transfers into 18 REIL IR instructions. If we
+assume the time of symbolically executing grows as the number of instructions increase, the
+design of adopting IR layers can introduce large overhead.
+
+\vspace*{2pt}
+\textbf{Our Solution to Challenge C2:}
+We adopt the approach from QSYM~\cite{217563} and implement the symbolic execution
+directly on the top of x86 instructions. Table~\ref{scala:ir} shows that
+eliminating the IR layer can reduce the number of instructions executed during
+the analysis.
+
+\begin{table}%[ht]
+      \centering\small\footnotesize
+      \caption{The number of x86,  % instructions and the number of 
+             REIL IR, and VEX IR instructions on the traces of crypto programs.}
+      \label{scala:ir}
+\vspace*{-1pt}
+      \resizebox{\columnwidth}{!}{%
+
+            \begin{tabular}{cccc}
+                  \hline
+                                    & \begin{tabular}[c]{@{}c@{}}Number of\\ x86 Instructions\end{tabular} & \begin{tabular}[c]{@{}c@{}}Number of\\ VEX IR\end{tabular} & \begin{tabular}[c]{@{}c@{}}Number of\\ REIL IR\end{tabular} \\ \hline
+                  AES OpenSSL 0.9.7 & $1,704$                   & $23,938$ (15x)            & $62,045$ (36x)            \\
+                  DES OpenSSL 0.9.7 & $2,976$                   & $41,897$ (15x)            & $100,365$ (33x)           \\
+                  RSA OpenSSL 0.9.7 & $1.6*10^7$                & $2.4*10^8$ (15x)          & $5.9*10^8$ (37x)          \\
+                  RSA mbedTLS 2.5  & $2.2*10^7$                & $3.1*10^8$ (15x)          & $8.6*10^8$  (39x)         \\ \hline
+            \end{tabular}
+      }
+\end{table}
+
+\subsection{Constraint Solving}
+As discussed in \S\ref{side-channel:condition}, the problem of identifying
+side-channels can be reduced to the question below.
+
+\begin{quote}
+      \textit{Can we find two different input variables $k_1, k_2 \in K$ that
+            satisfy the formula $f_a(k_1) \neq f_a(k_2)$?}
+\end{quote}
+
+Existing approach relies on satisfiability modulo theories (SMT) solvers (e.g,
+Z3~\cite{DeMoura:2008:ZES:1792734.1792766}) to find satisfying $k_1$ and $k_2$.
+We argue that while it is a universal approach to solving constraints with SMT
+solvers, for constraints with the above formats, using custom heuristics and
+testing is much more efficient in practice. Constraint solving is a decision
+problem expressed in logic formulas. SMT solvers transfer the inputted SMT
+formula into the boolean conjunctive normal form (CNF) and feed it into the
+internal boolean satisfiability problem (SAT) solver. The translation process,
+called ``bit blasting'', is time-consuming. Also, as the SAT problem is a
+well-known NP-complete problem, it is also hard to deal when it comes to
+realistic uses with huge formulas. Despite the rapid development of SMT solvers
+in recent years, constraint solving remains one of the obstacles to achieve the
+scalability for real-world cryptosystems.
+
+\vspace*{2pt}
+\textbf{Our Solution to Challenge C3:}
+Instead of feeding the formula $f_a(k_1) \neq f_a(k_2)$ into a SMT solver, we
+just randomly pick up $k_1, k_2 \in K$ and test them if they can satisfy the
+formula. Our solution is based on the following intuition. For most combination
+of $(k_{1}, k_{2} )$, the formula $f_a(k_1) \neq f_a(k_2)$ holds. As long as
+$f_a$ is not a constant function, such $k_1, k_2$ must exist. For example,
+suppose each time we only have 5\% chance to find such $k_1, k_2$, then after we
+test with different input combination with 100 times, we have $1 -
+(1-0.05)^{100} = 99.6\%$ chance find such $k_1, k_2$. Such random algorithms
+work well for our problem.
 \section{Evaluation}
 
 \section{Discussion}
