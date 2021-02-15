@@ -1,4 +1,489 @@
 % !TEX root = ../YourName-Dissertation.tex
 
-\chapter{Analysis on Single-trace Attacks}
+\chapter{Precise Analysis on Single-trace Attacks}
 
+\section{Introduction}
+Side channels are ubiquitous in modern computer systems as sensitive
+information can leak through many mechanisms such as power,
+electromagnetic radiation, and even
+sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.
+Among them, software side-channel attacks, such as cache attacks, memory page
+attacks, and controlled-channel attacks, are especially problematic as they do not require physical proximity~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These
+attacks arises from shared micro-architectural components in a computer processor.
+By observing inadvertent interactions between two programs, attackers can infer program
+execution flows that manipulate secrets and guess secrets such as encryption
+keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
+
+%% to deal with side channels, we can protect or detect them and detection is better
+%%arious countermeasures have been proposed to defend against software-based
+%%side-channel attacks. Hardware-level solutions, such as reducing shared
+%%resources, adopting oblivious RAM, and using transnational
+%%memory~\cite{203878,217537,shih2017t,Zhang:2015:HDL:2775054.2694372}, need new
+%%hardware features and changes in modern complex computer systems, which are
+%%impractical and hard to adopt in reality. Therefore, a promising and
+%%universal direction is software countermeasures, detecting and eliminating
+%%side-channel vulnerabilities from code base.
+
+Many side-channel attacks originate
+in two code patterns: data flow from secrets to load
+addresses and data flow from secrets to branch conditions. We refer to them as
+secret-dependent data accesses and control flows, respectively. 
+
+Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946}
+can detect many side-channel vulnerabilities. For example,
+DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA
+implementation in OpenSSL 1.1.0f\@. 
+Further analysis shows 1,510 leaks can be dismissed. But that
+leaves 460 data-access leaks and 278 control-flow leaks. 
+Many of these vulnerabilities have not been fixed by developers for a variety of reasons.
+First, some vulnerable implementations perform better. For example,
+RSA implementations usually adopt the CRT optimization,
+which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}.
+Second, fixing vulnerabilities can introduce new 
+weaknesses.
+Third, most vulnerabilities pose a negligible risk. 
+Although some vulnerabilities result in the key being 
+entirely compromised~\cite{184415, aumuller2002fault}, 
+many others are less
+severe in reality. Therefore, we need a proper quantification metric to 
+assess the sensitivity of side-channel vulnerabilities,
+so a developer can efficiently triage them.
+
+Previous work~\cite{182946,5207642} can identify numerous leakages or even provide an upper bound on the amount of leakage, which is useful to verify that an implementation is secure if it incurs zero leakage.
+However, these techniques cannot quantify the severity of a leak because they over approximate the leakage. For example, CacheAudit~\cite{182946} 
+reports that the upper-bound leakage of AES-128 exceeds the original key size. Besides, existing side-channel quantification work~\cite{182946,5207642} assumes an attacker runs the target program multiple times with different
+input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, those results are less useful to assess the severity level of each leakage site.
+
+To overcome these limitations, we propose a novel method to quantify information 
+leakage precisely. We quantify the number of bits that can leak during a real 
+execution and define the amount of leaked information as the cardinality of 
+possible secrets based on an attacker's observation. Before an attack, an adversary has a large but finite input space. 
+Whenever the adversary observes a leakage site, they can eliminate some impossible 
+inputs and reduce the input space's size. In an extreme case, if the input space's size reduces to one, an adversary has determined the input, which means all secret information (e.g., the entire secret key) is
+leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely.
+We use symbolic execution to generate constraints to model the relation 
+between the original sensitive input and an attacker's observations. 
+Symbolic execution provides fine-grained information, but it is expensive
+to compute. Therefore, prior symbolic
+execution work~\cite{203878,236338,Brotzman19Casym} either analyzes only
+small programs or applies domain knowledge~\cite{203878} to simplify the analysis. We
+examine the bottleneck of the trace-oriented symbolic execution and optimize it
+to work for real-world crypto-systems.
+
+We have implemented the proposed technique in a tool called \tool{} and demonstrated 
+it on real-world crypto libraries, including OpenSSL, 
+mbedTLS, Libgcrypt, and Monocypher.
+We collect execution traces of these libraries and apply 
+symbolic execution to each instruction. We model
+each side-channel leak as a logic formula. These
+formulas precisely model side-channel vulnerabilities. 
+Then we use the conjunction of those formulas to model the 
+leaks at a statement that appears in different location in
+the execution trace file (e.g., leaks inside a loop).
+Finally, we introduce a Monte Carlo sampling method to estimate 
+the information leakage. 
+The experimental results confirm
+that \tool{} precisely identifies previously known vulnerabilities and 
+reports how much information is leaked and which byte in the original sensitive 
+buffer is leaked. We also test \tool{} on side-channel-free algorithms. 
+\tool{} produces no false positives.
+The result also shows the newer version of crypto libraries leak less information 
+than earlier versions.
+\tool{} also discovers new vulnerabilities. With the help of \tool{}, 
+we confirm that some of these vulnerabilities are severe.
+
+
+%Based on the fixed attack target, we classify the software-based side-channel
+%vulnerabilities into two categories: 1.\textit{secret-dependent control-flow
+%transfers} and 2.\textit{secret-dependent data accesses} and model them with
+%math formulas which constrain the value of sensitive information. We quantify
+%the amount of leaked information as the number of possible solutions that are
+%reduced after applying each constrains.
+
+
+%Our method can identify and quantify address-based sensitive information
+%leakage sites in real-world applications automatically. Adversaries can exploit
+%different control-flow transfers and data-access patterns when the program
+%processes different sensitive data. We refer them as the potential information
+%leakage sites. Our tool can discover and estimate those potential information
+%leakage sites as well as how many bits they can leak. We are also able to
+%report precisely how many bits can be leaked in total if an attacker observes
+%more than one site. We run symbolic execution on execution traces. We model
+%each side-channel leakage as a math formula. The sensitive input is divided
+%into several independent bytes and each byte is regarded as a unique symbol.
+%Those formulas can precisely model every the side-channel vulnerability. In
+%other words, if the application has a different sensitive input but still
+%satisfies the formula, the code can still leak the same information.  
+%Those information leakage sites may spread in the whole program and their
+%leakages may not be dependent. Simply adding them up can only get a coarse
+%upper bound estimate. In order to accurately calculate the total information
+%leakage, we must know the dependent relationships among those multiple leakages
+%sites. Therefore, we introduce a monte carlo sampling method to estimate the
+%total information leakage.
+
+In summary, we make the following contributions:
+
+\begin{itemize}
+      \item We propose a novel method that can quantify fine-grained leaked
+            information from side-channel vulnerabilities that result from actual attack
+            scenarios. Our approach differs from previous ones in that we
+            model real attack scenarios for one execution. 
+            We model the information quantification problem as a counting problem 
+            and use a Monte Carlo sampling method to estimate the information leakage.
+   
+      \item We implement the method into a tool and apply it
+            to several pieces of real software. \tool{} successfully identifies
+            previous unknown and known side-channel vulnerabilities and calculates the corresponding information leakage. 
+            Our results are useful in practice.
+            The leakage estimates and the corresponding trigger inputs can 
+            help developers to triage and fix the vulnerabilities.
+\end{itemize}
+
+\section{Threat Model}
+
+We assume that an attacker shares the same hardware platform with the target.
+The attacker attempts to retrieve sensitive information through address-based
+side-channel attacks. The attacker has no direct access to the target's memory or cache,
+but it can probe its memory or cache at each program point. In reality, the
+attacker will face many possible obstacles such as the noisy observations 
+of the memory or cache. However, for this project, we assume
+the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. 
+The threat model captures most cache-based and address-based side-channel attacks. 
+We only consider deterministic programs and assume an attacker 
+has access to the source code or binary executable of the target program.
+
+\section{Quantification}
+
+In this section, we discuss how \tool{} quantifies the amount of leaked
+information. We first present the limitation of existing quantification metrics.
+Then, we introduce our model, the mathematical notation used in the
+paper, and our method.
+
+\subsection{Problem Setting}
+Existing static side-channel quantification
+works~\cite{182946,Wichelmann:2018:MFF:3274694.3274741,zhang2010sidebuster,bang2016string} define information
+leakage using max entropy or Shannon entropy.  If zero bits of
+information leakage is reported, a program is secure. However, when a tool using these metrics reports leakage, it is the ``average'' leakage. In a real attack, the leakage could be dramatically different.
+
+ \begin{figure}[h!]
+    \vspace*{-5pt}
+    \centering
+    \begin{lstlisting}[xleftmargin=.03\textwidth,xrightmargin=.01\textwidth]
+char key[9] = input();
+if(strcmp(key, "password"))   // leakage site C
+    pass();                   // branch 1
+else
+    fail();                   // branch 2
+\end{lstlisting}
+\vspace*{-10pt}
+    \caption{A dummy password checker}
+    \label{fig:password-checker}
+\vspace*{-5pt}
+\end{figure}
+
+Consider a password checker sketched in Figure~\ref{fig:password-checker}.
+The password checker takes an 8-byte char array (exclude \textsf{NULL} character) 
+and checks if the input is the correct password. If an attacker uses a side-channel attack to determine that the code executes branch
+$\{{1\}}$, they can infer the password equals to
+``password'', in which case the attacker retrieves the full password.
+Therefore, the total leaked information should be 64 bits, which equals to the
+size of the original sensitive input when the code executes branch
+$1$.
+
+However, prior static approaches cannot precisely capture the amount of leakage. According to the definition of Shannon entropy, the leakage will be
+$\frac{1}{2^{64}}*\log_{2}\frac{1}{2^{64}} + \frac{2^{64}-1}{2^{64}}
+*\log_{2}\frac{2^{64}-1}{2^{64}} \approx 0$ bits. Max-entropy is defined from the
+number of possible observations. Because the program has two
+branches, tools based on max-entropy will report the code has a $\log_2{2} = 1$
+bit leakage.
+
+
+\section{Approximate Model Counting}
+\label{MCreasons}
+%According to
+%Definition~\ref{def} introduced in \S\ref{sec:trace-qif},
+%the problem of quantifying the amount of leaked information can be reduced to
+%the problem of computing the number of items in $K^o$. However, we find that while
+%there are various propositional model counters (e.g., \#SAT), they are not
+%sufficient scalable for production cryptosystem analysis.
+%there is no open source modulo theories counter (\#SMT) available.
+
+%One straightforward method approximating the number of solutions is based on Monte Carlo
+%sampling. However, the number of satisfying values could be exponentially small.
+%Consider the formula $f_i\equiv{k_1} = 1\land{k_2} = 2\land{k_3} = 3\land{k_4} =
+%4$, where $k_1$, $k_2$, $k_3$, and $k_4$ each represents one byte in the
+%original sensitive input buffer, there is only one satisfying solution of total
+%$2^{32}$ possible values, which requires exponentially many samples to get a
+%tight bound. Monte Carlo method also suffers from the curse of dimensionality.
+%For example, the length of an RSA private key can be as long as 4096 bits. If we
+%take each byte (8 bits) in the original buffer as one symbol, the formula can
+%have as many as 512 symbols.
+
+%\vspace*{2pt}
+%\textbf{Our Solution to Challenge C3:}
+%We adopt multiple-step Monte Carlo sampling methods to count the number of
+%possible inputs that satisfy the logic formula groups. The key idea is to split
+%those constraints into several small formulas and sample them independently.
+%We will introduce the method in the following subsection.
+
+%\subsection{Information Leakage Estimation}
+
+\newcommand{\addr}[1]{{l}_{#1}}
+\renewcommand{\addr}[1]{{\gamma}_{#1}}
+\renewcommand{\addr}[1]{{\zeta}_{#1}}
+\renewcommand{\addr}[1]{{\xi}_{#1}}
+
+In this section, we present the algorithm to calculate the information leakage
+based on Definition~\ref{def} (\S\ref{sec:trace-qif}), answering to
+\textbf{Challenge C3}.
+
+\subsection{Problem Statement}
+For each leakage site, we model it with a constraint using the
+method presented in~\S\ref{side-channel:condition}. Suppose the address of the
+leakage site is $\addr{i}$, we use $c_{\addr{i}}$ to denote the constraint
+that models its side-channel leakage. 
+%For
+%multiple leakage sites, we take the conjunction of those constraints to
+%represent those leakage sites.
+
+According to the Definition~\ref{def}, to calculate the amount of leaked
+information, the key is to calculate the cardinality
+of $K^o$. Suppose an attacker can observe $n$ leakage sites, and each leakage
+site has the following constraints: $c_{\addr{1}}, c_{\addr{2}}, \ldots,
+c_{\addr{n}}$ respectively. The total leakage can be calculated from the constraint
+$c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}}) = c_{\addr{1}} \land c_{\addr{2}}
+\land \ldots \land c_{\addr{n}}$. 
+%%The problem of estimating the total leaked
+%%information can be reduced to the problem of counting the number of different
+%%solutions that satisfies the constraint
+%%$c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}})$. 
+A simple method is to pick elements $k$ from $K$ and check if an
+element is also contained in $K^o$. Assume $q$ elements satisfy this condition. In
+expectation, we can use $\frac{k}{q}$ to approximate the value of
+$\frac{|K|}{|K^o|}$.
+
+However, the above sampling method fails in practice due to the following two problems:
+
+\begin{enumerate}
+      \item The curse of dimensionality problem. $c_t({\addr{1}},\ldots,{\addr{n}})$ is
+            the conjunction of many constraints. Therefore, the input variables
+            of each constraints will also be the input variables of the
+            $c_t({\addr{1}},\ldots,{\addr{n}})$. The sampling method fails
+            as $n$ grows. 
+
+            %For example, if the program has $2$ input whose size is 
+            %one byte, the whole search space is a $256^2$ cube. If we want
+            %the sampling distance between each point equals to $d$, we need
+            %$256^2d$ points. If the program has $10$ byte input, we need
+            %$256^{10}d$ points if we still we want the sampling distance equals
+            %to $d$.
+
+      \item The number of satisfying assignments could be exponentially small.
+            According to Chernoff bound, we need exponentially many samples to
+            get a tight bound. 
+            %On an extreme situation, if the constraint only
+            %has one unique satisfying solution, the simple Monte Carlo method
+            %cannot find the satisfying assignment even after sampling many
+            %points.
+\end{enumerate}
+
+However, despite above two problems, we also observe two characteristics of the
+problem:
+\begin{enumerate}
+      \item $c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}})$ is the conjunction of
+            several short constraints $c_{\addr{i}}$. The set containing the
+            input variables of $c_{\addr{i}}$ is the subset of the input
+            variables of $c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}})$. Some
+            constraints have completely different input variables from other
+            constraints.
+
+            \item Each time when we sample $c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}})$
+            with a point, the sampling result is \emph{Satisfied} or not \emph{Not Satisfied}.
+            The outcome does not depend on the result of 
+            previous experiments. Also, as the amount of leaked information is calculated
+            by a $\log$ function, we need not exactly count the number of solutions for 
+            a given constraint.
+            %\item For each constraint $F(C_{{addr}_i})$, the satisfying assignments
+            %are close to each other, which means if we find one satisfying assignment, we 
+            %are more likely to find other satisfying assignments nearby than randomly
+            %pick one point in the whole searching space.
+
+\end{enumerate}
+
+In regard to the above problems, we present our methods. First, we split
+$c_t(\addr{1},\addr{2},\ldots,\addr{n})$ into several independent constraint
+groups. After that, we run a multi-step sampling method for each constraint.
+
+\subsection{Maximum Independent Partition}
+
+For a constraint $c_{\addr{i}}$, we define function $\pi$, which maps the
+constraint into a set of different input symbols. For example, $\pi(k1 + k2 >
+128) = \{k1, k2\}$.
+
+\begin{mydef}[]
+      \label{independentC}
+      Given two constraints $c_m$ and $c_n$, we call them independent iff
+      $$\pi(c_m) \cap \pi(c_n) = \emptyset$$
+\end{mydef}
+
+Based on the Definition~\ref{independentC}, we can split the constraint
+$c_t(\addr{1},\addr{2},\ldots,\addr{n})$ into several independent constraints.
+There are many partitions. For our project, we are interested in the following
+one.
+
+\begin{mydef}\label{Goodpartition}
+      For the constraint $c_t(\addr{1},\addr{2},\ldots,\addr{n})$,
+      we call the constraint group
+      $g_{1}, g_{2}, \ldots, g_{m}$
+      the maximum independent partition of $c_t(\addr{1},\addr{2},\ldots,\addr{n})$ iff
+      \begin{enumerate}
+            \item $g_{1} \land g_{2} \land \ldots \land g_{m} = c_t(\addr{1},\addr{2},\ldots,\addr{n})$
+            \item $\forall i, j \in \{1, \ldots, m\} \quad \textrm{and} \quad
+                        i \neq j,\quad\pi(g_{i}) \cap \pi(g_{j}) = \emptyset $
+            \item For any other partitions  $h_{1}, h_{2}, \ldots, h_{m'}$ satisfy 1) and
+                  2), $m \geq m'$
+      \end{enumerate}
+
+\end{mydef}
+
+The reason we want a good partition of constraints is we want to reduce
+the dimensions. For example,
+a good partition of $F: ({k_1} = 1)\land({k_2} = 2)\land({k_3} > 4)\land({k_3} - {k_4} > 10)$ would be
+$g_{1}: ({k_1} = 1)\quad g_{2}: ({k_2} = 2)\quad g_{3}: ({k_3} > 4) \land
+({k_3} - {k_4} > 10)$  
+We can sample each constraint independently and combine them
+with Theorem~\ref{IndependentConstraint}.
+
+\begin{theorem}
+      \label{IndependentConstraint}
+      Let $g_{1}, g_{2}, \ldots, g_{m}$ be a maximum independent partition of
+      $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
+      $K_c$ is the input set that satisfies constraint $c$. We have the following
+      equation in regard to the size of $K_c$
+      $$|K_{c_t(\addr{1},\addr{2},\ldots,\addr{n})}| = |K_{g_{1}}|*|K_{g_{2}}|*\ldots*|K_{g_{n}}|$$
+\end{theorem}
+\vspace{-3pt}
+With Theorem~\ref{IndependentConstraint}, we change the problem of
+counting the number of solutions to a complicated constraint in a high-dimension
+space into counting solutions to several small constraints. We compute the
+maximum independent partition by iterating each $\addr{i}$ and applying the function
+$\pi$ over the constraint $\addr{i}$.
+
+%% We apply the following
+%% algorithm~\ref{algo:max-inde} to get the Maximum Independent Partition of the
+%% $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
+
+%% \IncMargin{1em}
+%% \begin{algorithm}[h]
+%%       \DontPrintSemicolon
+%%       \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+%%       \Input{$c_t(\addr{1},\addr{2},\ldots,\addr{n}) = c_{\addr{1}} \land c_{\addr{2}} \land \ldots \land c_{\addr{m}}$}
+%%       \Output{The Maximum Independent Partition of $G = \{g_{1}, g_{2}  , \ldots,  g_{m} \}$ }
+%%       \For{$i\leftarrow 1$ \KwTo $n$}
+%%       {
+%%             $S_{c_i}$ $\leftarrow$ $\pi(c_{\addr{i}})$ \;
+%%             \For{$g_{i} \in G$}
+%%             {
+%%                   $S_{g_i}$ $\leftarrow$ $\pi(g_{i})$ \;
+%%                   $S$ $\leftarrow$ $S_{C_i} \cap S_{G_i}$  \;
+%%                   \If{$S \neq \emptyset$}
+%%                   {
+%%                         $g_{i} \leftarrow g_{i} \land g_{\addr{i}}$ \;
+%%                         \textbf{break} \;
+%%                   }
+%%                   Insert $c_{\addr{i}}$ to $G$
+%%             }
+%%       }
+%%       \caption{The Maximum Independent Partition}
+%%       \label{algo:max-inde}
+%% \end{algorithm}
+%% \DecMargin{1em}
+
+\subsection{Multiple-step Monte Carlo Sampling}
+
+After we split those constraints into several small constraints, we count the
+number of solutions for each constraint. Even though the dimension has been
+significantly reduced by the previous step, this is still a \#P problem. 
+%For our
+%project, we apply the approximate counting instead of exact counting for two
+%reasons. First, we do not need to have a very precise result of the exact number
+%of total solutions since the information is defined with a logarithmic function.
+%We do not need to distinguish between constraints having $10^{10}$ or $10^{10} +
+%10$ solutions; they are very close to after taking logarithmic. Second, the
+%precise model counting approaches, like Davis-Putnam-Logemann-Loveland (DPLL)
+%search, have difficulty scaling up to large problem sizes.
+
+We apply the ``counting by sampling'' method. For
+the constraint $g_{i}= c_{i_1} \land c_{i_2} \land ,\ldots, \land c_{i_j} \land
+,\ldots, \land c_{i_m}$, if the solution satisfies $g_{i}$, it should also
+satisfy any constraint from $c_{i_1}$ to $c_{i_m}$. In other words, $K_{c_gi}$
+should be the subset of $K_{c_1}$, $K_{c_2}$, \ldots , $K_{c_m}$. We notice that
+$c_i$ usually has fewer inputs than $g_{i}$. For example, if
+$c_{i_j}$ has only one 8-bit input variable, we can find the exact solution set
+$K_{c_{i_j}}$ of $c_{i_j}$ by trying every possible 256 solution. After that,
+we only generate random input numbers for the other input variables in
+constraint $g_{i}$. With this simple yet effective trick, we reduce the number of input
+while still ensuring accuracy.
+
+%% the algorithm
+%\IncMargin{1em}
+%\begin{algorithm}
+%\SetAlgoLined
+%\DontPrintSemicolon
+
+%\KwIn{{The constraint $G_{i}= C_{i_1} \land C_{i_2}
+%\land \ldots \land C_{i_m}$}}    
+%\KwOut{{The number of assignments that satisfy $G_{i}$ $|K_{G_{i}}|$}}
+
+%\SetKwProg{RW}{RandomWalk}{}{}
+%\SetKwProg{MM}{MetropolisMove}{}{} 
+%$n$: the number of sampling times \;
+%$P$: a probability generator \;
+%$k$: the input assignment \;
+%$n_{s}$: the number of satisfying assignments \;
+%$\#k$: the satisfying number of k \fixme{this number is not used syntactically} \; 
+%Initialization: \;
+%$\#{k_0}$ $\leftarrow$ $\sum_{j=1}^{m}C_{i_j}(k_0)$ \;
+%\For{$t\leftarrow 1$ \KwTo $n$} {
+%      $p$ $\leftarrow$ $P$ \;
+%      \If{$p \geq 0.5$}
+%      {
+%        $v$ $\leftarrow$ \RW{$v$} {}
+%      }
+%      \Else{
+%            $v$ $\leftarrow$ \MM{$v$} {}
+%      }
+%      \If{$v$ satisfies $G_{i}$}
+%      {$n_{s}$ $\leftarrow$ $n_{s} + 1$}
+%}
+%$|K_{G_{i}}|$ $\leftarrow$ $n_s|K| / n$
+%\caption{Metropolis Sampling}
+%\end{algorithm}
+%\DecMargin{1em}
+
+\subsection{Error Estimation}
+\label{sssec:errest}
+Our result has a probabilistic guarantee that the error of the estimated amount of leaked 
+information is less than 1 bit under the Central Limit Theorem (CLT) and uncertainty
+propagation theorem.
+
+Let $n$ be the number of samples and $n_s$ be the number of samples that satisfy
+the constraint $C$. Then we get $\hat{p} = \frac{n_s}{n}$. If we repeat the
+experiment multiple times, each time we get a $\hat{p}$. As each
+$\hat{p}$ is independent and identically distributed, according to the central limit
+theorem, the mean value should follow the normal distribution
+$ \frac{\bar{p}-E(p)}{\sigma\sqrt{n}} \rightarrow N(0,1) $. Here $E(p)$ is the
+mean value of $p$, and $\sigma$ is the standard variance of $p$. If we use the
+observed value $\hat{p}$ to calculate the standard deviation, we can claim that
+we have 95\%\footnote{For a normal distribution, 95\% of variable $\Delta p$ fall within two sigmas of the mean.} 
+confidence that the error $\Delta p= \bar{p} - E(p)$ falls in the interval:
+$$ |\Delta p| \leq 1.96\sqrt{\frac{ \hat{p} (1- \hat{p} )}{n}}$$
+
+Since we use $L = \log_{2}p$ to estimate the amount of leaked information, we
+can have the following error propagation formula $\Delta L = \frac{\Delta
+p}{p\ln2}$ by taking the derivative from Definition~\ref{def}. For \tool, we want the error of estimated leaked
+information ($\Delta L$) to be less than 1 bit. So we get $\frac{\Delta
+p}{p\ln2} \leq 1$. Therefore, as long as $ n \geq \frac{1.96^2(1-p)}{p(\ln2)^2}$, we have
+95\% confidence that the error of estimated leaked information is less than 1 bit.
+During the simulation, if $n$ and $p$ satisfy this inequality, the Monte Carlo
+simulation will terminate.
