@@ -77,6 +77,49 @@ various granularities. For example, cache channels can observe cache
 accesses at the level of cache sets~\cite{liu2015last}, cache lines~\cite{184415} or other granularities. 
 Other kinds of side-channels like controlled-channel attack~\cite{7163052},
 can observe the memory access at the level of memory pages.
+
+\subsection{Cache-level Channel}
+Cache-based channels rely on the time difference between cache misses and cache hits. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. 
+We introduce two common attack strategies, namely Prime+Probe and
+Flush+Reload. Prime+Probe targets a single cache set. An
+attacker preloads the cache set with its own data and waits until the victim
+executes the program. If the victim accesses the cache set and evicts part of
+the data, the attacker will experience a slow measurement. 
+While Flush+Reload targets a single cache line, it requires the attacker and victim share some memory. During the ``flush'' stage, the attacker flushes the ``monitored
+memory'' from the cache and waits for the victim to access the memory,
+who will load the sensitive information to the cache line. In the next phase,
+the attacker reloads the ``monitored memory''. By measuring the time difference
+brought by cache hit and miss, the attacker can further infer the sensitive information. Some other types of side-channels target different hardware
+layers other than CPU cache.
+
+\subsection{Page-level Channel}
+Recent studies also shows the attacks can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}, where a privileged adversary try to infer the sensitive information by manipulating the enclave page access. Those kinds of attacks usually happen on the shielding system. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the adversary can know which page is accessed by observing the page fault sequence. While the granularity of the controlled-channel attacks is very coarse grained, the controlled-channel attacks allow the attacker to have a noise-free observation. Examples of other attacks exploits page cache maintained by the OS, TLB also shares the same granularity.
+
+
+In this paper, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
+
+\begin{table}
+    \centering
+    \caption{Due to the page limit, we only shows some representations of the vast side-channel attacks: Attacks, the shared hardware resources with attackers, the granularity of the attacker can observe, is there any published attacks on non-cryptography library and if the type of attack can exploit multiple leakage sites.}
+    \label{table:side_channel_attack}
+    \resizebox{\columnwidth}{!}{%
+    
+    \begin{tabular}{lllcc}
+    \toprule
+    Attacks & Shared Resources & Granularity  & Non-Crpyto & Multiple   \\ \midrule
+    CacheBleed~\cite{yarom2017cachebleed} & Cache & Sub Cache Line (<64 B)  & \xmark & \xmark \\ 
+    CopyCat~\cite{moghimi2020copycat} & Page Tables   & Instruction   & \xmark &  \xmark \\
+    Prime + Probe~\cite{liu2015last} & Cache & Cache Set (64-512 B)  & \cmark &   \xmark \\
+    Prime + Abort~\cite{disselkoen2017prime+} & Cache  & Cache Set (64-512 B) & \cmark &  \xmark   \\
+    Flush + Reload~\cite{yarom2014flush+} & Cache & Cache Line (64 B) & \cmark  &  \cmark \\
+    Flush + Flush~\cite{gruss2016flush+} & Cache & Cache Line (64 B) & \cmark & \xmark  \\
+    Controlled-channel Attack~\cite{xu2015controlled} & Page Tables & Page (4KB) & \cmark & \xmark \\
+    TLBleed~\cite{gras_translation_2018} & MMUs & TLB Set (4KB) & \cmark  & \xmark \\
+    Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4KB) & \xmark &  \cmark \\ 
+    \bottomrule
+    \end{tabular}
+    }
+    \end{table}
 \section{Information Theory}
 This section presents a short introduction on information theory. For a detailed tutorial, we recommend users refer to the following literature.
 
@@ -211,4 +254,97 @@ settings. We will present that the static or theoretical results could be
 dramatically different from the real world, and we do need a better method to
 quantify the information leakage from a practical point of view.
 
-\section{Binary Analysis}
+
+Let $k$ be one of the possible
+value of $K$. The Shannon entropy $H(K)$ is defined as
+\begin{equation}\label{eq1}
+    H(K) = - \sum_{k {\in} K}p(k)\log_2(k)
+\end{equation}
+
+Shannon entropy can be used to quantify the initial uncertainty about the sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose every key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy. 
+
+
+In the paper, we use the channel capacity to describe the information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as 
+
+\begin{equation}\label{eq2}
+C(K;O) = \max_{p(x)} I(K;O)
+\end{equation}
+Here $I(K;O)$ is the mutual information between $K$ and $O$.  
+\begin{equation} \label{eq3}
+    I(K;O) = \sum_{k {\in} K}{\sum_{o {\in} O}{p(k, o)\log_2\frac{p(k, o)}{p(k)p(o)}}}
+\end{equation}
+
+While the general case of channel capacity is hard to execute, we consider the two special channels.
+
+\subsection{Noiseless Lossless Channel}
+The channel of the system is noiseless and lossless if
+
+\begin{equation} \label{eq:1}
+    C(K;O) = \max_{p(k)} I(K;O) = \max_{p(k)} H|O| =\max_{p(k)} H|K|
+\end{equation}
+$|K|$ represents the number of symbols in $K$. 
+
+Figure~\ref{fig:channel}a shows the example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$). 
+
+\begin{figure}
+    \begin{minipage}{0.48\linewidth}
+    \resizebox{\linewidth}{!}{
+    
+     \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
+      \node[ele,label=left:{\LARGE $k_1$}] (a1) at (0,4) {};    
+      \node[ele,label=left:{\LARGE $k_2$}] (a2) at (0,3) {};    
+      \node[ele,label=left:{\LARGE $k_3$}] (a3) at (0,2) {};
+      \node[ele,label=left:{\LARGE $k_4$}] (a4) at (0,1) {};
+    
+      \node[ele,,label=right:{\LARGE $o_1$}] (b1) at (4,4) {};
+      \node[ele,,label=right:{\LARGE $o_2$}] (b2) at (4,3) {};
+      \node[ele,,label=right:{\LARGE $o_3$}] (b3) at (4,2) {};
+      \node[ele,,label=right:{\LARGE $o_4$}] (b4) at (4,1) {};
+    
+      \node[draw,fit= (a1) (a2) (a3) (a4),minimum width=2cm] {} ;
+      \node[draw,fit= (b1) (b2) (b3) (b4),minimum width=2cm] {} ;  
+      \draw[->,thick,shorten <=2pt,shorten >=2pt] (a1) -- (b1);
+      \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
+      \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b3);
+      \draw[->,thick,shorten <=2pt,shorten >=2] (a4) -- (b4);
+     \end{tikzpicture}
+    }
+    \caption*{(a) Noiseless Lossless}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\linewidth}
+    \resizebox{\linewidth}{!}{
+    
+     \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
+      \node[ele,label=left:{\LARGE $k_1$}] (a1) at (0,4) {};    
+      \node[ele,label=left:{\LARGE $k_2$}] (a2) at (0,3) {};    
+      \node[ele,label=left:{\LARGE $k_3$}] (a3) at (0,2) {};
+      \node[ele,label=left:{\LARGE $k_4$}] (a4) at (0,1) {};
+    
+      \node[ele,,label=right:{\LARGE $o_1$}] (b1) at (4,4) {};
+      \node[ele,,label=right:{\LARGE $o_2$}] (b2) at (4,3) {};
+      \node[ele,,label=right:{\LARGE $o_3$}] (b3) at (4,2) {};
+      \node[ele,,label=right:{\LARGE $o_4$}] (b4) at (4,1) {};
+    
+      \node[draw,fit= (a1) (a2) (a3) (a4),minimum width=2cm] {} ;
+      \node[draw,fit= (b1) (b2) (b3) (b4),minimum width=2cm] {} ;  
+      \draw[->,thick,shorten <=2pt,shorten >=2pt] (a1) -- (b1);
+      \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
+      \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b2);
+      \draw[->,thick,shorten <=2pt,shorten >=2] (a4) -- (b2);
+     \end{tikzpicture}
+     }
+     \caption*{(b) Noiseless Loss}
+     \end{minipage}
+    \caption{Two Kinds of Channels}\label{fig:channel}
+    \end{figure}
+    
+
+\subsection{Noiseless Loss Channel}
+In reality, noiseless loss channel is more common. We define the channel is noiseless loss if
+
+\begin{equation} \label{eq:2}
+    C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O| = \log_2 {|O|}
+\end{equation}
+
+Figure~\ref{fig:channel}b  shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
