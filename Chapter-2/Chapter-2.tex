@@ -348,3 +348,57 @@ In reality, noiseless loss channel is more common. We define the channel is nois
 \end{equation}
 
 Figure~\ref{fig:channel}b  shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
+
+\section{Binary Analysis}
+Binary analysis is the process of automatically inferring program behaviors from
+the binary executable.
+It plays a critical role from a security viewpoint. For many programs, like malware, Commercial off-the-shelf (COTS) application, source code are typically not
+available. Besides, some low-level information, including memory accesses and cache
+accesses, is only available on the binary code level. As many side-channel vulnerabilities
+are typically low-level problem, we believe binary analysis are more suitable than
+source code level analysis.
+
+Binary analysis can be categorized into two groups depending when the analysis is
+launched.
+\begin{itemize}
+    \item Static Analysis infer analyzing the binary program without running it. Previous studies focus on addressing several open problems, including identifying
+    function entry points~\cite{184521, Wang17a}, resolving indirect jumps, disambiguating code and data and solving alias memory address. Static analysis
+    lacks the run-time information, which may lead to false positives and false 
+    negatives. However, static analysis typically can have better coverage as it can
+    reason about every possible execution paths.
+    \item Dynamic Analysis involving analyzing a binary code as it executes. Tools
+    that perform dynamic analysis usually need to instrument the binary code.  
+    Although dynamic analysis can only reason only one execution path. It is usually more precise than static analysis.
+\end{itemize}
+
+In this dissertation, we detected side-channel vulnerabilities by trace-based analysis.
+It consists of two steps. The first step, called online trace logging, collect run-time
+information for the targeted program under the dynamic binary instrumentation (DBI)
+to collect necessary information. The second step, called offline analysis, run
+several analysis (e.g., taint analysis, symbolic analysis) on the top of traces.  
+
+Existing binary analysis frameworks, like Angr, BAP and Bitblaze combine both static
+and dynamic analyses, are applicable to a series of tasks. However, those frameworks
+are not suitable for the following reasons. 
+\begin{itemize}
+    \item Existing binary analysis frameworks transfer the machine code into
+    architecture-independent intermediate representatives (IR) and then run the
+    analysis. The IR design, which simplify the implementation and support multiple
+    architectures, introduces imprecision to the analysis results as well because some
+    information like cache accesses, control-flow transfers are lost during the IR
+    transformation.
+    \item Coverage is one of the concerns when they design the frameworks. 
+    As a result, they rely on constraint solvers to find different inputs that can
+    trigger different paths. As constraint solving is known for time-consuming. It is
+    one of the obstacles to make analyses salable.
+    However, we will show for many tasks, like binary similarity comparisons and side-channel vulnerability detection. We can
+    reduce the call to the solver just by fuzzing the formula. The design will
+    significantly reduce the overhead.
+\end{itemize}
+To solve the above problem, we propose Phoenix, a trace-oriented binary analysis
+framework. Phoenix is a dynamic binary analysis framework that provide several 
+functioning including dynamic symbolic execution engine, dynamic taint analysis
+engine, AST representation of X86 and binding for STP solvers. It run 
+execution on the top X86 instructions and symbolically reason the program behaviours.
+Our preliminary results show that Phoenix has a better performance compared to 
+many existing works, which makes it scalable to real-world applications.

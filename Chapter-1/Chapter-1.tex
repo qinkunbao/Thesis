@@ -13,7 +13,8 @@ keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-
 
 In this chapter, we first introduce two code patterns that can be exploited to retrieve sensitive information. After that, we discuss some common attacks and corresponding defense strategies. The limitations of existing work motivate the research in the dissertation. Finally, we summarize the contributions of the dissertation.
 
-\section{Address-based Side-channel Attacks}
+\section{Address-based Side-channel}
+\subsection{Attack}
 Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most of the attack allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim. As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
 
 Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
@@ -54,15 +55,22 @@ uint32_t a = *RK++ ^ \
 
 Secret-dependent data accesses happen when the value of the secret can affect which memory cell the code reads or writes. Figure~\ref{fig:secret:da} shows an example. \textsf{FSb} is an array. Depending on the value of \textsf{secret}, the code may read or write different items in the array. 
 
-\section{Defense}
+\subsection{Defense}
+
+
+
 Both hardware~\cite{Page2005PartitionedCA,
 Wang:2007:NCD:1250662.1250723,Zhang:2015:HDL:2775054.2694372,Li:2014:SLH:2541940.2541947,
 236344, 236334} and software~\cite{shih2017t,Coppens:2009:PMT:1607723.1608124,
 brickell2006software,crane2015thwarting, 197207} side-channels mitigation techniques have
 been proposed recently. Hardware countermeasures, including partitioning hardware resources~\cite{Page2005PartitionedCA}, randomizing cache
 accesses~\cite{Wang:2007:NCD:1250662.1250723, 236344}, and designing new
-architecture~\cite{tiwari2011crafting}, require changes to complex processors and are complex to adopt. On the contrary, software approaches are
-usually easy to implement. Coppens et
+architecture~\cite{tiwari2011crafting}, require changes to complex processors and are complex to adopt. 
+
+On the contrary, software approaches are
+usually easy to implement. By removing the above two kinds of code patterns, developers protect their 
+code from a seris of side-channel attacks.
+Coppens et
 al.~\cite{Coppens:2009:PMT:1607723.1608124} uses a compiler
 to eliminate key-dependent control-flow transfers. Crane et
 al.~\cite{crane2015thwarting} mitigated side-channels by randomizing software.
@@ -70,6 +78,9 @@ As for crypto libraries, the basic idea is to eliminate key-dependent
 control-flow transfers and data accesses. Common approaches include
 bit-slicing~\cite{konighofer2008fast,rebeiro2006bitslice} and unifying
 control-flows~\cite{Coppens:2009:PMT:1607723.1608124}.
+
+
+
 
 Regarding the root cause of software-based side channel attacks, many of them originate
 from two specific circumstances: data flow from secrets to load
@@ -199,59 +210,6 @@ In summary, we make the following contributions:
             reported vulnerabilities.
 \end{itemize}
 
-\section{Binary Analysis}
-Binary analysis is the process of automatically inferring program behaviors from
-the binary executable.
-It plays a critical role from a security viewpoint. For many programs, like malware, Commercial off-the-shelf (COTS) application, source code are typically not
-available. Besides, some low-level information, including memory accesses and cache
-accesses, is only available on the binary code level. As many side-channel vulnerabilities
-are typically low-level problem, we believe binary analysis are more suitable than
-source code level analysis.
-
-Binary analysis can be categorized into two groups depending when the analysis is
-launched.
-\begin{itemize}
-    \item Static Analysis infer analyzing the binary program without running it. Previous studies focus on addressing several open problems, including identifying
-    function entry points~\cite{184521, Wang17a}, resolving indirect jumps, disambiguating code and data and solving alias memory address. Static analysis
-    lacks the run-time information, which may lead to false positives and false 
-    negatives. However, static analysis typically can have better coverage as it can
-    reason about every possible execution paths.
-    \item Dynamic Analysis involving analyzing a binary code as it executes. Tools
-    that perform dynamic analysis usually need to instrument the binary code.  
-    Although dynamic analysis can only reason only one execution path. It is usually more precise than static analysis.
-\end{itemize}
-
-In this dissertation, we detected side-channel vulnerabilities by trace-based analysis.
-It consists of two steps. The first step, called online trace logging, collect run-time
-information for the targeted program under the dynamic binary instrumentation (DBI)
-to collect necessary information. The second step, called offline analysis, run
-several analysis (e.g., taint analysis, symbolic analysis) on the top of traces.  
-
-Existing binary analysis frameworks, like Angr, BAP and Bitblaze combine both static
-and dynamic analyses, are applicable to a series of tasks. However, those frameworks
-are not suitable for the following reasons. 
-\begin{itemize}
-    \item Existing binary analysis frameworks transfer the machine code into
-    architecture-independent intermediate representatives (IR) and then run the
-    analysis. The IR design, which simplify the implementation and support multiple
-    architectures, introduces imprecision to the analysis results as well because some
-    information like cache accesses, control-flow transfers are lost during the IR
-    transformation.
-    \item Coverage is one of the concerns when they design the frameworks. 
-    As a result, they rely on constraint solvers to find different inputs that can
-    trigger different paths. As constraint solving is known for time-consuming. It is
-    one of the obstacles to make analyses salable.
-    However, we will show for many tasks, like binary similarity comparisons and side-channel vulnerability detection. We can
-    reduce the call to the solver just by fuzzing the formula. The design will
-    significantly reduce the overhead.
-\end{itemize}
-To solve the above problem, we propose Phoenix, a trace-oriented binary analysis
-framework. Phoenix is a dynamic binary analysis framework that provide several 
-functioning including dynamic symbolic execution engine, dynamic taint analysis
-engine, AST representation of X86 and binding for STP solvers. It run 
-execution on the top X86 instructions and symbolically reason the program behaviours.
-Our preliminary results show that Phoenix has a better performance compared to 
-many existing works, which makes it scalable to real-world applications.
 
 
 \section{Contribution}
