@@ -75,14 +75,14 @@ code from a series of side-channel attacks.
 
 However, it is still hard to apply software approaches in practice due to the following reasons.
 
-\begin{itemize}
+\begin{enumerate}
     \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of original secret inputs. Recent work can identify side-channel leakages. But those tools can only work on small programs or need to apply some domain knowledge to simplify the analysis. 
     \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because those leakages are either false positives or leaked very little information.  
-\end{itemize}
+\end{enumerate}
 
 
 \section{Contribution}
-To address the above problems, we make the following contributions in this dissertations:
+To address Problem 2, we make the following contributions in this dissertations:
 
 
 \begin{itemize}
