@@ -86,7 +86,7 @@ To address Problem 1, we make the following contributions on detecting side-chan
 
 \begin{itemize}
     \item We designs a symbolic analysis method that can detect secret-dependent control-flow transfers and secret-dependent data access. The key idea is to only symbolically execute those machine instructions that are relevant to vulnerabilities while executing other instructions natively.
-    \item We implement the above method in a tool called ~\detect{}. The evaluation results shows that ~\detect{}  is 3 to 100 times faster than existing tools while identifying all vulnerabilities when we run it on the same library. Additional, we do not need to apply domain knowledge to only part of the original program, which simplify the analysis. 
+    \item We implement the above method in a tool called ~\detect{}. The evaluation results shows that ~\detect{}  is 3 to 100 times faster than existing tools while identifying all vulnerabilities when we run it on the same library.  We do not need to apply domain knowledge to only part of the original program, which simplify the analysis. In addition, ~\detect{} yields new leakages which are not identified by previous tools. We confirm those findings with developers.
 \end{itemize}
 
 To address Problem 2, we make the following contributions on quantifying side-channel leakages:
