@@ -82,11 +82,18 @@ However, it is still hard to apply software approaches in practice due to the fo
 
 
 \section{Contribution}
-To address Problem 2, we make the following contributions in this dissertations:
+To address Problem 1, we make the following contributions on detecting side-channel leakages:
+
+\begin{itemize}
+    \item We designs a symbolic analysis method that can detect secret-dependent control-flow transfers and secret-dependent data access. The key idea is to only symbolically execute those machine instructions that are relevant to vulnerabilities while executing other instructions natively.
+    \item We implement the above method in a tool called ~\detect{}. The evaluation results shows that ~\detect{}  is 3 to 100 times faster than existing tools while identifying all vulnerabilities when we run it on the same library. Additional, we do not need to apply domain knowledge to only part of the original program, which simplify the analysis. 
+\end{itemize}
+
+To address Problem 2, we make the following contributions on quantifying side-channel leakages:
 
 
 \begin{itemize}
-    \item We propose a novel method that can quantify fine-grained leaked
+    \item We propose a method that can quantify fine-grained leaked
     information from side-channel vulnerabilities that result from actual attack
     scenarios in a single trace attack. Our approach differs from previous ones in that we
     model real attack scenarios for one execution. 
@@ -102,7 +109,6 @@ To address Problem 2, we make the following contributions in this dissertations:
     \item We analyze the amount of information leakage from side-channel vulnerabilities based on the channel capacity. We propose a method that can estimate the lower bound of information leakages. The theory can serve as the foundation of the future work on quantify the information leakage based on the fuzzing.
     \item We implement the above method in a tool called \ctool{} and evaluate the tool with several benchmarks and several real-world applications such as OpenSSL, mbedTLS, TinyDNN, and GTK. The results show that our tool can detect and quantify the side-channel leakages effectively. Moreover, the leakage reports given by the \ctool{} can help developers fix the reported vulnerabilities.
 \end{itemize}
-
 
 
 
