@@ -13,8 +13,15 @@ keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-
 
 In this chapter, we first introduce two code patterns that can be exploited to retrieve sensitive information. After that, we discuss some common attacks and corresponding defense strategies. The limitations of existing work motivate the research in the dissertation. Finally, we summarize the contributions of the dissertation.
 
-\section{Side-channel Attacks}
-\begin{figure}[tbp]
+\section{Address-based Side-channel Attacks}
+Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most of the attack allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim. As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
+
+Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
+
+In this dissertation, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
+
+When we examine those side-channel attacks, many of them stem from the two code patterns, \emph{secret-dependent control-flow transfers} and \emph{secret-dependent data accesses}.
+\begin{figure}[h]
 \begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
 int secret[32];
 ...
@@ -28,8 +35,9 @@ while(i>0){
 \label{fig:secret:cf}
 \end{figure}
 
+Secret-dependent control-flow transfers happen when the value of secret can affect which branch the code executes. Figure~\ref{fig:secret:cf} shows an example. Depending on the value of \textsf{secret}, the code may or may not execute the code at line 6. As attackers, they can retrieve some information based on the execution control-flow. 
 
-\begin{figure}[tbp]
+\begin{figure}[h]
 \begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
 static char FSb[256] = {...}
 ... 
@@ -44,7 +52,9 @@ uint32_t a = *RK++ ^ \
 \label{fig:secret:da}
 \end{figure}
 
-\section{Current Defense}
+Secret-dependent data accesses happen when the value of the secret can affect which memory cell the code reads or writes. Figure~\ref{fig:secret:da} shows an example. \textsf{FSb} is an array. Depending on the value of \textsf{secret}, the code may read or write different item in the array.
+
+\section{Defense}
 
 Regarding the root cause of software-based side channel attacks, many of them originate
 from two specific circumstances: data flow from secrets to load
