@@ -15,7 +15,7 @@ In this chapter, we first introduce two code patterns that can be exploited to r
 
 \section{Address-based Side-channel}
 \subsection{Attack}
-Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most of the attack allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim. As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
+Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most systems allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim. As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
 
 Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
 
