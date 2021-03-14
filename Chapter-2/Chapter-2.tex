@@ -1,8 +1,9 @@
 % !TEX root = ../YourName-Dissertation.tex
 
-\chapter{Background and Related Work}\label{chapter2}
-In this chapter, we first present related work on existing side-channel attack, mitigation, information quantification, and model counting. After that, we present some background knowledge to facilitate the 
-\section{Address-based Side-channel Attacks}
+\chapter{Related Work}\label{chapter2}
+This chapter introduces the related work in this dissertation. We present the related work from the following aspects: side-channel attacks, detections, mitigation, and information quantification.
+
+\section{Side-channel Attacks}
 Side channels can leak sensitive information
 unconsciously through different execution behaviors caused by shared 
 hardware components (e.g., CPU cache, TLB, and
@@ -28,43 +29,6 @@ layers other than CPU cache. For example, the controlled-channel
 attack~\cite{7163052}, where an attacker works in the kernel space, can infer
 sensitive data in shielding systems by observing the page fault sequences
 after restricting some code and data pages.
-
-\begin{figure}[]
-
-    \noindent\begin{minipage}{0.45\linewidth}
-        \noindent
-        \begin{lstlisting}[numbers = none]
-unsigned long long r;
-int secret[32];
-...
-while(i>0){
-    r = (r * r) % n;
-    if(secret[--i] == 1)
-        r = (r * x) % n;   
-}
-        \end{lstlisting}
-\vspace*{-9pt}
-        \caption{Secret-dependent control-flow transfers}
-        \label{fig:secret:cf}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.45\linewidth}
-        \begin{lstlisting}[numbers = none]
-static char Fsb[256] = {...}
-... 
-uint32_t a = *RK++ ^ \ 
-(FSb[(secret)) ^
-(FSb[(secret >> 8)] << 8 ) ^
-(FSb[(secret >>16)] << 16 ) ^
-(FSb[(secret >>24)] << 24 );
-...
-        \end{lstlisting}
-\vspace*{-9pt}
-        \caption{Secret-dependent memory accesses}
-        \label{fig:secret:da}
-    \end{minipage}
-\vspace*{-12pt}
-\end{figure}
 
 The key intuition is that above side-channel attacks happen when a
 program accesses different memory addresses if the program has different
@@ -93,15 +57,60 @@ brought by cache hit and miss, the attacker can further infer the sensitive info
 layers other than CPU cache.
 
 \subsection{Page-level Channel}
-Recent studies also shows the attacks can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}, where a privileged adversary try to infer the sensitive information by manipulating the enclave page access. Those kinds of attacks usually happen on the shielding system. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the adversary can know which page is accessed by observing the page fault sequence. While the granularity of the controlled-channel attacks is very coarse grained, the controlled-channel attacks allow the attacker to have a noise-free observation. Examples of other attacks exploits page cache maintained by the OS, TLB also shares the same granularity.
+Recent studies also shows the attacks can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}, where a privileged adversary try to infer the sensitive information by manipulating the enclave page access. Those kinds of attacks usually happen on the shielding system. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the adversary can know which page is accessed by observing the page fault sequence. While the granularity of the controlled-channel attacks is coarse-grained, the controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack, DDRAM attacks share the same page-level granularity.
 
 
 In this paper, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
 
+\subsection{Target Applications}
+While there is a vast number of studies\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last} on side-channel attacks and detections, we find many of those work targets on the encryption key on cryptography libraries. In terms of the non-cryptography side-channel attacks. We find many of them can be classified into the below three categories.
+
+\subsubsection{Cryptography Libraries}
+
+\subsubsection{Machine Learning and Deep Learning Models}
+Previous side-channel attack mainly focus on recovering the input of the model and reversing the architecture of deep learning models. Hua et al.~\cite{hua2018reverse} were the first reverse engineer the architecture of neural networks. Wei et al.~\cite{wei2018know} perform the side-channel attacks on an FPG-based convolution neural network based on the power consumption to recover the real-world inputs. For the MNIST dataset, their attacks can achieve up 89\% accuracy. On the contrary, our attack based on the page access information can achieve accuracy. CSI NN~\cite{batina2019csi} reverse engineer the multi-layer perception and convolution neural network based on the Electromagnetic signal. Cache Telepathy~\cite{yan2020cache} introduce the cache based side-channel attack to extract DNN architecture. We mention that all existing approach need a lot of domain knowledge and expertise to launch the attack.
+\subsubsection{Media and Graphic Libraries}
+A few of recent work also studies the side-channel in media and graphic libraries. In the first controlled-channel attack~\cite{xu2015controlled}, they can recover the outline of the image by exploiting the vulnerability in the inverse DCT leakage site. Daimeng et al.~\cite{wang2019unveiling} present the cache attack in graphic libraries. Their approaches also combine a machine learning approach. However, they use the machine learning to infer the best exploitable cache line, while our approach use the machine learning to infer the total leaked information.
+\subsubsection{Others}
+Some other side-channel targets also include spell checking tools, and font libraries~\cite{xu2015controlled}. The attack to font libraries is essentially the same to the attack to the graphic library like GTK. By exploiting the differences of memory accesses when the program render each character, an attacker can recover part of the original sensitive information. We find most of those side-channel attacks target the trusted execution environments. We think part of the reason is that it is easy to argue that information in those libraries is also sensitive to users as well.
+
+\section{Detection and Mitifation}
+While there are several existing work on side-channel leakage detections, we find it very hard to apply existing methods to identify controlled-channel attacks. According to Table~\ref{table:related_work}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction. 
+
+\textbf{Trace comparison.} If the victim program has two different execution traces with two different sensitive inputs, then we can distinguish the sensitive input by observing the execution trace. Therefore, we can conclude the program is vulnerable to side-channel attacks. The method is similar to UNIX tool \textsf{diff}. Moreover, the approach does not need to model or abstract the program's semantics. In general, the approach is quite salable. On the negative side, comparing the trace along can only find the leakage, but it cannot find the complex relationship between the leakage site and the original buffer. For example, if two leakage sites leak the same information in the original buffer, those approaches cannot find out the two leakage sites are the same. 
+
+\textbf{Abstraction.} The second category of those tools belongs to the field of abstractions. Tools based on those approaches use the abstraction to generate approximations of the semantics of computer programs. After that, by analyzing the model, those tools can identify side-channel leakages. Comparing with the trace comparison approach, the method is more precise. 
+
+Those methods usually follow the below steps. Suppose a program $P$ has $k$ as the input, we can run symbolic execution on the top the victim program. So temporary values can be represented as math formulas. After that, we need to build a cache or memory access model and model the side-channel leakage as a math constraint. Then we use SMT solvers to find if there are two different secret inputs that can lead to access different locations in the memory or the cache. If so, then the program is vulnerable to side-channel attacks. Contrary to the trace comparison, the method is quite precise. Moreover, it can model multiple leakages precisely as the conjunction of those formulas. However, after some initial investigations and experiments, we find such approach fails in practice due to the below reasons. 
+
+\begin{itemize}
+    \item Existing tools cannot not handle many instructions such as AVX, and SIMD instructions.  Most existing tools are research prototype or are implemented based on the research prototype. For many projects, the tool is only implemented to properly handle the benchmark in their papers. Second, many those tools rely on transferring those instructions into some intermediate languages. However, those intermediate languages do not support those architecture instructions. 
+    \item Today's solvers can not handle many complicated constraints, especially the conjunction of those constraints. Recent studies show existing solver have bugs when it deals with floating pointer calculations.
+\end{itemize}
+
+According to Table~\ref{table:side_channel_detection_tool}, some methods may choose to analyze the source code or the intermediate languages. However, it still cannot solve the problem. First, many widely-used libraries (e.g., Intel MKL) do not open the source code. Second, some libraries use hand code assembly code to pursue the maximum performance. CacheAudit~\cite{182946} uses abstract domains to compute an
+over approximation of cache-based side-channel information leakage upper bound.
+However, it is difficult to judge the sensitive level of the side-channel leakage based on
+the leakage provided by CacheAudit. CacheS~\cite{236338} improves on
+CacheAudit with new abstract domains that only track
+secret-related code. Like CacheAudit, CacheS cannot
+indicate the sensitive level of side-channel vulnerabilities.
+CaSym~\cite{Brotzman19Casym} introduces a static cache-aware symbolic
+reasoning technique to cover multiple paths in a target program. Again, their
+approaches cannot evaluate the sensitive level for each side-channel
+vulnerability, and it only work on small code snippets.
+
+The dynamic approach, usually consists of taint analysis and symbolic execution,
+can perform a very precise analysis. CacheD~\cite{203878} takes a concrete execution trace and runs symbolic execution on the trace
+to get the formula of each memory address. CacheD is
+quite precise in avoiding false positives. However, CacheD is not able to detect secret-dependent control-flows. We adopted a similar approach to model the secret-dependent data accesses. \tool{} differs from CacheD in that we do not use traditional taint tracking or domain knowledge to cut the trace when identifying secret-dependent data access vulnerabilities. \tool{} works on machine instructions directly instead of intermediate representations. Moreover, \tool{} finds secret-dependent control-flows at the same time and gives a precise quantification of the leakage. DATA~\cite{217537} detects address-based side-channel vulnerabilities by comparing different execution traces under various test inputs. After collecting execution traces, DATA aligns them and finds the differences. It uses statistical hypothesis testing to find true leakages. However, both imperfect trace alignment and statistical testing result that DATA can produce false positives.
+MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} uses
+mutual information (MI) between sensitive input and execution state to detect side-channels. 
+
 \begin{table}
     \centering
     \caption{Due to the page limit, we only shows some representations of the vast side-channel attacks: Attacks, the shared hardware resources with attackers, the granularity of the attacker can observe, is there any published attacks on non-cryptography library and if the type of attack can exploit multiple leakage sites.}
-    \label{table:side_channel_attack}
+    \label{table:side_channel_detection_tool}
     \resizebox{\columnwidth}{!}{%
     
     \begin{tabular}{lllcc}
@@ -120,285 +129,59 @@ In this paper, we consider three types of granularity: byte (1 Byte), cache line
     \end{tabular}
     }
     \end{table}
-\section{Information Theory}
-This section presents a short introduction on information theory. For a detailed tutorial, we recommend users refer to the following literature.
-
-Given an event $e$ that occurs with the probability $p(e)$, we receive
-\begin{displaymath}
-    I = - \log_2p(e)
-\end{displaymath}
-bits of information by knowing the event $e$ happens according to information theory~\cite{shannon1948mathematical}. 
-Considering a char variable $a$
-with one byte storage size in a C program, its value ranges from 0 to 255.
-Assume $a$ has a uniform distribution. If we observe that
-$a$ equals $1$, the probability of this observation is $\frac{1}{256}$. So 
-we get $-\log(\frac{1}{256}) = 8$ bits information, which is exactly the size
-of a char variable in the C program.
-
-Existing works on information leakage quantification typically use Shannon
-entropy~\cite{clark2007static,Wichelmann:2018:MFF:3274694.3274741},
-min-entropy~\cite{10.1007/978-3-642-00596-1_21}, and max-entropy~\cite{182946,
-Doychev:2017:RAS:3062341.3062388}. In these frameworks, the input sensitive
-information $K$ is considered as a random variable.
-
-Let $k$ be one of the possible
-value of $K$. The Shannon entropy $H(K)$ is defined as
-\begin{displaymath}
-    H(K) = - \sum_{k {\in} K}p(k)\log_2(p(k))
-\end{displaymath}
-
-Shannon entropy can be used to quantify the initial uncertainty about the
-sensitive information. It measures the amount of information in a system.
-
-Min-entropy describes the information leaks for a program with the most likely input. 
-For example, min-entropy can be used to describe the
-best chance of success in guessing one's password using the
-most common password. %, which is defined as
-\begin{displaymath}
-    \mathit{min\text{-}entropy} = - \log_2(p_{\mathit{max}})
-\end{displaymath}
-
-Max-entropy is defined solely on the number of possible observations.
-%It is equal to $-\log_2{n}$.
-\begin{displaymath}
-    \mathit{max\text{-}entropy} = -\log_2{n}
-\end{displaymath}
-As it is easy to compute, most recent works~\cite{182946,Doychev:2017:RAS:3062341.3062388} use max-entropy as the definition of
-the amount of leaked information.
-
-To illustrate how these definitions work, we consider the code
-fragment in Figure~\ref{fig:side-channel}. It has two secret-dependent
-control-flows, A and B.
-
-\begin{figure}[h!]
-\centering
-\begin{lstlisting}[xleftmargin=.03\textwidth,xrightmargin=.01\textwidth]
-uint8_t key[2], t1, t2;
-get_key(key);              // 0 <= key[0], key[1] < 256
-t1 = key[0] + key[1];
-t2 = key[0] - key[1];
-if (t1 < 4){               // leakage site A
-    foo();    
-}                          
-if (t2 > 0){               // leakage site B     
-    doo();    
-}                          
-\end{lstlisting}
-\vspace*{-1pt}
-    \caption{Side-channel leakage}
-    \label{fig:side-channel}
-\end{figure}
-In this paper we assume an attacker can observe the secret-dependent control-flows in Figure~\ref{fig:side-channel}.
-Therefore, an attacker can have two different observations for each leak site
-depending on the value of the $\mathit{key}$: $A$ for function \textsf{foo} is executed, 
-$\neg A$ for function \textsf{foo} is not executed, $B$ for function \textsf{doo} is
-executed, and $\neg B$ for function \textsf{doo} is not executed. Now the
-question is how much information can be leaked from the above code if an
-attacker knows which branch is executed?
-
-\begin{table}[ht]
-    \centering\small\footnotesize
-    \caption{The distribution of observation}\label{shtable}
-    \vspace*{-0pt}
-%    \resizebox{\columnwidth}{!}{
-    \begin{tabular}{l|cc|cc}
-        \hline
-
-        Observation ($o$)   & $A$ & $\neg A$ & $B$ & $\neg B$ \\ \hline
-        Number of Solutions & 65526       & 10        & 32768     & 32768           \\ \hline
-        Possibility (p)     & 0.9998      & 0.0002    & 0.5    & 0.5       \\
-        \hline
-    \end{tabular}
-%        }
-\end{table}
-
-Assuming $\mathit{key}$ is uniformly distributed, we can calculate the corresponding
-possibility by counting the number of possible inputs. Table~\ref{shtable}
-describes the probability of each observation. We use the above three types of 
-leakage metrics to calculate the amount of leaked information for leak A and leak B.
-
-\vspace{3pt}
-\textbf{Min Entropy.}
-As $p_{A\mathit{max}} = 0.9998$ and $p_{B\mathit{max}} = 0.5$, 
-with the definition, min-entropy equals to
-\begin{align*}
-    \mathit{min\text{-}entropy_A} & = -\log_2{0.9998} = 0.000\ \mathrm{bits} \\
-    \mathit{min\text{-}entropy_B} & = -\log_2{0.5} = 1.000\ \mathrm{bits}
-\end{align*}
-
-\textbf{Max Entropy.}
-Depending on the value of key, the code can run two different branches for each leakage site. 
-Therefore, with the max entropy
-definition, both leakage sites leak
-
-\begin{displaymath}
-    \mathit{max\text{-}entropy} = -\log_2{2} = 1.000\ \mathrm{bits}
-\end{displaymath}
-
-\textbf{Shannon Entropy.}
-Based on Shannon entropy, the respective amount of information in A and B equals to
-{\footnotesize
-\begin{align*}
-    \mathit{Shannon\text{-}entropy_A} & = -(0.9998*\log_{2}0.9998      \\
-                                    & \qquad+ 0.0002*\log_{2}0.0002)  \\
-                                    & = 0.000\ \mathrm{bits}         \\
-    \mathit{Shannon\text{-}entropy_B} & = -(0.5*\log_{2}0.5      \\
-                                    & \qquad+ 0.5*\log_{2}0.5)        \\
-                                    & = 1.000\ \mathrm{bits}                             
-\end{align*}
-}
-In the next section, we will show that these measures work well only
-theoretically in a static analysis setting. 
-Generally, they do not apply to dynamic analysis or real
-settings. We will present that the static or theoretical results could be
-dramatically different from the real world, and we do need a better method to
-quantify the information leakage from a practical point of view.
-
-
-Let $k$ be one of the possible
-value of $K$. The Shannon entropy $H(K)$ is defined as
-\begin{equation}\label{eq1}
-    H(K) = - \sum_{k {\in} K}p(k)\log_2(k)
-\end{equation}
-
-Shannon entropy can be used to quantify the initial uncertainty about the sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose every key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy. 
-
-
-In the paper, we use the channel capacity to describe the information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as 
-
-\begin{equation}\label{eq2}
-C(K;O) = \max_{p(x)} I(K;O)
-\end{equation}
-Here $I(K;O)$ is the mutual information between $K$ and $O$.  
-\begin{equation} \label{eq3}
-    I(K;O) = \sum_{k {\in} K}{\sum_{o {\in} O}{p(k, o)\log_2\frac{p(k, o)}{p(k)p(o)}}}
-\end{equation}
-
-While the general case of channel capacity is hard to execute, we consider the two special channels.
-
-\subsection{Noiseless Lossless Channel}
-The channel of the system is noiseless and lossless if
-
-\begin{equation} \label{eq:1}
-    C(K;O) = \max_{p(k)} I(K;O) = \max_{p(k)} H|O| =\max_{p(k)} H|K|
-\end{equation}
-$|K|$ represents the number of symbols in $K$. 
-
-Figure~\ref{fig:channel}a shows the example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$). 
-
-\begin{figure}
-    \begin{minipage}{0.48\linewidth}
-    \resizebox{\linewidth}{!}{
     
-     \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
-      \node[ele,label=left:{\normalsize $k_1$}] (a1) at (0,4) {};    
-      \node[ele,label=left:{\normalsize $k_2$}] (a2) at (0,3) {};    
-      \node[ele,label=left:{\normalsize $k_3$}] (a3) at (0,2) {};
-      \node[ele,label=left:{\normalsize $k_4$}] (a4) at (0,1) {};
-    
-      \node[ele,,label=right:{\normalsize $o_1$}] (b1) at (4,4) {};
-      \node[ele,,label=right:{\normalsize $o_2$}] (b2) at (4,3) {};
-      \node[ele,,label=right:{\normalsize $o_3$}] (b3) at (4,2) {};
-      \node[ele,,label=right:{\normalsize $o_4$}] (b4) at (4,1) {};
-    
-      \node[draw,fit= (a1) (a2) (a3) (a4),minimum width=2cm] {} ;
-      \node[draw,fit= (b1) (b2) (b3) (b4),minimum width=2cm] {} ;  
-      \draw[->,thick,shorten <=2pt,shorten >=2pt] (a1) -- (b1);
-      \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
-      \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b3);
-      \draw[->,thick,shorten <=2pt,shorten >=2] (a4) -- (b4);
-     \end{tikzpicture}
-    }
-    \caption*{(a) Noiseless Lossless}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\linewidth}
-    \resizebox{\linewidth}{!}{
-    
-     \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
-      \node[ele,label=left:{\normalsize $k_1$}] (a1) at (0,4) {};    
-      \node[ele,label=left:{\normalsize $k_2$}] (a2) at (0,3) {};    
-      \node[ele,label=left:{\normalsize $k_3$}] (a3) at (0,2) {};
-      \node[ele,label=left:{\normalsize $k_4$}] (a4) at (0,1) {};
-    
-      \node[ele,,label=right:{\normalsize $o_1$}] (b1) at (4,4) {};
-      \node[ele,,label=right:{\normalsize $o_2$}] (b2) at (4,3) {};
-      \node[ele,,label=right:{\normalsize $o_3$}] (b3) at (4,2) {};
-      \node[ele,,label=right:{\normalsize $o_4$}] (b4) at (4,1) {};
-    
-      \node[draw,fit= (a1) (a2) (a3) (a4),minimum width=2cm] {} ;
-      \node[draw,fit= (b1) (b2) (b3) (b4),minimum width=2cm] {} ;  
-      \draw[->,thick,shorten <=2pt,shorten >=2pt] (a1) -- (b1);
-      \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
-      \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b2);
-      \draw[->,thick,shorten <=2pt,shorten >=2] (a4) -- (b2);
-     \end{tikzpicture}
-     }
-     \caption*{(b) Noiseless Loss}
-     \end{minipage}
-    \caption{Two Kinds of Channels}\label{fig:channel}
-    \end{figure}
-    
+Both hardware~\cite{Page2005PartitionedCA,
+Wang:2007:NCD:1250662.1250723,Zhang:2015:HDL:2775054.2694372,Li:2014:SLH:2541940.2541947,
+236344, 236334} and software~\cite{shih2017t,Coppens:2009:PMT:1607723.1608124,
+brickell2006software,crane2015thwarting, 197207} side-channels mitigation techniques have
+been proposed recently. Hardware countermeasures, including partitioning hardware resources~\cite{Page2005PartitionedCA}, randomizing cache
+accesses~\cite{Wang:2007:NCD:1250662.1250723, 236344}, and designing new
+architecture~\cite{tiwari2011crafting}, require changes to complex processors and are complex to adopt. On the contrary, software approaches are
+usually easy to implement. Coppens et
+al.~\cite{Coppens:2009:PMT:1607723.1608124} uses a compiler
+to eliminate key-dependent control-flow transfers. Crane et
+al.~\cite{crane2015thwarting} mitigated side-channels by randomizing software.
+As for crypto libraries, the basic idea is to eliminate key-dependent
+control-flow transfers and data accesses. Common approaches include
+bit-slicing~\cite{konighofer2008fast,rebeiro2006bitslice} and unifying
+control-flows~\cite{Coppens:2009:PMT:1607723.1608124}.
 
-\subsection{Noiseless Loss Channel}
-In reality, noiseless loss channel is more common. We define the channel is noiseless loss if
+\section{Quantification}
+Proposed by Denning~\cite{robling1982cryptography} and Gray~\cite{gray1992toward}, 
+Quantitative Information Flow (QIF) aims at providing an estimation of the amount of leaked information from the sensitive information given the public output. If zero bits
+of the information are leaked, the program is called non-interference. McCamant
+and Ernst~\cite{McCamantE2008} quantify the information leakage as the network
+flow capacity. Backes et al.~\cite{5207642} propose an automated method for QIF
+by computing an equivalence relation on the set of input keys. But the approach
+cannot handle real-world programs with bitwise operations. 
+Phan et al.~\cite{Phan:2012:SQI:2382756.2382791} propose symbolic QIF. The goal of their
+work is to ensure a program is non-interference. They adopt an over
+approximation method to estimate the total information leakage and their method
+does not work for secret-dependent memory access side-channels.
+Pasareanu et al.~\cite{pasareanu2016multi} combine symbolic analysis and Max-SMT solving to synthesize the concrete public input that can lead to the worst case leakage. They assume the target program has multiple different input secrets and calculate the average leakage for one-fixed public input.
+CHALICE~\cite{Chattopadhyay:2017:QIL:3127041.3127044} quantifies the leaked
+information for a given cache behavior. 
+It symbolically reasons about cache
+behavior and estimates the amount of leaked information based on cache miss/hit.
+Their approach only scale to small programs, which limits its usage in
+real-world applications. On the contrary, \tool{} assesses the sensitive level
+of side-channels with different granularities. It can also analyze side-channels
+in real-world crypto libraries.
 
-\begin{equation} \label{eq:2}
-    C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O| = \log_2 {|O|}
-\end{equation}
-
-Figure~\ref{fig:channel}b  shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
-
-\section{Binary Analysis}
-Binary analysis is the process of automatically inferring program behaviors from
-the binary executable.
-It plays a critical role from a security viewpoint. For many programs, like malware, Commercial off-the-shelf (COTS) application, source code are typically not
-available. Besides, some low-level information, including memory accesses and cache
-accesses, is only available on the binary code level. As many side-channel vulnerabilities
-are typically low-level problem, we believe binary analysis are more suitable than
-source code level analysis.
-
-Binary analysis can be categorized into two groups depending when the analysis is
-launched.
-\begin{itemize}
-    \item Static Analysis infer analyzing the binary program without running it. Previous studies focus on addressing several open problems, including identifying
-    function entry points~\cite{184521, Wang17a}, resolving indirect jumps, disambiguating code and data and solving alias memory address. Static analysis
-    lacks the run-time information, which may lead to false positives and false 
-    negatives. However, static analysis typically can have better coverage as it can
-    reason about every possible execution paths.
-    \item Dynamic Analysis involving analyzing a binary code as it executes. Tools
-    that perform dynamic analysis usually need to instrument the binary code.  
-    Although dynamic analysis can only reason only one execution path. It is usually more precise than static analysis.
-\end{itemize}
-
-In this dissertation, we detected side-channel vulnerabilities by trace-based analysis.
-It consists of two steps. The first step, called online trace logging, collect run-time
-information for the targeted program under the dynamic binary instrumentation (DBI)
-to collect necessary information. The second step, called offline analysis, run
-several analysis (e.g., taint analysis, symbolic analysis) on the top of traces.  
-
-Existing binary analysis frameworks, like Angr, BAP and Bitblaze combine both static
-and dynamic analyses, are applicable to a series of tasks. However, those frameworks
-are not suitable for the following reasons. 
-\begin{itemize}
-    \item Existing binary analysis frameworks transfer the machine code into
-    architecture-independent intermediate representatives (IR) and then run the
-    analysis. The IR design, which simplify the implementation and support multiple
-    architectures, introduces imprecision to the analysis results as well because some
-    information like cache accesses, control-flow transfers are lost during the IR
-    transformation.
-    \item Coverage is one of the concerns when they design the frameworks. 
-    As a result, they rely on constraint solvers to find different inputs that can
-    trigger different paths. As constraint solving is known for time-consuming. It is
-    one of the obstacles to make analyses salable.
-    However, we will show for many tasks, like binary similarity comparisons and side-channel vulnerability detection. We can
-    reduce the call to the solver just by fuzzing the formula. The design will
-    significantly reduce the overhead.
-\end{itemize}
-To solve the above problem, we propose Phoenix, a trace-oriented binary analysis
-framework. Phoenix is a dynamic binary analysis framework that provide several 
-functioning including dynamic symbolic execution engine, dynamic taint analysis
-engine, AST representation of X86 and binding for STP solvers. It run 
-execution on the top X86 instructions and symbolically reason the program behaviours.
-Our preliminary results show that Phoenix has a better performance compared to 
-many existing works, which makes it scalable to real-world applications.
+Model counting refers to the problem of computing the number of 
+models for a propositional formula (\#SAT). There are two approaches to
+solving the problem, exact model counting and approximate model 
+counting. We focus on approximate model counting since it is our approach. Wei and Selman~\cite{wei2005new} introduce
+ApproxCount, a local search based method using Markov Chain Monte 
+Carlo (MCMC). ApproxCount has the better scalability than 
+exact model counters. Other approximate model counter includes 
+SampleCount~\cite{gomes2007sampling},
+Mbound~\cite{gomes2006model}, and MiniCount~\cite{kroc2008leveraging}. 
+Unlike ApproxCount,
+these model counters can give lower or upper bounds with guarantees.
+Despite the rapid development of model counters for SAT and some 
+research~\cite{chistikov2017approximate,phan2015model} on Modulo Theories model counting (\#SMT),
+they cannot be directly applied to 
+side channel leakage quantification.
+ApproxFlow~\cite{biondi2018scalable} uses ApproxMC~\cite{chakraborty2016algorithmic} for information flow quantification,
+but it has only been tested with small programs.
