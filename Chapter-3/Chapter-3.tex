@@ -2,28 +2,7 @@
 
 \chapter{Scalable Side-channel Vulnerability Detection}\label{chapter3}
 \section{Motivation}
-While there are several existing work on side-channel leakage detections, we find it very hard to apply existing methods to identify controlled-channel attacks. According to Table~\ref{table:related_work}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction. 
-\begin{table*}
-    \centering
-    \caption{Existing leakage detection tool only evaluate them on cryptography library. 1. Most recent work only evaluates their approaches on cryptography libraries. 2. All of them can not reason about the total effect of multiple leakages.}
-    \label{table:related_work}
-    
-    \begin{tabular}{lllcclc}
-    \toprule
-    Tool & S/D & Method  & AVX/SIMD  & Multiple & Evaluation & Available \\ \midrule
-    CacheAudit~\cite{doychev2015cacheaudit} & Static  & Abstraction  & \xmark & \xmark & Crypto Algorithm  & \cmark \\ 
-    CacheD~\cite{wang2017cached} & Dynamic  & Symbolic Execution + Taint Analysis  & \xmark & \xmark & Libgcrypt, OpenSSL & \xmark \\
-    CachSym~\cite{brotzman2019casym} & Static & Symbolic Execution  & \xmark & \xmark & Crypto Snippet & \xmark \\
-    CacheS~\cite{wang2019identifying} & Static & Abstract Interpretation & \xmark & \xmark & Libgcrypt, OpenSSL, mbedTLS & \xmark \\
-    DATA~\cite{weiser2018data} & Dynamic & Trace Alignment + Comparison & \cmark & \xmark & OpenSSL, PyCrypto & \cmark \\
-    ctgrind~\cite{langley2010ctgrind} & Dynamic & Taint Analysis & \cmark & \xmark & Crypto Library & \cmark \\
-    Satcco~\cite{xiao2017stacco} & Dynamic & Trace Comparison & \cmark & \xmark & OpenSSL, GnuTLS, mbedTLS, WolfTLS, LibreSSL & \xmark \\
-    ANABLEPS~\cite{wang2019time} & Dynamic & Trace Comparison & \cmark & \xmark & Deep Learning, gsl, Hunspell, PNG, Freetype, QRcodegen, Genometools & \xmark \\
-    MicroWalk~\cite{wichelmann2018microwalk} & Dynamic & Trace Comparison & \cmark & \xmark & Intel IPP, Microsoft CNG & \cmark \\ 
-    \bottomrule
-    \end{tabular}
 
-    \end{table*}
 
 \section{Threat Model}
 
@@ -85,9 +64,7 @@ domain knowledge to simplify the analysis.
 %instruction and update memory cells and registers with formulas that
 %captured the semantics of the execution and search different input values that
 %can lead to different execution behaviors using constraint solver. 
-We implement
-the approach presented in \S\ref{sec:trace-qif} and model the side-channels as
-formulas. While the tool can finish analyzing some simple cases like AES, it can
+We implement the approach presented in \S\ref{sec:trace-qif} and model the side-channels as formulas. While the tool can finish analyzing some simple cases like AES, it can
 not handle complicated cases like RSA.
 We observe that finding side-channels using symbolic execution is different from
 traditional general symbolic execution and can be optimized to be as efficient
