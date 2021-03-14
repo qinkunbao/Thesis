@@ -6,7 +6,7 @@
 
 \section{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
-Here are a few examples. 1) A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can start a new VM and probe the process running on the other VM.  2) In a shielding system, a malicious operating system can extract sensitive information from the protected application. 
+Here are a few examples. 1) A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can start a new VM and probe the process running on the other VM.  2) In a shielding system, a malicious operating system can extract sensitive information from the protected application. 3) An user level application can probe some sensitive information inside the kernel. 
 The attacker attempts to retrieve sensitive information through address-based
 side-channel attacks. The attacker has no direct access to the target's memory or cache,
 but it can probe its memory or cache at each program point. In reality, the
