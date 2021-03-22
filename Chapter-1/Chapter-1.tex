@@ -1,6 +1,7 @@
 % !TEX root = ../YourName-Dissertation.tex
 
 \chapter{Introduction} \label{chapter1}
+\section{Side-channel Analysis}
 Side channels are ubiquitous in modern computer systems as sensitive
 information can leak through many mechanisms such as power,
 electromagnetic radiation, and even sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.
@@ -30,7 +31,15 @@ However, these techniques cannot quantify the severity of a leak because they ov
 reports that the upper-bound leakage of AES-128 exceeds the original key size. Besides, existing side-channel quantification work~\cite{182946,5207642} assumes an attacker runs the target program multiple times with different
 input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, those results are less useful to assess the severity level of each leakage site.
 
-We try to address the above problem from the following aspects.
+
+In summary, it is hard to apply software approaches in practice due to the following reasons.
+
+\begin{enumerate}
+    \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of original secret inputs. Recent work can identify side-channel leakages. But those tools can only work on small programs or need to apply some domain knowledge to simplify the analysis. 
+    \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because those leakages are either false positives or leaked very little information.  
+\end{enumerate}
+
+We try to address the above problem from the following two aspects.
 \begin{enumerate}
 \item \textbf{Detection.} We propose a fast and precise side-channel detection method. Different from previous trace comparison based methods, our method has fewer false positives and false negatives. Compared with methods based on symbolic execution and abstract interpretation, our methods can work on real-world cryptography libraries. Symbolic execution provides fine-grained information, but it is expensive to compute. Therefore, prior symbolic
 execution work~\cite{203878,236338,Brotzman19Casym} either analyzes only
@@ -39,25 +48,11 @@ small programs or applies domain knowledge~\cite{203878} to simplify the analysi
 leakage precisely from a single trace attack. We quantify the number of bits that can leak during a real execution and define the amount of leaked information as the cardinality of possible secrets based on an attacker's observation. Before an attack, an adversary has a large but finite input space. Whenever the adversary observes a leakage site, they can eliminate some impossible inputs and reduce the input space's size. In an extreme case, if the input space's size reduces to one, an adversary has determined the input, which means all secret information (e.g., the entire secret key) is
 leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely. We use symbolic execution to generate constraints to model the relation 
 between the original sensitive input and an attacker's observations. 
-
-
-\end{enumerate}
-
-
-
-
-However, it is still hard to apply software approaches in practice due to the following reasons.
-
-\begin{enumerate}
-    \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of original secret inputs. Recent work can identify side-channel leakages. But those tools can only work on small programs or need to apply some domain knowledge to simplify the analysis. 
-    \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because those leakages are either false positives or leaked very little information.  
 \end{enumerate}
 
 
 \section{Contribution}
-We address above problems from two aspects. First, we propose a novel method that can detect side-channel vulnerabilities in real-world applications automatically fast and precisely. Second, we propose methods that can quantify each side-channel leakages precisely. In addition, we study two kinds of threat models, single-trace attacks, and chosen message attacks.
-
-In summary, we make the following contributions:
+We address above problems from two aspects. First, we propose a novel method that can detect side-channel vulnerabilities in real-world applications automatically fast and precisely. Second, we propose methods that can quantify each side-channel leakages precisely. In addition, we study two kinds of threat models, single-trace attacks, and chosen message attacks. In summary, we make the following contributions:
 
 To address Problem 1, we make the following contributions on detecting side-channel leakages:
 
