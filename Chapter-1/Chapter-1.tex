@@ -4,33 +4,44 @@
 Side channels are ubiquitous in modern computer systems as sensitive
 information can leak through many mechanisms such as power,
 electromagnetic radiation, and even sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.
-It is typically hard to fix all side-channel vulnerabilities for real-world software systems. 
+It is typically hard to fix all side-channel vulnerabilities for real-world software systems. Among them, software side-channel attacks, such as cache attacks, memory page attacks, and controlled-channel attacks, are especially problematic as they do not require physical proximity~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These attacks arises from shared micro-architectural components in a computer processor. By observing inadvertent interactions between two programs, attackers can infer program execution flows that manipulate secrets and guess secrets such as encryption keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
 
-Among them, software side-channel attacks, such as cache attacks, memory page
-attacks, and controlled-channel attacks, are especially problematic as they do not require physical proximity~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These attacks arises from shared micro-architectural components in a computer processor.
-By observing inadvertent interactions between two programs, attackers can infer program execution flows that manipulate secrets and guess secrets such as encryption keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
+Various countermeasures have been proposed to defend against
+side channel attacks. Hardware-level solutions, such as reducing shared
+resources, adopting oblivious RAM, and using transnational
+memory~\cite{203878,217537,shih2017t,Zhang:2015:HDL:2775054.2694372}, need new
+hardware features and changes in modern complex computer systems, which are
+hard to adopt in reality. Therefore, a promising and universal direction is software countermeasures, detecting and eliminating side channel vulnerabilities from code base. It is due to the following reason: many side-channel attacks originate in two code patterns: data flow from secrets to load addresses and data flow from secrets to branch conditions. We refer to them as secret-dependent data accesses and control flows respectively in the dissertation. 
 
-Many side-channel attacks originate in two code patterns: data flow from secrets to load addresses and data flow from secrets to branch conditions. We refer to them as secret-dependent data accesses and control flows, respectively. 
-
-Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities. For example, DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA
-implementation in OpenSSL 1.1.0f\@. 
-Further analysis shows 1,510 leaks can be dismissed. But that
-leaves 460 data-access leaks and 278 control-flow leaks. 
-Many of these vulnerabilities have not been fixed by developers for a variety of reasons.
-
-First, some vulnerable implementations perform better. For example,
-RSA implementations usually adopt the CRT optimization,
-which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}.
-Second, fixing vulnerabilities can introduce new 
-weaknesses. Third, most vulnerabilities pose a negligible risk. 
+However, eliminating side channel vulnerabilities from real-world software code base is not easy. First, some vulnerable implementations perform better. For example, RSA implementations usually adopt the CRT optimization,
+which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}. Fixing vulnerabilities can introduce new 
+weaknesses. Second, it is hard to detect side channels in reality. While recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities, they either suffer from expensive computation cost or high false positives and false negatives. Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities. For example, DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA implementation in OpenSSL 1.1.0f\@. Further analysis shows 1,510 leaks can be dismissed. But that leaves 460 data-access leaks and 278 control-flow leaks. Many of these vulnerabilities have not been fixed by developers for a variety of reasons. Third, most vulnerabilities pose a negligible risk. 
 Although some vulnerabilities result in the key being 
 entirely compromised~\cite{184415, aumuller2002fault}, 
-many others are less severe in reality. Therefore, we need a proper quantification metric to  assess the sensitivity of side-channel vulnerabilities, so a developer can efficiently triage them.
+many others are less severe in reality. Therefore, we need a proper quantification metric to assess the sensitivity of side-channel vulnerabilities, so a developer can efficiently triage them.
 
 Previous work~\cite{182946,5207642} can identify numerous leakages or even provide an upper bound on the amount of leakage, which is useful to verify that an implementation is secure if it incurs zero leakage.
 However, these techniques cannot quantify the severity of a leak because they over approximate the leakage. For example, CacheAudit~\cite{182946} 
 reports that the upper-bound leakage of AES-128 exceeds the original key size. Besides, existing side-channel quantification work~\cite{182946,5207642} assumes an attacker runs the target program multiple times with different
 input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, those results are less useful to assess the severity level of each leakage site.
+
+We try to address the above problem from the following aspects.
+\begin{enumerate}
+\item 
+\item We propose a novel method to quantify information 
+leakage precisely from a single trace attack. We quantify the number of bits that can leak during a real execution and define the amount of leaked information as the cardinality of possible secrets based on an attacker's observation. Before an attack, an adversary has a large but finite input space. Whenever the adversary observes a leakage site, they can eliminate some impossible inputs and reduce the input space's size. In an extreme case, if the input space's size reduces to one, an adversary has determined the input, which means all secret information (e.g., the entire secret key) is
+leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely.
+We use symbolic execution to generate constraints to model the relation 
+between the original sensitive input and an attacker's observations. 
+Symbolic execution provides fine-grained information, but it is expensive
+to compute. Therefore, prior symbolic
+execution work~\cite{203878,236338,Brotzman19Casym} either analyzes only
+small programs or applies domain knowledge~\cite{203878} to simplify the analysis. We examine the bottleneck of the trace-oriented symbolic execution and optimize it to work for real-world crypto-systems.
+
+\end{enumerate}
+
+
+
 
 
 \section{Address-based Side-channel}
