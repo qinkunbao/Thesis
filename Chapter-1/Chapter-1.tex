@@ -27,11 +27,10 @@ input secrets and calculates an ``average'' estimation, which is different from 
 
 We try to address the above problem from the following aspects.
 \begin{enumerate}
-\item 
+\item In terms of side-channel vulnerability detections, we propose a fast and precise side-channel detection method. 
 \item We propose a novel method to quantify information 
 leakage precisely from a single trace attack. We quantify the number of bits that can leak during a real execution and define the amount of leaked information as the cardinality of possible secrets based on an attacker's observation. Before an attack, an adversary has a large but finite input space. Whenever the adversary observes a leakage site, they can eliminate some impossible inputs and reduce the input space's size. In an extreme case, if the input space's size reduces to one, an adversary has determined the input, which means all secret information (e.g., the entire secret key) is
-leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely.
-We use symbolic execution to generate constraints to model the relation 
+leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely. We use symbolic execution to generate constraints to model the relation 
 between the original sensitive input and an attacker's observations. 
 Symbolic execution provides fine-grained information, but it is expensive
 to compute. Therefore, prior symbolic
