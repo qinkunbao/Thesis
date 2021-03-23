@@ -4,8 +4,8 @@
 This chapter introduces the related work in this dissertation. We present the related work from the following aspects: side-channel attacks, detections, mitigation, and information quantification.
 
 \section{Side-channel Attacks}
-Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most systems allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim~\cite{ge2018survey,szefer2019survey}. An attacker can probe the shared hardware resource to infer the sensitive information.
-As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
+Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. In many situations,  computer systems allow the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim~\cite{ge2018survey,szefer2019survey}. As a result, an attacker can probe the shared hardware resource to infer the sensitive information.
+While the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
 
 \begin{table}
 \centering
@@ -31,7 +31,7 @@ Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4KB) & \xmark &  \
 \end{table}
 
 
-For example, cached-based
+For example, cached
 side-channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415}
 rely on the time difference between cache misses and cache hits. We introduce two
 common attack strategies, namely Prime+Probe~\cite{liu2015last} and
