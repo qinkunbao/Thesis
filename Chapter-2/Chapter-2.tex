@@ -29,39 +29,12 @@ Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4KB) & \xmark &  \
 \end{tabular}
 }
 \end{table}
-
-
-For example, cached
-side-channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415}
-rely on the time difference between cache misses and cache hits. We introduce two
-common attack strategies, namely Prime+Probe~\cite{liu2015last} and
-Flush+Reload~\cite{184415}. Prime+Probe targets a single cache set. An
-attacker preloads the cache set with its own data and waits until the victim
-executes the program. If the victim accesses the cache set and evicts part of
-the data, the attacker will experience a slow measurement. 
-While Flush+Reload targets a
-single cache line, it requires the attacker and victim share some memory. 
-During the ``flush'' stage, the attacker flushes the ``monitored
-memory'' from the cache and waits for the victim to access the memory,
-who will load the sensitive information to the cache line. In the next phase,
-the attacker reloads the ``monitored memory''. By measuring the time difference
-brought by cache hit and miss, the attacker can further infer the sensitive information.
-Some other types of side-channels target different hardware
-layers other than CPU cache. For example, the controlled-channel
-attack~\cite{7163052}, where an attacker works in the kernel space, can infer
-sensitive data in shielding systems by observing the page fault sequences
-after restricting some code and data pages.
-
-
-Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
-
-In this dissertation, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
  
 
 
 
 \subsection{Cache-level Channel}
-Cache-based channels rely on the time difference between cache misses and cache hits. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. 
+Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415} rely on the time difference between cache misses and cache hits. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. 
 We introduce two common attack strategies, namely Prime+Probe and
 Flush+Reload. Prime+Probe targets a single cache set. An
 attacker preloads the cache set with its own data and waits until the victim
@@ -73,6 +46,8 @@ who will load the sensitive information to the cache line. In the next phase,
 the attacker reloads the ``monitored memory''. By measuring the time difference
 brought by cache hit and miss, the attacker can further infer the sensitive information. Some other types of side-channels target different hardware
 layers other than CPU cache.
+
+Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
 
 \subsection{Page-level Channel}
 Recent studies also shows the attacks can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}, where a privileged adversary try to infer the sensitive information by manipulating the enclave page access. Those kinds of attacks usually happen on the shielding system. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the adversary can know which page is accessed by observing the page fault sequence. While the granularity of the controlled-channel attacks is coarse-grained, the controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack, DDRAM attacks share the same page-level granularity.
