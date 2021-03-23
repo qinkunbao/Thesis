@@ -37,40 +37,7 @@ after restricting some code and data pages.
 Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
 
 In this dissertation, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
-
-When we examine those side-channel attacks, many of them stem from the two code patterns, \emph{secret-dependent control-flow transfers} and \emph{secret-dependent data accesses}.
-\begin{figure}[h]
-\begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
-int secret[32];
-...
-while(i>0){
-    r = (r * r) % n;
-    if(secret[--i] == 1)
-        r = (r * x) % n;   
-}
-\end{lstlisting}
-\caption{Secret-dependent control-flow transfers}
-\label{fig:secret:cf}
-\end{figure}
-
-Secret-dependent control-flow transfers happen when the value of secret can affect which branch the code executes. Figure~\ref{fig:secret:cf} shows an example. Depending on the value of \textsf{secret}, the code may or may not execute the code at line 6. As attackers, they can retrieve some information based on the execution control-flow. 
-
-\begin{figure}[h]
-\begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
-static char FSb[256] = {...}
-... 
-uint32_t a = *RK++ ^ \ 
-(FSb[(secret)) ^
-(FSb[(secret >> 8)] << 8 ) ^
-(FSb[(secret >>16)] << 16 ) ^
-(FSb[(secret >>24)] << 24 );
-...
-\end{lstlisting}
-\caption{Secret-dependent data accesses}
-\label{fig:secret:da}
-\end{figure}
-
-Secret-dependent data accesses happen when the value of the secret can affect which memory cell the code reads or writes. Figure~\ref{fig:secret:da} shows an example. \textsf{FSb} is an array. Depending on the value of \textsf{secret}, the code may read or write different items in the array. 
+ 
 
 The key intuition is that above side-channel attacks happen when a
 program accesses different memory addresses if the program has different
