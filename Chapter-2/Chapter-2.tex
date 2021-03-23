@@ -4,10 +4,12 @@
 This chapter introduces the related work in this dissertation. We present the related work from the following aspects: side-channel attacks, detections, mitigation, and information quantification.
 
 \section{Side-channel Attacks}
+Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most systems allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim. As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
+
 Side channels can leak sensitive information
 unconsciously through different execution behaviors caused by shared 
 hardware components (e.g., CPU cache, TLB, and
-DRAM) in modern computer systems~\cite{ge2018survey,szefer2019survey}. 
+DRAM) in modern computer system~\cite{ge2018survey,szefer2019survey}. 
 
 For example, cached-based
 side-channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415}
@@ -30,7 +32,7 @@ attack~\cite{7163052}, where an attacker works in the kernel space, can infer
 sensitive data in shielding systems by observing the page fault sequences
 after restricting some code and data pages.
 
-Address-based side-channel attacks happen when a program has different behaviors when it accesses different memory addresses. Most systems allows the attacker to shares some hardware resources (e.g., CPU Cache, TLB, and DRAM) with the victim. As a result, while the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
+
 
 Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
 
