@@ -4,7 +4,8 @@
 This chapter introduces the related work in this dissertation. We present the related work from the following aspects: side-channel attacks, detections, mitigation, and information quantification.
 
 \section{Side-channel Attacks}
-Address-based side-channel attacks happen when a program accesses different memory addresses when it processes different secrets. In many situations, an attacker may shares some hardware resources (e.g., Cache, TLB, and DRAM) with the victim in today's computer system ~\cite{ge2018survey,szefer2019survey}. As a result, the attacker can probe the shared hardware resource to infer the sensitive information. While the root reason of the attack is the same, there are various approaches that can exploit the attack at different granularities. 
+While there are many kinds of side-channel attacks, we only study address-based side-channel attacks in this dissertation.
+Address-based side-channel attacks happen when a program accesses different memory addresses when it processes different secrets. In many situations, an attacker may shares some hardware resources (e.g., Cache, TLB, and DRAM) with the victim in today's computer system ~\cite{ge2018survey,szefer2019survey}. As a result, the attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are various approaches and an attacker can exploit the attack to retrieve the information at different granularities. 
 
 \begin{table}
 \centering
