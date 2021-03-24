@@ -34,6 +34,7 @@ Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4KB) & \xmark &  \
 Table~\ref{table:side_channel_attack} shows some representations of the recent side-channel attacks. For a detailed overview of recent side-channel attacks, we refer to the following survey paper~\cite{ge2018survey}. We classified those side-channel attacks into two categories: cache channels and page channels.
 
 \subsection{Cache-level Channel}
+A CPU cache are an essential part in modern computer systems. It is a faster memory to reduce the average data accesses to the main memory.
 Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415} rely on the time difference between cache misses and cache hits. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. 
 We introduce two common attack strategies, namely Prime+Probe and
 Flush+Reload. Prime+Probe targets a single cache set. An
