@@ -41,10 +41,12 @@ Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184
 An attacker primes the cache set with its own data and waits until the victim executes the program. After that, the attacker probes the cache by reading previously-loaded data. If the victim accesses the cache set and evicts some lines of the data, the attacker will experience a slow measurement. Under the circumstance, the attacker can know the victim must have touched some data that mapping to the same cache set.
 
 \textbf{Flush+Reload.} Flush+Reload allows an attacker to observe the memory at the granularity of cache line instead of a cache set. While Flush+Reload targets a single cache line, it requires the attacker and victim share some memory. During the ``flush'' stage, the attacker flushes the ``monitored
-memory'' from the cache and waits for the victim to access the memory, who may load the sensitive information to the cache line. On X86-64 machines, it can be achieved by using the \textsf{clflush} instruction. In the next phase,
+memory'' from the cache and waits for the victim to access the memory, who may load the sensitive information to the cache line.  In the next phase,
 the attacker reloads the ``monitored memory''. By measuring the time differences
-brought by cache hits and misses, the attacker can further infer the sensitive information. Some other types of side-channels target different hardware
-layers other than CPU cache.
+brought by cache hits and misses, the attacker can further infer the sensitive information. On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
+
+
+Some other types of side-channels target different hardware layers other than CPU cache.
 
 Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
 
