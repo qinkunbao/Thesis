@@ -22,9 +22,9 @@ Prime + Probe~\cite{liu2015last} & Cache & Cache Set (64-512 B)  & \cmark &   \x
 Prime + Abort~\cite{disselkoen2017prime+} & Cache  & Cache Set (64-512 B) & \cmark &  \xmark   \\
 Flush + Reload~\cite{yarom2014flush+} & Cache & Cache Line (64 B) & \cmark  &  \cmark \\
 Flush + Flush~\cite{gruss2016flush+} & Cache & Cache Line (64 B) & \cmark & \xmark  \\
-Controlled-channel Attack~\cite{xu2015controlled} & Page Tables & Page (4KB) & \cmark & \xmark \\
-TLBleed~\cite{gras_translation_2018} & MMUs & TLB Set (4KB) & \cmark  & \xmark \\
-Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4KB) & \xmark &  \cmark \\ 
+Controlled-channel Attack~\cite{xu2015controlled} & Page Tables & Page (4 KB) & \cmark & \xmark \\
+TLBleed~\cite{gras_translation_2018} & MMUs & TLB Set (4 KB) & \cmark  & \xmark \\
+Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4 KB) & \xmark &  \cmark \\ 
 \bottomrule
 \end{tabular}
 }
@@ -45,11 +45,7 @@ memory'' from the cache and waits for the victim to access the memory, who may l
 the attacker reloads the ``monitored memory''. By measuring the time differences
 brought by cache hits and misses, the attacker can further infer the sensitive information. On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
 
-
-Some other types of side-channels target different hardware layers other than CPU cache.
-
-Cache channels rely on the time difference between cache misses and cache hits. A cache channel works when the victim program and the attacker's program shares some sized chunks like cache lines or cache sets. Recent studies shows that an attacker can even observe the address access at a finer granularity (e.g., CacheBleed). Page-level side-channels allow attackers observe the memory access at the granularity of memory pages. 
-
+Based on the above attacks, some work~\cite{brickell} suggests not having secret-dependent memory accesses at coarser than cache line granularity should be secure enough. However, recent studies shows that having memory accesses within a cache line is also dangerous. One example is the CacheBleed attack~\cite{yarom2017cachebleed}. It is a cache channel attack can exploits cache-back collisions.
 \subsection{Page-level Channel}
 Recent studies also shows the attacks can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}, where a privileged adversary try to infer the sensitive information by manipulating the enclave page access. Those kinds of attacks usually happen on the shielding system. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the adversary can know which page is accessed by observing the page fault sequence. While the granularity of the controlled-channel attacks is coarse-grained, the controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack, DDRAM attacks share the same page-level granularity.
 
