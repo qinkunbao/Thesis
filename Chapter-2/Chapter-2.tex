@@ -67,7 +67,7 @@ Some other side-channel targets also include spell checking tools, and font libr
 Many exploits rely on the knowledge of the memory location of a certain kernel function. Since Linux 4.12, the kernel loads core kernel image and device drivers at random positions during the boot time. Jang et al.~\cite{jang2016breaking} rely on side-channels to reveal mapping status of each page. After that, they detect kernel modules with unique size signatures to break KASLR. The second example relies on the side-channel vulnerabilities~\cite{cao2019principled} inside kernels to infer the TCP sequence numbers, which can be used to hijack connections between the client and the server~\cite{cao2016off}.
 
 \section{Detection and Mitigation}
-While there are several existing work on side-channel leakage detections, we find it very hard to apply existing methods to identify controlled-channel attacks. According to Table~\ref{table:side_channel_detection_tool}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction. 
+There are several existing work on side-channel leakage detections. According to Table~\ref{table:side_channel_detection_tool}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction. 
 
 \textbf{Trace comparison.} If a program has two different execution traces under two different sensitive inputs, then attacker can distinguish the sensitive input by observing the execution trace. Therefore, we can conclude the program is vulnerable to side-channel attacks. The method is similar to UNIX tool \textsf{diff}. Moreover, the approach does not need to model or abstract the program's semantics. In general, the approach is quite fast. On the negative side, comparing the trace along can find the leakage, but it cannot find the complex relationship between the leakage site and the original buffer. For example, if two leakage sites leak the same information in the original buffer, those approaches cannot find out the two leakage sites are the same. 
 
@@ -117,7 +117,7 @@ DATA~\cite{217537} & Dynamic & Trace Alignment + Comparison & \cmark & \xmark & 
 ctgrind~\cite{langley2010ctgrind} & Dynamic & Taint Analysis & \cmark & \xmark & Crypto Library & \cmark \\
 Satcco~\cite{xiao2017stacco} & Dynamic & Trace Comparison & \cmark & \xmark & OpenSSL, GnuTLS, mbedTLS, WolfTLS, LibreSSL & \xmark \\
 ANABLEPS~\cite{wang2019time} & Dynamic & Trace Comparison & \cmark & \xmark & gsl, Hunspell, PNG, Freetype, QRcodegen, Genometools & \xmark \\
-MicroWalk~\cite{wichelmann2018microwalk} & Dynamic & Trace Comparison & \cmark & \xmark & Intel IPP, Microsoft CNG & \cmark \\ 
+MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} & Dynamic & Trace Comparison & \cmark & \xmark & Intel IPP, Microsoft CNG & \cmark \\ 
 \bottomrule
 \end{tabular}
 }
