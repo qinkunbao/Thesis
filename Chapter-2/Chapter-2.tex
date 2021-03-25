@@ -61,10 +61,9 @@ For example, AES can have more than five different implementations (OpenSSL). De
 \subsubsection{Machine Learning Applications}
 Recent side-channel attack on machine learning applications mainly focus on recovering two types of the sensitive information: the input of the model, and the architecture of deep learning models. Hua et al.~\cite{hua2018reverse} were the first in the literature to reverse engineer the architecture of convolutional neural networks (CNNs) through the memory access patterns. Wei et al.~\cite{wei2018know} perform the side-channel attacks on an FPG-based convolution neural network based on the power consumption to recover inputs to the networks. For an image classification task trained by the MNIST dataset, their attacks can achieve up 89\% accuracy. CSI NN~\cite{batina2019csi} reverse engineer the multi-layer perception and convolution neural network based on the electromagnetic signals (EMs). Cache Telepathy~\cite{yan2020cache} introduces the cache based side-channel attack to extract DNNs' architectures. We find that all existing approaches need a lot of domain knowledge and expertise to launch the attacks.
 \subsubsection{Media and Graphic Libraries}
-A few of recent work also studies the side-channel attacks in media and graphic libraries. In the controlled-channel attack~\cite{xu2015controlled}, they can recover the outline of the image by exploiting the vulnerability in the inverse DCT leakage site. Daimeng et al.~\cite{wang2019unveiling} present the cache attack in graphic libraries. Their approaches also combine a machine learning approach. However, they use the machine learning to infer the best exploitable cache line, while our approach use the machine learning to infer the total leaked information.
+A few of recent work also studies the side-channel attacks in media and graphic libraries. In the controlled-channel attack~\cite{xu2015controlled}, Yuanzhong et al. demonstrate an attack to recover the outline of the image by exploiting the vulnerability in the inverse DCT function in libjpeg. Daimeng et al.~\cite{wang2019unveiling} present the cache attack in graphic libraries. Their approaches combine a machine learning approach. They use the machine learning to pick cache lines that can be exploitable to leak most information.
 \subsubsection{Others}
-Some other side-channel targets also include spell checking tools, and font libraries~\cite{xu2015controlled}. The attack to font libraries is essentially the same to the attack to the graphic library like GTK. By exploiting the differences of memory accesses when the program render each character, an attacker can recover part of the original sensitive information. We find most of those side-channel attacks target the trusted execution environments. We think part of the reason is that it is easy to argue that information in those libraries is also sensitive to users as well.
-
+Some other side-channel targets also include spell checking tools, and font libraries~\cite{xu2015controlled}. The attack to font libraries is essentially the same to the attack to the graphic library like GTK. By exploiting the differences of memory accesses when the program renders different characters, an attacker can recover parts of the original sensitive information. Other side-channel attacks target on the kernel of the operating system. We list two examples here. One example is the to use the side-channel attacks to break the kernel address space randomization (KASLR).
 \section{Detection and Mitigation}
 While there are several existing work on side-channel leakage detections, we find it very hard to apply existing methods to identify controlled-channel attacks. According to Table~\ref{table:related_work}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction. 
 
@@ -113,9 +112,9 @@ mutual information (MI) between sensitive input and execution state to detect si
     Prime + Abort~\cite{disselkoen2017prime+} & Cache  & Cache Set (64-512 B) & \cmark &  \xmark   \\
     Flush + Reload~\cite{yarom2014flush+} & Cache & Cache Line (64 B) & \cmark  &  \cmark \\
     Flush + Flush~\cite{gruss2016flush+} & Cache & Cache Line (64 B) & \cmark & \xmark  \\
-    Controlled-channel Attack~\cite{xu2015controlled} & Page Tables & Page (4KB) & \cmark & \xmark \\
-    TLBleed~\cite{gras_translation_2018} & MMUs & TLB Set (4KB) & \cmark  & \xmark \\
-    Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4KB) & \xmark &  \cmark \\ 
+    Controlled-channel Attack~\cite{xu2015controlled} & Page Tables & Page (4 KB) & \cmark & \xmark \\
+    TLBleed~\cite{gras_translation_2018} & MMUs & TLB Set (4 KB) & \cmark  & \xmark \\
+    Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4 KB) & \xmark &  \cmark \\ 
     \bottomrule
     \end{tabular}
     }
