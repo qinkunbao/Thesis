@@ -103,20 +103,20 @@ MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} uses mutual information (MI
 %\begin{table*}
 %\centering
 \caption{Existing leakage detection tool only evaluate them on cryptography library. 1. Most recent work only evaluates their approaches on cryptography libraries. 2. All of them can not reason about the total effect of multiple leakages.}
-\label{table:related_work}
+\label{table:side_channel_detection_tool}
 \resizebox{1\columnwidth}{!}{%
 
 \begin{tabular}{lllcclc}
 \toprule
 Tool & S/D & Method  & AVX/SIMD  & Multiple & Evaluation & Available \\ \midrule
-CacheAudit~\cite{doychev2015cacheaudit} & Static  & Abstraction  & \xmark & \xmark & Crypto Algorithm  & \cmark \\ 
-CacheD~\cite{wang2017cached} & Dynamic  & Symbolic Execution + Taint Analysis  & \xmark & \xmark & Libgcrypt, OpenSSL & \xmark \\
-CachSym~\cite{brotzman2019casym} & Static & Symbolic Execution  & \xmark & \xmark & Crypto Snippet & \xmark \\
-CacheS~\cite{wang2019identifying} & Static & Abstract Interpretation & \xmark & \xmark & Libgcrypt, OpenSSL, mbedTLS & \xmark \\
-DATA~\cite{weiser2018data} & Dynamic & Trace Alignment + Comparison & \cmark & \xmark & OpenSSL, PyCrypto & \cmark \\
+CacheAudit~\cite{182946} & Static  & Abstraction  & \xmark & \xmark & Crypto Algorithm  & \cmark \\ 
+CacheD~\cite{203878} & Dynamic  & Symbolic Execution + Taint Analysis  & \xmark & \xmark & Libgcrypt, OpenSSL & \xmark \\
+CachSym~\cite{Brotzman19Casym} & Static & Symbolic Execution  & \xmark & \xmark & Crypto Snippet & \xmark \\
+CacheS~\cite{236338} & Static & Abstract Interpretation & \xmark & \xmark & Libgcrypt, OpenSSL, mbedTLS & \xmark \\
+DATA~\cite{217537} & Dynamic & Trace Alignment + Comparison & \cmark & \xmark & OpenSSL, PyCrypto & \cmark \\
 ctgrind~\cite{langley2010ctgrind} & Dynamic & Taint Analysis & \cmark & \xmark & Crypto Library & \cmark \\
 Satcco~\cite{xiao2017stacco} & Dynamic & Trace Comparison & \cmark & \xmark & OpenSSL, GnuTLS, mbedTLS, WolfTLS, LibreSSL & \xmark \\
-ANABLEPS~\cite{wang2019time} & Dynamic & Trace Comparison & \cmark & \xmark & Deep Learning, gsl, Hunspell, PNG, Freetype, QRcodegen, Genometools & \xmark \\
+ANABLEPS~\cite{wang2019time} & Dynamic & Trace Comparison & \cmark & \xmark & gsl, Hunspell, PNG, Freetype, QRcodegen, Genometools & \xmark \\
 MicroWalk~\cite{wichelmann2018microwalk} & Dynamic & Trace Comparison & \cmark & \xmark & Intel IPP, Microsoft CNG & \cmark \\ 
 \bottomrule
 \end{tabular}
