@@ -46,7 +46,7 @@ We have tested \tool{} on both macOS and Ubuntu. You can refer to the continuous
 
 \tool{} can be built within a docker, simply run the following command:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, frame=none, numbers=none]
 $ git clone https://github.com/s3team/Abacus.git
 $ cd Abacus
 $ ./docker.sh
@@ -122,7 +122,6 @@ You will get two files \textsf{Function.txt} and \textsf{Inst\_data.txt}. \texts
 \subsection{Quantify the leakage}
 To analyze the execution trace and generate the report, run the below command:
 \begin{lstlisting}[language=bash]
-
 $ ./build/App/QIF/QIF ./Inst_data.txt -f Function.txt \ 
   -d ./examples/a.out -o result.txt
 \end{lstlisting}
