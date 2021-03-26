@@ -201,9 +201,45 @@ So the unconditional control-transfer does not leak any information based on our
 The conditional control-flow transfer instructions, like conditional jumps, depending on CPU states, may or may not transfer control flows. For conditional jumps, the CPU will test if certain condition flag 
 (e.g., CF = 0, ZF =1) is met and jump to certain branches, respectively.
 The symbolic engine will compute the flag and represent the flag in a symbol 
-formula. Because we are running on a symbolic execution on an execution trace, 
-we know which branch is executed.
+formula. Because we are running on a symbolic execution on an execution trace, we know which branch is executed.
 If a conditional jump uses the CPU status flag, we will generate the constraint accordingly.
+
+For examples, considering the below x86 code snippet,
+
+\begin{lstlisting}
+ ...
+0x0000e781      add dword [local_14h], 1
+0x0000e785      cmp dword [local_14h], 4
+0x0000e789      jne 0xe7df
+0x0000e78b      mov dword [local_14h], 0
+ ...
+\end{lstlisting}
+
+At the beginning of the instruction segment, the value at the address of local\_14h can be written as $F(\vec{K})$. At the address $e785$, the value will be updated with $F(\vec{K})+1$. Then the code compares 
+the value with 4 and use the result as a conditional jump. Based on the result, we can have the following formula:
+
+$$F(\vec{K}) + 1 = 4$$
+
+The formula, together with the memory address ($0xe789$) is store as a \textit{formula tuple (address, formula)}. Each formula tuple represents one leakage site.
+
+\subsubsection{Secret-dependent data access}
+Like input-dependent control-flow transfers, an adversary can also infer sensitive information from the data access pattern as well. We try to find this kind of leakages by checking every memory operand of the instruction. We generate the memory addressing 
+formulas. As discussed before, every symbols in the formula is the input key. If the formula does not contain any symbols, the memory access is independent 
+from the input sensitive information and will not leak any sensitive information according to our threat model. Otherwise, we will generate the constraint for
+the memory addressing. We model the memory address with a symbolic formula $F(\vec{K})$. Because we also have the concrete value of the memory address $Addr1$. 
+Inspired by the work from~\cite{203878}, the formula can be written as:
+
+$$F(\vec{K}) >> L = Addr1 >> L$$
+
+$L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6.
+
+\subsubsection{Information Flow Check}
+\tool{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing the bug, we also track the information flow for each byte of the input
+buffer. 
+The step can be seen as the multiple-tag taint analysis. With the help of the information from symbolic execution, we can implement a relatively simple but relatively precise information flow track.
+At the beginning of the analysis, \tool{} keep a track for each byte in 
+the original buffer. When \tool{} symbolically executes each instruction in the trace, it will check every value read from registers or memory. If the value is concrete, it means the instruction has nothing to do with the original buffer.
+If the value is a formula, it means the original information passes through the instruction. Since each byte in the sensitive buffer is represented as a symbol with a unique ID, \tool{} can know which byte in the origin buffer goes through the instruction.
 
 \section{Evaluation}
 
