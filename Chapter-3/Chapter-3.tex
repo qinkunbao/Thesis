@@ -2,13 +2,15 @@
 
 \chapter{Fast and Precise Side-channel Vulnerability Detection}\label{chapter3}
 \section{Problem}
-Side-channel attacks infer sensitive information such as cryptographic keys, personal data from software products unconsciously. Based on the discussions in \S\ref{chapter1} and \S\ref{chapter2}, patching leakage sites in software is usually easier than adopting new hardware to defend against side-channel attacks. In order to eliminate those leakage sites, developers also need to identify potential leakage sites from the code base manually. However, the manual process is tedious and error-prone. Recent studies~\cite{203878} also suggests fixing old vulnerabilities can sometimes introduce new leakages. 
+Side-channel attacks infer sensitive information such as cryptographic keys, personal data from software products unconsciously. Based on the discussions in \S\ref{chapter1} and \S\ref{chapter2}, patching leakage sites in software is usually easier than adopting new hardware to defend against side-channel attacks. In order to eliminate those leakage sites, developers also need to identify potential leakage sites from the code base manually. However, the manual process is tedious and error-prone. Recent studies~\cite{203878} also suggest fixing old vulnerabilities can sometimes introduce new leakages. 
 
-Recent work has made good progress in identifying side-channel leakages automatically. Some tools (e.g., DATA, CacheD) have successfully identified unknown leakage sites from software products automatically. However, existing tools have the following limitations.
+Recent work has made good progress in identifying side-channel leakages automatically. Some tools (e.g., CacheD, CaSym) can successfully identify unknown leakage sites from software products automatically. However, those tools have the following limitations. 
 
-First, performance
+First, although some tools can find side-channel leakages in real-world software products, they can only analyze one code fragment at a time due to the expensive performance overhead. As a result, users sometimes need to manually cut off some irrelevant code based on the user's experience. The trimming process is tedious and needs domain knowledge from users (e.g., which part of the code is more likely to have side-channel leakage sites). More importantly, those tools miss leakages on the trimmed code.
 
-Second, precision
+Second, many tools perform the analysis at the level of intermediate representations (IR) instead of machine code to facilitate the implementations. However, side-channel leakages are a pretty low-level issue and a low-level analysis can give the most accurate results. For example, the IR-level branches isn't necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches like conditional moves and the converse could also happen. 
+
+To overcome the problem, we 
 
 \section{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
@@ -126,8 +128,7 @@ the analysis.
       \caption{The number of x86,  % instructions and the number of 
              REIL IR, and VEX IR instructions on the traces of crypto programs.}
       \label{scala:ir}
-\vspace*{-1pt}
-      \resizebox{\columnwidth}{!}{%
+      \resizebox{.7\columnwidth}{!}{%
 
             \begin{tabular}{cccc}
                   \hline
