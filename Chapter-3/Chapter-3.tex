@@ -4,7 +4,11 @@
 \section{Problem}
 Side-channel attacks infer sensitive information such as cryptographic keys, personal data from software products unconsciously. Based on the discussions in \S\ref{chapter1} and \S\ref{chapter2}, patching leakage sites in software is usually easier than adopting new hardware to defend against side-channel attacks. In order to eliminate those leakage sites, developers also need to identify potential leakage sites from the code base manually. However, the manual process is tedious and error-prone. Recent studies~\cite{203878} also suggests fixing old vulnerabilities can sometimes introduce new leakages. 
 
-Recent work has made good progress in identifying side-channel leakages automatically. Some tools (e.g., DATA, CacheD) have successfully identified unknown leakage sites from software products automatically. However, existing tools have the following limitations. 
+Recent work has made good progress in identifying side-channel leakages automatically. Some tools (e.g., DATA, CacheD) have successfully identified unknown leakage sites from software products automatically. However, existing tools have the following limitations.
+
+First, performance
+
+Second, precision
 
 \section{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
