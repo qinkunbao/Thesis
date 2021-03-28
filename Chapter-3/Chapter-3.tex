@@ -8,15 +8,14 @@ Recent work has made good progress in identifying side-channel leakages automati
 
 First, although some tools can find side-channel leakages in real-world software products, they can only analyze one code fragment at a time due to the expensive performance overhead. As a result, users sometimes need to manually cut off some irrelevant code based on the user's experience. The trimming process is tedious and needs domain knowledge from users (e.g., which part of the code is more likely to have side-channel leakage sites). More importantly, those tools miss leakages on the trimmed code.
 
-Second, many tools perform the analysis at the level of intermediate representations (IR) instead of machine code to facilitate the implementations. However, side-channel leakages are a pretty low-level issue and a low-level analysis can give the most accurate results. For example, the IR-level branches isn't necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches like conditional moves and the converse could also happen. 
+Second, many tools perform the analysis at the level of intermediate representations (IR) instead of machine code to facilitate the implementations. However, side-channel leakages are a pretty low-level issue and a low-level analysis can give the most accurate results. For example, the IR-level branches is not necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches like conditional moves and the converse could also happen. 
 
-To overcome the problem, we propose a fast and precise method to detect the side-channel leakages in real-world software products. Different from previous methods, our method works on the machine code. 
+To overcome the problem, we propose a fast and precise method to detect the side-channel leakages in real-world software products. Different from previous methods, our tool analyzes on the machine code, which can give more precision than traditional IR-based approaches.  We examine the bottleneck of current symbolic execution approaches and optimize it to work on real-world cryptography systems. The evaluation results show that our tool can identify previous side-channel leakages, as well as find new leakages. Compared to recent tools, our tool is 3-100x faster while finding all the leakages when we evaluate on the same benchmarks.
 
-\section{Background}
+\section{Background and Threat Model}
+\subsection{}
 
-
-
-\section{Threat Model}
+\subsection{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
 Here are a few examples. 1) A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can start a new VM and probe the process running on the other VM.  2) In a shielding system, a malicious operating system can extract sensitive information from the protected application. 3) An user level application can probe some sensitive information inside the kernel. 
 The attacker attempts to retrieve sensitive information through address-based
@@ -30,7 +29,7 @@ We only consider deterministic programs and assume an attacker
 has access to the source code or binary executable of the target program.
 
 
-\section{An illustrative example}
+\section{Illustrative examples}
 
 \section{Math Notations}
 We now discuss how to model observations ($O$), which are the direct information
