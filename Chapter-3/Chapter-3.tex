@@ -10,7 +10,11 @@ First, although some tools can find side-channel leakages in real-world software
 
 Second, many tools perform the analysis at the level of intermediate representations (IR) instead of machine code to facilitate the implementations. However, side-channel leakages are a pretty low-level issue and a low-level analysis can give the most accurate results. For example, the IR-level branches isn't necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches like conditional moves and the converse could also happen. 
 
-To overcome the problem, we 
+To overcome the problem, we propose a fast and precise method to detect the side-channel leakages in real-world software products. Different from previous methods, our method works on the machine code. 
+
+\section{Background}
+
+
 
 \section{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
