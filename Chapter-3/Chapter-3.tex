@@ -14,14 +14,16 @@ To overcome the problem, we propose a fast and precise method to detect the side
 
 \section{Background and Threat Model}
 \subsection{Micro-architectures}
-
+Many side-channel attacks are architecture-dependent. To facilitate the illustration, we present some necessary backgrounds in this section.
 
 \subsection{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
-Here are a few examples. 1) A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can start a new VM and probe the process running on the other VM.  2) In a shielding system, a malicious operating system can extract sensitive information from the protected application. 3) An user level application can probe some sensitive information inside the kernel. 
 The attacker attempts to retrieve sensitive information through address-based
 side-channel attacks. The attacker has no direct access to the target's memory or cache,
-but it can probe its memory or cache at each program point. In reality, the
+but it can probe its memory or cache at each program point. 
+Here are a few examples. 1) A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can start a new VM and probe the process running on the other VM.  2) In a shielding system, a malicious operating system can extract sensitive information from the protected application. 3) An user level application can probe some sensitive information inside the kernel.
+
+In reality, the
 attacker will face many possible obstacles such as the noisy observations 
 of the memory or cache. However, for this project, we assume
 the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. 
@@ -32,7 +34,7 @@ has access to the source code or binary executable of the target program.
 
 \section{Illustrative examples}
 
-\section{Math Notations}
+\section{Our Theoretical Frameworks}
 We now discuss how to model observations ($O$), which are the direct information
 that an adversary can get during the attack.
 
