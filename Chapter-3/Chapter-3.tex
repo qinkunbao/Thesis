@@ -25,7 +25,7 @@ Figure~\ref{fig:memory_hierarchy} shows the overview of the hierarchy memory. Fo
     \caption{Computer Memory Hierarchy}\label{fig:memory_hierarchy}
 \end{figure}
 
-The current computer memory hierarchy opens the way for side-channel attacks from two aspects. First, the architecture relies on the system software for managing the memory, which becomes a problem in a threat model where the operating system is not untrusted (e.g., Intel SGX). Second, the size of the cache is smaller than the main memory. Is is possible that different units in the main memory share the same address in the cache. 
+The current computer memory hierarchy opens the way for side-channel attacks from two aspects. First, the architecture relies on the system software for managing the memory, which becomes a problem in a threat model where the operating system is not untrusted (e.g., Intel SGX). Second, the size of the cache is smaller than the main memory. It is possible that different units in the main memory share the same address in the cache. 
 \begin{figure}
     \centering
     \includegraphics[width=.65\columnwidth]{./figures/chapter3/address.pdf}
