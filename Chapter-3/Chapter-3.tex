@@ -39,8 +39,12 @@ the translation process keeps the bottom bits same while using the top bits to m
 We assume that an attacker shares the same hardware platform with the target.
 The attacker attempts to retrieve sensitive information through address-based
 side-channel attacks. The attacker has no direct access to the target's memory or cache,
-but it can probe its memory or cache at each program point. 
-Here are a few examples. 1) A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can start a new VM and probe the process running on the other VM.  2) In a shielding system, a malicious operating system can extract sensitive information from the protected application. 3) An user level application can probe some sensitive information inside the kernel.
+but it can probe its memory or cache at each program point. Here are a few examples. 
+\begin{enumerate}
+\item A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can control the VM and probe the process running on the other VM.
+\item  In a shielding system, a malicious operating system can extract sensitive information from the protected application.
+\item An user level application can probe some sensitive information inside the kernel.
+\end{enumerate}
 
 In reality, the
 attacker will face many possible obstacles such as the noisy observations 
