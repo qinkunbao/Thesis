@@ -32,7 +32,7 @@ The current computer memory hierarchy opens the way for side-channel attacks fro
     \caption{Memory Addressing}\label{fig:memory_address}
 \end{figure}
 
-In modern CPUs, L1 and L2 caches are traditional N-way set associate caches. That is, the cache is divided into several cache sets, and each set is associated with several cache lines. The cache line is the atomic unit. As shown in Figure~\ref{fig:memory_address}, we can determine whether the data is in the cache with the folowing steps.  Given an address, the CPU uses the \textsf{Set Index} field of the address to locate the cache set that the address should reside in. After that, it tries to use the \textsf{Tag} field to match every cache line inside the set line. If the CPU can locate a cache line with the same tag and the valid bit is set, then a cache hit occurs. The CPUs use a similar process to manage the main memory. The main memory is divided into many units called pages. As shown in Figure~\ref{fig:memory_address}, 
+In modern CPUs, L1 and L2 caches are traditional N-way set associate caches. That is, the cache is divided into several cache sets, and each set is associated with several cache lines. The cache line is the atomic unit. As shown in Figure~\ref{fig:memory_address}, we can determine whether the data is in the cache with the following steps.  Given an address, the CPU uses the \textsf{Set Index} field of the address to locate the cache set that the address should reside in. After that, it tries to use the \textsf{Tag} field to match every cache line inside the set line. If the CPU can locate a cache line with the same tag and the valid bit is set, then a cache hit occurs. The CPUs use a similar process to manage the main memory. The main memory is divided into many units called pages. As shown in Figure~\ref{fig:memory_address}, 
 the translation process keeps the bottom bits same while using the top bits to map the Physical Page Numbers to Virtual Page Numbers.
 
 \subsection{Threat Model}
@@ -51,11 +51,10 @@ attacker will face many possible obstacles such as the noisy observations
 of the memory or cache. However, for this project, we assume
 the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. 
 The threat model captures most cache-based and address-based side-channel attacks. 
-We only consider deterministic programs and assume an attacker 
-has access to the source code or binary executable of the target program.
+We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
 
 
-\section{Examples}
+\section{Side-channel Leakages}
 \subsection{Secret-dependent Control Flow Transfers}
 
 \subsection{Secret-dependent Data Accesses}
