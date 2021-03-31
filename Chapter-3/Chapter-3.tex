@@ -54,22 +54,24 @@ We only consider deterministic programs and assume an attacker has access to the
 
 
 \section{Side-channel Leakages}
-\subsection{Secret-dependent Control Flow Transfers}
+This section discusses two types of side-channel leakage code patterns. The key intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as secret-dependent control flow transfers and secret-dependent data accesses. Unlike previous work, our tool works on the machine code, which can provide us more prevision than the previous tools.
+\subsection{Control Flow}
 \begin{figure}[h]
-\begin{minipage}{0.4\linewidth}
+\begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-void example1(uint8_t k, uint32_t m) {
+int example1(uint8_t k, uint32_t m) {
   uint32_t b = (k & m) >> 7;
   if (b) {
-    printf("branch 1\n");
+    ...    // Branch 1
   } else {
-    printf("branch 2\n");
+    ...    // Branch 2
   }
+  ...
 }
 \end{lstlisting}
 \end{minipage}
 \hfill
-\begin{minipage}{0.4\linewidth}
+\begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 push  ebp
 mov   ebp, esp
@@ -80,11 +82,11 @@ test  eax, eax
 jne   branch 2
 ...
 \end{lstlisting}
-\end{minipage}
+\end{minipage}\caption*{(a)}
 
-\begin{minipage}{0.4\linewidth}
+\begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-int example6(uint16_t k) {
+int example2(uint16_t k) {
   int res;
   if (k > 8) {
     res = 0;
@@ -96,7 +98,7 @@ int example6(uint16_t k) {
 \end{lstlisting}
 \end{minipage}
 \hfill
-\begin{minipage}{0.4\linewidth}
+\begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 xor   eax, eax
 cmp   [addr_k], 8
@@ -104,12 +106,61 @@ setbe  al
 xor    edx, edx
 ret
 \end{lstlisting}
-\end{minipage}
-\caption{A Serious Leakage}\label{fig:chapter3:cf}
+\end{minipage}\caption*{(b)}
+\caption{Secret-dependent Control-flow Transfers}\label{fig:chapter3:cf}
 \end{figure}
 
-\subsection{Secret-dependent Data Accesses}
+\subsection{Data Flow}
+\begin{figure}[h]
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+uint8_t T[128];
+...
+int example3(uint8_t secret){
+  uint32_t index = 0;
+  index = (index + secret) % 128;
+  uint8_t t = T[index];
+  ...
+}
+\end{lstlisting}
+\end{minipage}
+\hfill
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+...
+lea    edx, [addr_T]
+mov    eax, [addr_secret]
+and    eax, 0x7f
+movzx  eax, [addr_T + eax*1]
+...
+\end{lstlisting}
+\end{minipage}\caption*{(a)}
 
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+uint8_t T[128];
+...
+int example4(uint8_t secret){
+  uint32_t index = 0;
+  index = (index + secret) % 128;
+  uint8_t t = T[index % 4];
+  ...
+}
+\end{lstlisting}
+\end{minipage}
+\hfill
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+...
+lea    edx, [addr_T]
+mov    eax, [addr_secret]
+and    eax, 0x3
+movzx  eax, [addr_T + eax*1]
+...
+\end{lstlisting}
+\end{minipage}\caption*{(b)}
+\caption{Secret-dependent Data Accesses}\label{fig:chapter3:da}
+\end{figure}
 
 \section{Our Theoretical Frameworks}
 \begin{figure}
