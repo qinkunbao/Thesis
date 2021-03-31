@@ -56,41 +56,58 @@ We only consider deterministic programs and assume an attacker has access to the
 \section{Side-channel Leakages}
 \subsection{Secret-dependent Control Flow Transfers}
 \begin{figure}[h]
-\begin{minipage}{0.6\linewidth}
-\begin{lstlisting}
-void bar(uint8_t secret)
-{
-  uint8_t T[128];
-  uint8_t index = 0, t;
-  int i;
-  index = (index+secret)%128;
-  t = T[index];
-  ...
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+void example1(uint8_t k, uint32_t m) {
+  uint32_t b = (k & m) >> 7;
+  if (b) {
+    printf("branch 1\n");
+  } else {
+    printf("branch 2\n");
+  }
 }
 \end{lstlisting}
 \end{minipage}
 \hfill
-\begin{minipage}{0.45\linewidth}
-\resizebox{\textwidth}{!}{%
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+push  ebp
+mov   ebp, esp
+movzx eax, [addr_key]    
+and   eax, [addr_message] 
+shr   eax, 0x7           
+test  eax, eax
+jne   branch 2
+...
+\end{lstlisting}
+\end{minipage}
 
-\begin{tabular}{cccccccccc}
-\toprule
-\diagbox{S}{T} & 0 & 1 & 2 & 3 & 4 & 5& 6& 7 &  ...\\ 
-\midrule
-0 & A &  &  &  &  &  \\
-1 &  & A &  &  &  &  \\
-2 &  &  & A &  &  &  \\
-3 &  &  &  & A &  &  \\
-4 &  &  &  &  & A &  \\
-5 &  &  &  &  &  & A & \\
-6 &  &  &  &  &  & &A \\
-7 &  &  &  &  &  &  && A\\ 
-\bottomrule
-\end{tabular}%
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+int example6(uint16_t k) {
+  int res;
+  if (k > 8) {
+    res = 0;
+  } else {
+    res = 1;
+  }
+  return res;
 }
+\end{lstlisting}
+\end{minipage}
+\hfill
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+xor   eax, eax
+cmp   [addr_k], 8
+setbe  al
+xor    edx, edx
+ret
+\end{lstlisting}
 \end{minipage}
 \caption{A Serious Leakage}\label{fig:chapter3:cf}
 \end{figure}
+
 \subsection{Secret-dependent Data Accesses}
 
 
