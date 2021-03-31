@@ -75,8 +75,8 @@ int example1(uint8_t k, uint32_t m) {
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 push  ebp
 mov   ebp, esp
-movzx eax, [addr_key]    
-and   eax, [addr_message] 
+movzx eax, [addr_k]    
+and   eax, [addr_me] 
 shr   eax, 0x7           
 test  eax, eax
 jne   branch 2
@@ -109,6 +109,8 @@ ret
 \end{minipage}\caption*{(b)}
 \caption{Secret-dependent Control-flow Transfers}\label{fig:chapter3:cf}
 \end{figure}
+
+The first type of leakage sites is secret-dependent control-flow leakage sites. Shown in Figure~\ref{fig:chapter3:cf}(a), the 
 
 \subsection{Data Flow}
 \begin{figure}[h]
