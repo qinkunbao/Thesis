@@ -248,7 +248,6 @@ possibility by counting the number of possible inputs. Table~\ref{shtable}
 describes the probability of each observation. We use the above three types of 
 leakage metrics to calculate the amount of leaked information for leak A and leak B.
 
-\vspace{3pt}
 \textbf{Min Entropy.}
 As $p_{A\mathit{max}} = 0.9998$ and $p_{B\mathit{max}} = 0.5$, 
 with the definition, min-entropy equals to
@@ -352,7 +351,7 @@ methods all fail in real attack models. This is the first challenge we face
     \caption{The gap between the real attack and previous models}\label{fig:gap}
 \end{figure}
 
-\subsection{Theoretical Analysis \textbf{(Solution to Challege C1)}}
+\subsection{Theoretical Analysis}
 Now we present our metric to quantify the amount of leaked information from
 dynamic analysis.
 
@@ -549,20 +548,20 @@ However, the above sampling method fails in practice due to the following two pr
             $c_t({\addr{1}},\ldots,{\addr{n}})$. The sampling method fails
             as $n$ grows. 
 
-            %For example, if the program has $2$ input whose size is 
-            %one byte, the whole search space is a $256^2$ cube. If we want
-            %the sampling distance between each point equals to $d$, we need
-            %$256^2d$ points. If the program has $10$ byte input, we need
-            %$256^{10}d$ points if we still we want the sampling distance equals
-            %to $d$.
+            For example, if the program has $2$ input whose size is 
+            one byte, the whole search space is a $256^2$ cube. If we want
+            the sampling distance between each point equals to $d$, we need
+            $256^2d$ points. If the program has $10$ byte input, we need
+            $256^{10}d$ points if we still we want the sampling distance equals
+            to $d$.
 
       \item The number of satisfying assignments could be exponentially small.
             According to Chernoff bound, we need exponentially many samples to
             get a tight bound. 
-            %On an extreme situation, if the constraint only
-            %has one unique satisfying solution, the simple Monte Carlo method
-            %cannot find the satisfying assignment even after sampling many
-            %points.
+            On an extreme situation, if the constraint only
+            has one unique satisfying solution, the simple Monte Carlo method
+            cannot find the satisfying assignment even after sampling many
+            points.
 \end{enumerate}
 
 However, despite above two problems, we also observe two characteristics of the
@@ -647,9 +646,38 @@ space into counting solutions to several small constraints. We compute the
 maximum independent partition by iterating each $\addr{i}$ and applying the function
 $\pi$ over the constraint $\addr{i}$.
 
-%% We apply the following
-%% algorithm~\ref{algo:max-inde} to get the Maximum Independent Partition of the
-%% $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
+We apply the following
+algorithm~\ref{algo:max-inde} to get the Maximum Independent Partition of the
+$c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
+
+
+\IncMargin{1em}
+\begin{algorithm}[h]\small
+    \DontPrintSemicolon
+    \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+    \Input{$c_t(\addr{1},\addr{2},\ldots,\addr{n}) = c_{\addr{1}} \land c_{\addr{2}} \land \ldots \land c_{\addr{m}}$}
+    \Output{The Maximum Independent Partition of $G = \{g_{1}, g_{2}  , \ldots,  g_{m} \}$ }
+    Insert $c_{\addr{1}}$ to $G$ as a new entry \;
+    \For{$i\leftarrow 2$ \KwTo $n$}
+    {
+        $S_{c_{\addr{i}}}$ $\leftarrow$ $\pi(c_{\addr{i}})$ \;
+        \For{$g_{i} \in G$}
+        {
+            $S_{g_j}$ $\leftarrow$ $\pi(g_{j})$ \;
+            $S$ $\leftarrow$ $S_{c_{\addr{i}}} \cap S_{g_j}$  \;
+            \If{$S \neq \emptyset$}
+            {
+                $g_{j} \leftarrow g_{i} \land g_{\addr{i}}$ \;
+                \textbf{continue} \;
+            }
+            Insert $c_{\addr{i}}$ to $G$ as a new entry \;
+        }
+    }
+    \caption{The Maximum Independent Partition}
+    \label{algo:max-inde}
+\end{algorithm}
+\DecMargin{1em}
+
 
 %% \IncMargin{1em}
 %% \begin{algorithm}[h]
@@ -682,14 +710,13 @@ $\pi$ over the constraint $\addr{i}$.
 After we split those constraints into several small constraints, we count the
 number of solutions for each constraint. Even though the dimension has been
 significantly reduced by the previous step, this is still a \#P problem. 
-%For our
-%project, we apply the approximate counting instead of exact counting for two
-%reasons. First, we do not need to have a very precise result of the exact number
-%of total solutions since the information is defined with a logarithmic function.
-%We do not need to distinguish between constraints having $10^{10}$ or $10^{10} +
-%10$ solutions; they are very close to after taking logarithmic. Second, the
-%precise model counting approaches, like Davis-Putnam-Logemann-Loveland (DPLL)
-%search, have difficulty scaling up to large problem sizes.
+For our
+project, we apply the approximate counting instead of exact counting for two
+reasons. First, we do not need to have a very precise result of the exact number of total solutions since the information is defined with a logarithmic function.
+We do not need to distinguish between constraints having $10^{10}$ or $10^{10} 
+10$ solutions; they are very close to after taking logarithmic. Second, the
+precise model counting approaches, like Davis-Putnam-Logemann-Loveland (DPLL)
+search, have difficulty scaling up to large problem sizes.
 
 We apply the ``counting by sampling'' method. For
 the constraint $g_{i}= c_{i_1} \land c_{i_2} \land ,\ldots, \land c_{i_j} \land
@@ -703,6 +730,52 @@ we only generate random input numbers for the other input variables in
 constraint $g_{i}$. With this simple yet effective trick, we reduce the number of input
 while still ensuring accuracy.
 
+
+\IncMargin{1em}
+\begin{algorithm}\small
+    \SetAlgoLined
+    \DontPrintSemicolon
+
+    \KwIn{{The constraint $g_{i}= c_{i_1} \land c_{i_2}
+                    \land \ldots \land c_{i_m}$}}
+    \KwOut{{The number of assignments that satisfy $g_{i}$ $|K_{g_{i}}|$}}
+
+    $n$: the number of sampling times \;
+    $S_{c_i}$: the set contains input variables for $c_{i}$ \;
+    $n_{s}$: the number of satisfying assignments \;
+    $N_{c_t}$: the set contains all solution for $c_t$ \;
+    $r$: times of reducing $g$\;
+    $k$: the input variable \;
+    $R$: a function that produces a random point from $S_{c_i}$\;
+    %$\#k$: the satisfying number of k \fixme{this number is not used syntactically} \;
+    %Initialization: \;
+    $r$ $\leftarrow$ $1$,
+    $n$ $\leftarrow$ $0$ \;
+    \For{$t$ $\leftarrow$ $1$ \KwTo $m$} {
+        $S_{c_t}$ $\leftarrow$ $\pi(c_t)$ \;
+        \If{$|S_{c_t}| = 1$}
+        {
+            $N_{c_t}$ $\leftarrow$ Compute all solutions of $c_i$ \;
+            $N_{c_t} = \{n_1, \ldots, n_m\},\ S_{c_t} = \{k\}  $ \;
+            $g_{i} = $ $g_i(k=n_1) \land \ldots \land g_i(k=n_m)$ \;
+            $r \leftarrow r+1$ \;
+
+        }
+    }
+    \While{$n \leq \frac{8p}{1-p}$} {
+        $S_{g_i}$ $\leftarrow$ $\pi(g_i)$ \;
+        $v \leftarrow R(S_{g_i})$ 
+        \If{$v$ satisfies $g_i$}
+        {
+           $n_s \leftarrow n_s + 1$
+        }
+        $n \leftarrow n +1,\ p = \frac{n_s}{n}$
+    }
+
+    $|K_{g_{i}}|$ $\leftarrow$ $n_s|K| / (n * r * range(k))$
+    \caption{Multiple Step Monte Carlo Sampling}
+\end{algorithm}
+\DecMargin{1em}
 %% the algorithm
 %\IncMargin{1em}
 %\begin{algorithm}
