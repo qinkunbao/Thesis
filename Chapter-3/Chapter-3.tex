@@ -8,7 +8,7 @@ Recent work has made good progress in identifying side-channel leakages automati
 
 First, although some tools can find side-channel leakages in real-world software products, they can only analyze one code fragment at a time due to the expensive performance overhead. As a result, users of those tools sometimes need to manually cut off some irrelevant code based on their past experience. The trimming process is tedious and needs domain knowledge of the target software (e.g., which part of the code is more likely to have side-channel leakage sites). More importantly, if many leakages sites are on the trimmed code, those tools will miss those leakage sites as well.
 
-Second, many tools perform the analysis at the level of intermediate representations (IR) instead of machine code. It is a design decision to facilitate the implementations. While analyzing the IRs can simplify the implementation, it is not a suitable design choice for the side-channel analysis. In reality, side-channel leakages are a pretty low-level issue and only the low-level analysis can give the most accurate results. For example, the IR-level branches is not necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches like conditional moves and the converse could also happen. Moreover, translating the machine code into IRs can casue a significant overhead for the trace analysis, as we will discuss in the dissertation. 
+Second, many tools perform the analysis at the level of intermediate representations (IR) instead of machine code. It is a design decision to facilitate the implementations. While analyzing the IRs can simplify the implementation, it is not a suitable design choice for the side-channel analysis. In reality, side-channel leakages are a pretty low-level issue and only the low-level analysis can give the most accurate results. For example, the IR-level branches is not necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches like conditional moves and the converse could also happen. Moreover, translating the machine code into IRs can cause a significant overhead for the trace analysis, as we will discuss in the dissertation. 
 
 To overcome the above problems, we propose a fast and precise method to detect the side-channel leakages in real-world software products. Different from previous methods, our tool analyzes on the machine code, which can give more precision than traditional IR-based approaches.  We examine the bottleneck of current symbolic execution approaches and optimize it to work on real-world cryptography systems. The evaluation results show that our tool can identify previous side-channel leakages, as well as find new leakages. Compared to recent tools, our tool is 3-100x faster while finding all the leakages when we evaluate on the same benchmarks.
 
@@ -62,7 +62,7 @@ In this dissertation, we study two types of side-channel leakage code patterns. 
 \begin{figure}[h]
 \begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-int example1(uint8_t k, uint32_t m) {  // m = 0
+int example1(uint8_t k, uint32_t m) { // m = 0
   uint32_t b = (k & m) >> 7;
   if (b) {
     ...    // Branch 1
@@ -225,7 +225,8 @@ $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta,
 
 An adversary can observe which branch the code executes if the branch condition
 equals $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
-the observation ($o$) on secret-dependent control-transfers.
+the observation ($o$) on secret-dependent control-transfers. Note that in the
+above definition, $m$ is also a variable. 
 
 \subsection{Secret-dependent Data Accesses}
 Similar to secret-dependent control-flow transfers, a data access operation is
