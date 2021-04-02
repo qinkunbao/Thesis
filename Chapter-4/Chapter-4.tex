@@ -477,33 +477,33 @@ information in some attack scenarios.
 \end{table}
 \section{Approximate Model Counting}
 \label{MCreasons}
-%According to
-%Definition~\ref{def} introduced in \S\ref{sec:trace-qif},
-%the problem of quantifying the amount of leaked information can be reduced to
-%the problem of computing the number of items in $K^o$. However, we find that while
-%there are various propositional model counters (e.g., \#SAT), they are not
-%sufficient scalable for production cryptosystem analysis.
-%there is no open source modulo theories counter (\#SMT) available.
+According to
+Definition~\ref{def} introduced in \S\ref{sec:trace-qif},
+the problem of quantifying the amount of leaked information can be reduced to
+the problem of computing the number of items in $K^o$. However, we find that while
+there are various propositional model counters (e.g., \#SAT), they are not
+sufficient scalable for production cryptosystem analysis.
+there is no open source modulo theories counter (\#SMT) available.
 
-%One straightforward method approximating the number of solutions is based on Monte Carlo
-%sampling. However, the number of satisfying values could be exponentially small.
-%Consider the formula $f_i\equiv{k_1} = 1\land{k_2} = 2\land{k_3} = 3\land{k_4} =
-%4$, where $k_1$, $k_2$, $k_3$, and $k_4$ each represents one byte in the
-%original sensitive input buffer, there is only one satisfying solution of total
-%$2^{32}$ possible values, which requires exponentially many samples to get a
-%tight bound. Monte Carlo method also suffers from the curse of dimensionality.
-%For example, the length of an RSA private key can be as long as 4096 bits. If we
-%take each byte (8 bits) in the original buffer as one symbol, the formula can
-%have as many as 512 symbols.
+One straightforward method approximating the number of solutions is based on Monte Carlo
+sampling. However, the number of satisfying values could be exponentially small.
+Consider the formula $f_i\equiv{k_1} = 1\land{k_2} = 2\land{k_3} = 3\land{k_4} =
+4$, where $k_1$, $k_2$, $k_3$, and $k_4$ each represents one byte in the
+original sensitive input buffer, there is only one satisfying solution of total
+$2^{32}$ possible values, which requires exponentially many samples to get a
+tight bound. Monte Carlo method also suffers from the curse of dimensionality.
+For example, the length of an RSA private key can be as long as 4096 bits. If we
+take each byte (8 bits) in the original buffer as one symbol, the formula can
+have as many as 512 symbols.
 
 %\vspace*{2pt}
 %\textbf{Our Solution to Challenge C3:}
-%We adopt multiple-step Monte Carlo sampling methods to count the number of
-%possible inputs that satisfy the logic formula groups. The key idea is to split
-%those constraints into several small formulas and sample them independently.
-%We will introduce the method in the following subsection.
+We adopt multiple-step Monte Carlo sampling methods to count the number of
+possible inputs that satisfy the logic formula groups. The key idea is to split
+those constraints into several small formulas and sample them independently.
+We will introduce the method in the following subsection.
 
-%\subsection{Information Leakage Estimation}
+\subsection{Information Leakage Estimation}
 
 \newcommand{\addr}[1]{{l}_{#1}}
 \renewcommand{\addr}[1]{{\gamma}_{#1}}
@@ -530,10 +530,10 @@ site has the following constraints: $c_{\addr{1}}, c_{\addr{2}}, \ldots,
 c_{\addr{n}}$ respectively. The total leakage can be calculated from the constraint
 $c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}}) = c_{\addr{1}} \land c_{\addr{2}}
 \land \ldots \land c_{\addr{n}}$. 
-%%The problem of estimating the total leaked
-%%information can be reduced to the problem of counting the number of different
-%%solutions that satisfies the constraint
-%%$c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}})$. 
+The problem of estimating the total leaked
+information can be reduced to the problem of counting the number of different
+solutions that satisfies the constraint
+$c_t({\addr{1}},{\addr{2}},\ldots,{\addr{n}})$. 
 A simple method is to pick elements $k$ from $K$ and check if an
 element is also contained in $K^o$. Assume $q$ elements satisfy this condition. In
 expectation, we can use $\frac{k}{q}$ to approximate the value of
@@ -580,10 +580,7 @@ problem:
             previous experiments. Also, as the amount of leaked information is calculated
             by a $\log$ function, we need not exactly count the number of solutions for 
             a given constraint.
-            %\item For each constraint $F(C_{{addr}_i})$, the satisfying assignments
-            %are close to each other, which means if we find one satisfying assignment, we 
-            %are more likely to find other satisfying assignments nearby than randomly
-            %pick one point in the whole searching space.
+
 
 \end{enumerate}
 
@@ -838,3 +835,87 @@ p}{p\ln2} \leq 1$. Therefore, as long as $ n \geq \frac{1.96^2(1-p)}{p(\ln2)^2}$
 95\% confidence that the error of estimated leaked information is less than 1 bit.
 During the simulation, if $n$ and $p$ satisfy this inequality, the Monte Carlo
 simulation will terminate.
+
+\section{Implementation}
+
+\tool{} consists of 16,729 lines of code in C++17 and Python. It has three
+components: an Intel Pin tool that collects the execution trace, the
+instruction-level symbolic execution engine, and the back-end that estimates
+the information leakage. 
+
+\begin{table}[h!]
+    \centering
+    %    \resizebox{.8\columnwidth}{!}{
+    \caption{\tool{}' main components and sizes}\label{tbl:implementation}
+    \begin{tabular}{lr@{~}@{}l}
+        \hline
+        Component            & \multicolumn{2}{c}{Lines of Code (LOC)}             \\ \hline
+        Trace Logging        & 501 lines                               & of C++    \\
+        Symbolic Execution   & 14,963 lines                            & of C++    \\
+        Data Flow            & 451 lines                               & of C++    \\
+        Monte Carlo Sampling & 603 lines                               & of C++    \\
+        Others               & 211 lines                               & of Python \\ \hline
+        Total                & 16,729 lines                            &           \\\hline
+    \end{tabular}
+    %    }
+\end{table}
+
+Our current implementation supports most Intel 32-bit instructions that are essential to find address-based side-channel
+vulnerabilities, including bitwise operations, control transfer, data movement, and logic
+instructions. The tool uses the real values to update the registers and memory for instructions that the implementation does not support. 
+Therefore, the tool may miss some leakages but will not raise false positives. 
+
+\section{Evaluation}
+
+\section{Discussion}
+While recent work found many side-channel vulnerabilities, 
+we note that many of them have not been patched by developers.
+Side-channels are ubiquitous in software and it would be difficult to fix all of them. 
+We need a tool that estimates the sensitivity of each vulnerability
+so software engineers can focus on
+``severe'' leakages. For example, \tool{} reports that 
+the modular exponentiation using square and multiply algorithms can
+leak more information than a key validation function.
+
+Software developers can use \tool{} to find severe vulnerabilities
+and reason about countermeasures.
+\tool{} estimates the amount of leaked information for each side-channel leakage
+in one execution trace. \tool{} is useful for software
+engineers to test programs and fix vulnerabilities.
+The design, which is more precise in reporting true leakages as compared with other static
+methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, obviously misses
+leakages on unexplored traces. The amount of leaked information also depends on the secret key.
+However, as the tool is intended for debugging and testing,
+we think it is a software engineer's responsibility to select the input key and trigger 
+the path in which they are interested. It is not a problem for crypto software 
+since virtually all keys follow similar computational paths.
+
+We use the amount of leaked information to represent the sensitivity level of 
+each side-channel vulnerability. Although imperfect, \tool{} produces a reasonable 
+measurement for each leak. For example, the simple modular exponentiation is 
+notoriously famous for multiple side-channel attacks~\cite{kocher1996timing}. 
+During the execution, a single leak point may execute multiple times
+and each time leak a different bit. In this case, \tool{} reports that the 
+vulnerability can leak the whole key. However, not every leak point inside a 
+loop is severe. If a site in the loop leaks the same bit from the 
+original key, and these leaks are not independent. \tool{} captures most 
+fine-grained information by modeling each leak during the execution as a 
+formula and the conjunction of the formulas to describe its total effect. 
+Some leakage sites (e.g., square and multiply) 
+can leak one particular bit of the original key, but some leakage sites leak one bit 
+from several bytes in the original key. \tool{} can capture the dependency among the leaks and
+reports more precise leakage information.
+
+\tool{} reaches full precision if the number of estimated leaked bits 
+equals to Definition~\ref{def}. 
+\tool{} may lose precision from the 
+memory model it uses in theory. However, we did not find false positives 
+caused by the imprecise memory model during our evaluation. 
+Sampling introduces imprecision but with a probabilistic guarantee. 
+However, during the evaluation, we find that \tool{} cannot estimate 
+the amount of leakage for some leakage sites in a reasonable time, 
+which means the number of $K^o$ is very small. According to Definition~\ref{def}, 
+it means the leakage is very severe. The sampling method in \S\ref{sec:scala} seems
+simple and may miss some leakages (e.g., chosen ciphertext attacks) in theory. 
+However, the evaluation result 
+shows \tool{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.
