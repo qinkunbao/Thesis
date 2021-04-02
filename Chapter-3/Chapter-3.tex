@@ -178,24 +178,21 @@ The second limitation of the current side-channel detection tool is the performa
 \section{Method}
 \begin{figure}
     \centering
-    \includegraphics[width=.35\columnwidth]{./figures/chapter3/attack.pdf}
+    \includegraphics[width=.3\columnwidth]{./figures/chapter3/attack.pdf}
     \caption{A side-channel attack}\label{fig:side-channel-attack}
 \end{figure}
 
-In the section, we give necessary definitions and notation for dealing with
+In the section, we give necessary definitions and notations for dealing with
 programs and side-channels. 
 
-Shown in Figure~\ref{fig:side-channel-attack}. We assume a program ($\beta$) has $K$ as its sensitive input.  The program also takes public information $M$ as its input. During an AES encryption, for example, 
-$\beta$ is the encryption function. $K$ is the set of all possible AES keys, 
-and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have 
-some observations ($O$) of the program. Examples of those observations include 
-timing, CPU usages, and electromagnetic signals (EM). This paper only
-uses secret-dependent control flows and secret-dependent data 
-accesses as observations.
+Shown in Figure~\ref{fig:side-channel-attack}, a side-channel attack can be formulated into the below steps.  A program ($\beta$) has $K$ as its sensitive input (e.g., the encryption key) and $M$ as its the public input (e.g., the plaintext). In a real execution, an adversary may have 
+some observations ($O$) of the program. Examples of those observations include the
+timing, CPU usages, and electromagnetic signals (EM). In this dissertation, we 
+use secret-dependent control flows and secret-dependent data 
+accesses as observations. 
 
 With the above definition, we have the following mapping between $\beta$,
 $K$, $M$, and $O$:
-%\vspace*{-0pt}
 \begin{displaymath}
     \beta(K, M) \rightarrow O
 \end{displaymath}
@@ -205,18 +202,17 @@ We model a side-channel in the following way. An adversary does not have
 access to $K$, but he knows $\beta$, $M$, and $O$. For one execution of a
 deterministic program, once $k \in K$ and $m \in M$ are fixed, the observation
 ($o \in O$) should also be determined. An attacker knows $\beta$, $o$,
-and $m$. The attacker wants to infer the value of $k$. We use $K^o$ to denote
-the set of possible $k$ values that produce the same observation: $K^o = \{ k \in K \, |\, \beta(k, m) \rightarrow o\}$
+and $m$. The attacker wants to infer the value of $k$. Moreover, we assume
+an attacker can change the public input ($m \in M$) while keeping the secret input $k$. 
+The threat model is similar to a chosen-plaintext attack.
+We now discuss how to model observations ($O$), 
+which are the direct information that an adversary can get during the attack.
 
-
-We now discuss how to model observations ($O$), which are the direct information that an adversary can get during the attack.
-
-During the execution, a program ($\beta$) have many temporary values ($t_i \in
+For one execution, a program ($\beta$) has many temporary values ($t_i \in
 T$). Once $\beta$ (program), $k$ (secret), and $m$ (message, public) are
 determined, $t_i$ is also fixed. Therefore, $ t_i = f_i(\beta, k, m)$, where $f_
-i$ is a function that maps between $t_i$ and ($\beta$, $k$, $m$).
-
-In the paper, we consider two code patterns that can be exploited by an attacker,
+i$ is a function that maps between $t_i$ and ($\beta$, $k$, $m$). In the paper, 
+we consider two code patterns that can be exploited by an attacker,
 \emph{secret-dependent control transfers} and \emph{secret-dependent data
 accesses}. In other words, an adversary has observations based on control-flows
 and data accesses.
@@ -225,7 +221,7 @@ and data accesses.
 We think a control-flow is secret-dependent if different input sensitive keys
 ($K$) can lead to different branch conditions. Therefore,
 We define a branch is secret-dependent if:
-$$\exists k_{i1}, k_{i2} \in K , \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m)$$
+$$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m)$$
 
 An adversary can observe which branch the code executes, if the branch condition
 equals to $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
