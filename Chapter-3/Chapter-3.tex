@@ -139,12 +139,12 @@ movzx  eax, [addr_T + eax*1]
 
 \begin{minipage}{0.4\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-uint8_t T[4];
+uint8_t T[32];
 ...
 int example4(uint8_t secret){
   uint32_t index = 0;
-  index = (index + secret) % 128;
-  uint8_t t = T[index % 4];
+  index = (index + secret) % 32;
+  uint8_t t = T[index];
   ...
 }
 \end{lstlisting}
@@ -155,7 +155,7 @@ int example4(uint8_t secret){
 ...
 lea    edx, [addr_T]
 mov    eax, [addr_secret]
-and    eax, 0x3
+and    eax, 0x3f
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
@@ -163,7 +163,7 @@ movzx  eax, [addr_T + eax*1]
 \caption{Secret-dependent Data Accesses}\label{fig:chapter3:da}
 \end{figure}
 
-Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only four different elements can be accessed in the array and the size of the array is four bytes. However, such a code may still be vulnerable to side-channel vulnerabilities depending on the based address of the array.
+Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only four different elements can be accessed in the array and the size of the array is 32 bytes. However, such a code may still be vulnerable to side-channel vulnerabilities depending on the based address of the array.
 
 
 \section{Our Theoretical Frameworks}
