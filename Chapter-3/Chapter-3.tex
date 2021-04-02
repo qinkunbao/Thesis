@@ -52,14 +52,17 @@ the attacker has noise-free observations as in previous work~\cite{203878,182946
 The threat model captures most cache-based and address-based side-channel attacks. 
 We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
 
+\section{Limitations of Current Side-channel Leakage Detection Tools}
+In this section, we introduces two limitations of current side-channel leakage detection method. The first limitation is that some tools may have some false positives or false negatives. The second limitation is the current tools are not fast enough to analyze real world side-channel leakages.
 
-\section{Side-channel Leakages}
-This section discusses two types of side-channel leakage code patterns. The key intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as secret-dependent control flow transfers and secret-dependent data accesses. Unlike previous work, our tool works on the machine code, which can provide us more prevision than the previous tools.
-\subsection{Control Flow}
+
+\subsection{Imprecision}
+In this dissertation, we study two types of side-channel leakage code patterns. The key intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as secret-dependent control flow transfers and secret-dependent data accesses. Unlike previous work, our tool works on the machine code, which can provide us more prevision than the previous tools.
+\subsubsection{Control Flow}
 \begin{figure}[h]
 \begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-int example1(uint8_t k, uint32_t m) {
+int example1(uint8_t k, uint32_t m) {  // m = 0
   uint32_t b = (k & m) >> 7;
   if (b) {
     ...    // Branch 1
@@ -82,7 +85,7 @@ test  eax, eax
 jne   branch 2
 ...
 \end{lstlisting}
-\end{minipage}\caption*{(a)}
+\end{minipage}\caption*{(a) A False Negative}
 
 \begin{minipage}{0.45\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
@@ -106,12 +109,14 @@ setbe  al
 xor    edx, edx
 ret
 \end{lstlisting}
-\end{minipage}\caption*{(b)}
+\end{minipage}\caption*{(b) A False Positive}
 \caption{Secret-dependent Control-flow Transfers}\label{fig:chapter3:cf}
 \end{figure}
 
-If the input-sensitive data can affect the victim program's control flow, then an attacker can infer the sensitive data by observing the control flow during the execution. Figure~\ref{fig:chapter3:cf}(a) shows such an example. The function takes a public value \textsf{m} and a secret \textsf{k} as the input values. The code at line 2 ensures that the lower 7 bits of the value \textsf{k} do not affect the value \textsf{b}. However, depending on the value of \text{m}, the code snippet in Figure~\ref{fig:chapter3:cf}(a) may have a leakage site. If the eighth bit of \textsf{m} is 1, then an attacker can also infer the eighth bit of \textsf{k} by observing the branch at line 4 or line 6. The right figure shows the corresponding machine code. It has a conditional jump instruction \textsf{jne}. The sensitive input \textsf{k} can affect the program counter (the rip register), which is the root cause of the side-channel leakages.  Figure~\ref{fig:chapter3:cf}(b) shows a different situation. While the sensitive input \textsf{k} can affect the if-else branch, the compiler removes the branch with a conditional set instruction.  The opposite situation is the same. For example, recent work tries to use bit masking to rewrite the program with control flows. However, for some situations~\cite{Coppens:2009:PMT:1607723.1608124}, compilers (e.g., GCC) optimize the code too much (from a security view) and remove the unnecessary copy by reintroducing conditional moves.
-\subsection{Data Flow}
+If the input-sensitive data can affect the victim program's control flow, then an attacker can infer the sensitive data by observing the control flow during the execution. Figure~\ref{fig:chapter3:cf}(a) shows such an example. The function takes a public value \textsf{m} and a secret \textsf{k} as the input values. The code at line 2 ensures that the lower 7 bits of the value \textsf{k} do not affect the value \textsf{b}. However, depending on the value of \text{m}, the code snippet in Figure~\ref{fig:chapter3:cf}(a) may have a leakage site. If the eighth bit of \textsf{m} is 1, then an attacker can also infer the eighth bit of \textsf{k} by observing the branch at line 4 or line 6. The right figure shows the corresponding machine code. It has a conditional jump instruction \textsf{jne}. The sensitive input \textsf{k} can affect the program counter (the rip register), which is the root cause of the side-channel leakages. 
+
+Figure~\ref{fig:chapter3:cf}(b) shows a different situation. While the sensitive input \textsf{k} can affect the if-else branch, the compiler removes the branch with a conditional set instruction.  The opposite situation is the same. For example, recent work tries to use bit masking to rewrite the program with control flows. However, for some situations~\cite{Coppens:2009:PMT:1607723.1608124}, compilers (e.g., GCC) optimize the code too much (from a security view) and remove the unnecessary copy by reintroducing conditional moves.
+\subsubsection{Data Flow}
 \begin{figure}[h]
 \begin{minipage}{0.4\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
@@ -135,7 +140,7 @@ and    eax, 0x7f
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
-\end{minipage}\caption*{(a)}
+\end{minipage}\caption*{(a) A True Leakage}
 
 \begin{minipage}{0.4\linewidth}
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
@@ -159,14 +164,16 @@ and    eax, 0x3f
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
-\end{minipage}\caption*{(b)}
+\end{minipage}\caption*{(b) A False Positive}
 \caption{Secret-dependent Data Accesses}\label{fig:chapter3:da}
 \end{figure}
 
-Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. However, such a code may still be vulnerable to side-channel vulnerabilities depending on the based address of the array.
+Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of one cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, those tools may miss such vulnerabilities. 
+
+\subsection{Performance}
 
 
-\section{Detection}
+\section{Method}
 \begin{figure}
     \centering
     \includegraphics[width=.35\columnwidth]{./figures/chapter3/attack.pdf}
