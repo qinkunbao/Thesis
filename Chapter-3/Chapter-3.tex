@@ -163,10 +163,10 @@ movzx  eax, [addr_T + eax*1]
 \caption{Secret-dependent Data Accesses}\label{fig:chapter3:da}
 \end{figure}
 
-Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only four different elements can be accessed in the array and the size of the array is 32 bytes. However, such a code may still be vulnerable to side-channel vulnerabilities depending on the based address of the array.
+Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. However, such a code may still be vulnerable to side-channel vulnerabilities depending on the based address of the array.
 
 
-\section{Our Theoretical Frameworks}
+\section{Detection}
 \begin{figure}
     \centering
     \includegraphics[width=.35\columnwidth]{./figures/chapter3/attack.pdf}
