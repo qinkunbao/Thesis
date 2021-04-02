@@ -183,9 +183,7 @@ The second limitation of the current side-channel detection tool is the performa
 In the section, we give necessary definitions and notation for dealing with
 programs and side-channels. 
 
-Shown in Figure~\ref{fig:side-channel-attack}. We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be 
-a finite set of keys. The program also takes known messages $M$ as its input. 
-During an AES encryption, for example, 
+Shown in Figure~\ref{fig:side-channel-attack}. We assume a program ($\beta$) has $K$ as its sensitive input.  The program also takes public information $M$ as its input. During an AES encryption, for example, 
 $\beta$ is the encryption function. $K$ is the set of all possible AES keys, 
 and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have 
 some observations ($O$) of the program. Examples of those observations include 
@@ -209,9 +207,7 @@ and $m$. The attacker wants to infer the value of $k$. We use $K^o$ to denote
 the set of possible $k$ values that produce the same observation: $K^o = \{ k \in K \, |\, \beta(k, m) \rightarrow o\}$
 
 
-
-We now discuss how to model observations ($O$), which are the direct information
-that an adversary can get during the attack.
+We now discuss how to model observations ($O$), which are the direct information that an adversary can get during the attack.
 
 During the execution, a program ($\beta$) have many temporary values ($t_i \in
 T$). Once $\beta$ (program), $k$ (secret), and $m$ (message, public) are
@@ -227,7 +223,7 @@ and data accesses.
 We think a control-flow is secret-dependent if different input sensitive keys
 ($K$) can lead to different branch conditions. Therefore,
 We define a branch is secret-dependent if:
-$$\exists k_{i1}, k_{i2} \in K, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m)$$
+$$\exists k_{i1}, k_{i2} \in K , \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m)$$
 
 An adversary can observe which branch the code executes, if the branch condition
 equals to $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
