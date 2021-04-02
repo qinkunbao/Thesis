@@ -122,9 +122,9 @@ Figure~\ref{fig:chapter3:cf}(b) shows a different situation. While the sensitive
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t T[128];
 ...
-int example3(uint8_t secret){
-  uint32_t index = 0;
-  index = (index + secret) % 128;
+int example3(uint8_t k, uint32_t m){
+  uint32_t index = m;
+  index = (index + k) % 128;
   uint8_t t = T[index];
   ...
 }
@@ -135,7 +135,8 @@ int example3(uint8_t secret){
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 ...
 lea    edx, [addr_T]
-mov    eax, [addr_secret]
+mov    eax, [addr_k]
+add    eax, [addr_m]
 and    eax, 0x7f
 movzx  eax, [addr_T + eax*1]
 ...
@@ -146,9 +147,9 @@ movzx  eax, [addr_T + eax*1]
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t T[32];
 ...
-int example4(uint8_t secret){
-  uint32_t index = 0;
-  index = (index + secret) % 32;
+int example4(uint8_t k, uint32_t m){
+  uint32_t index = m;
+  index = (index + k) % 32;
   uint8_t t = T[index];
   ...
 }
@@ -159,7 +160,8 @@ int example4(uint8_t secret){
 \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 ...
 lea    edx, [addr_T]
-mov    eax, [addr_secret]
+mov    eax, [addr_k]
+add    eax, [addr_m]
 and    eax, 0x3f
 movzx  eax, [addr_T + eax*1]
 ...
