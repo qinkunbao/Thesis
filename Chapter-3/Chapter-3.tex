@@ -225,7 +225,7 @@ $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta,
 
 An adversary can observe which branch the code executes, if the branch condition
 equals to $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
-the observation ($o$) on secret-dependent control-transfers.
+the observation ($o$) on secret-dependent control-transfers. 
 
 \subsection{Secret-dependent Data Accesses}
 Similar to secret-dependent control-flow transfers, a data access operation is
@@ -234,7 +234,7 @@ memory addresses. We use the model from CacheD~\cite{203878}. The low $L$ bits
 of the address are irrelevant in side-channels.
 
 We consider a data access is secret-dependent if:
-$$\exists k_{i1}, k_{i2} \in K, \,f_i(\beta, k_{i1}, m) >> L \neq f_i(\beta, k_{i2}, m) >> L$$
+$$\exists k_{i1}, k_{i2} \in K, m \in M,\,f_i(\beta, k_{i1}, m) >> L \neq f_i(\beta, k_{i2}, m) >> L$$
 
 If the memory access equals to $t_b$, we can use the constraint $c_i :
 f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
