@@ -218,14 +218,14 @@ accesses}. In other words, an adversary has observations based on control-flows
 and data accesses.
 
 \subsection{Secret-dependent Control Transfers}
-We think a control-flow is secret-dependent if different input sensitive keys
-($K$) can lead to different branch conditions. Therefore,
-We define a branch is secret-dependent if:
+A control-flow path is secret-dependent if different input-sensitive keys
+($K$) can lead to different branch conditions. 
+We define a branch to be secret-dependent if:
 $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m)$$
 
-An adversary can observe which branch the code executes, if the branch condition
-equals to $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
-the observation ($o$) on secret-dependent control-transfers. 
+An adversary can observe which branch the code executes if the branch condition
+equals $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
+the observation ($o$) on secret-dependent control-transfers.
 
 \subsection{Secret-dependent Data Accesses}
 Similar to secret-dependent control-flow transfers, a data access operation is
