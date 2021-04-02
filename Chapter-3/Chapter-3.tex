@@ -226,26 +226,29 @@ $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta,
 An adversary can observe which branch the code executes if the branch condition
 equals $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
 the observation ($o$) on secret-dependent control-transfers. Note that in the
-above definition, $m$ is also a variable. 
+above definition, $m$ is also a variable. So it is possible for some $m \in M$,
+we can not find a pair of two different $k_{i1}$ and $k_{i2}$ to satisfy the above
+inequation. For example, in the example from Figure~\ref{fig:chapter3:cf}, if $m = 0$,
+the code will always execute the branch 2. However, the function \textsf{example1} still
+has a secret-dependent control-flow for some $m$, so we think the code has
+some side-channel leakages.
+
 
 \subsection{Secret-dependent Data Accesses}
 Similar to secret-dependent control-flow transfers, a data access operation is
-secret-dependent if different input sensitive keys ($K$) can lead to different
+secret-dependent if different input sensitive keys ($K$) cause access to different
 memory addresses. We use the model from CacheD~\cite{203878}. The low $L$ bits
-of the address are irrelevant in side-channels.
+of the address are generally unimportant in side-channels.
 
-We consider a data access is secret-dependent if:
+A data access is secret-dependent if:
+
 $$\exists k_{i1}, k_{i2} \in K, m \in M,\,f_i(\beta, k_{i1}, m) >> L \neq f_i(\beta, k_{i2}, m) >> L$$
 
 If the memory access equals to $t_b$, we can use the constraint $c_i :
 f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
 data accesses.
 
-With the above definitions, we can model an attacker's observation by a series of math formulas. For example, in Figure~\ref{fig:side-channel}, if an attacker observes
-the code executes the branch 1, we have $c_5: k_1 + k_2 < 4$ to describe an
-attacker's knowledge and $K^{o5} = \{k_1,\, k_2\,|\, (k_1 + k_2) < 4\}$. If an
-attacker observes the code executes the branch 2, we have $c_8: k_1 - k_2 > 0$
-and $K^{o8} = \{k_1,\, k_2\,|\, (k_1 - k_2) > 0\}$.
+
 \section{Scalability}
 \subsection{Trace-oriented Symbolic Execution}
 While symbolic execution can capture fine-grained semantics of programs, it
