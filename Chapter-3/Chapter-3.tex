@@ -432,3 +432,21 @@ If the value is a formula, it means the original information passes through the 
 
 \section{Discussion}
 
+In the section, we discuss the limitations, usages, and some future work. 
+%
+\tool{} works on native x86 execution traces. The design, which is very
+precise in terms of true leakages compared to other static source code
+method~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, also has 
+the common limitations of dynamic approaches. \tool{} may only cover part of the code.
+  % Each time we only get one single execution trace. Therefore,
+We may 
+neglect some side-channel vulnerabilities not covered by the traces analyzed.
+However, this is not a crucial problem for analyzing crypto libraries because crypto
+libraries are designed to have the same code coverage for various inputs. Our
+evaluation also confirms the above point. For symmetric encryptions, during our
+evaluation there is no secret-dependent control-flow transfers. RSA
+implementations have several secret-dependent control-flow transfers. 
+  %But after we manually check those leakages cites. We find
+Most of them are  %used for
+bound checks, which do not leak much information and have negligible effects
+on the whole code coverage as well.
