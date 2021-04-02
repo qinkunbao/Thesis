@@ -171,7 +171,7 @@ movzx  eax, [addr_T + eax*1]
 Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of one cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, those tools may miss such vulnerabilities. 
 
 \subsection{Performance}
-The second limitation of the current side-channel detection tool is the performance bottleneck, especially for those tools based on the symbolic analysis. For example, CaSym can only analyze small programs. CacheD perfroms better. However, it still can not handle large programs like RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks. But it is significantly less likely for cache side channels bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead.
+The second limitation of the current side-channel detection tool is the performance bottleneck, especially for those tools based on the symbolic analysis. For example, CaSym can only analyze small programs. CacheD perfroms better. However, it still can not handle large programs like RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks. But it is significantly less likely for cache side channels bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the solver and find side-channel leakages in a more efficient way.
 
 \section{Method}
 \begin{figure}
@@ -179,6 +179,36 @@ The second limitation of the current side-channel detection tool is the performa
     \includegraphics[width=.35\columnwidth]{./figures/chapter3/attack.pdf}
     \caption{A side-channel attack}\label{fig:side-channel-attack}
 \end{figure}
+
+In the section, we give necessary definitions and notation for dealing with
+programs and side-channels. 
+
+Shown in Figure~\ref{fig:side-channel-attack}. We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be 
+a finite set of keys. The program also takes known messages $M$ as its input. 
+During an AES encryption, for example, 
+$\beta$ is the encryption function. $K$ is the set of all possible AES keys, 
+and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have 
+some observations ($O$) of the program. Examples of those observations include 
+timing, CPU usages, and electromagnetic signals (EM). This paper only
+uses secret-dependent control flows and secret-dependent data 
+accesses as observations.
+
+With the above definition, we have the following mapping between $\beta$,
+$K$, $M$, and $O$:
+%\vspace*{-0pt}
+\begin{displaymath}
+    \beta(K, M) \rightarrow O
+\end{displaymath}
+
+
+We model a side-channel in the following way. An adversary does not have
+access to $K$, but he knows $\beta$, $M$, and $O$. For one execution of a
+deterministic program, once $k \in K$ and $m \in M$ are fixed, the observation
+($o \in O$) should also be determined. An attacker knows $\beta$, $o$,
+and $m$. The attacker wants to infer the value of $k$. We use $K^o$ to denote
+the set of possible $k$ values that produce the same observation: $K^o = \{ k \in K \, |\, \beta(k, m) \rightarrow o\}$
+
+
 
 We now discuss how to model observations ($O$), which are the direct information
 that an adversary can get during the attack.
