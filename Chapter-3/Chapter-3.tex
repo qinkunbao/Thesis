@@ -459,18 +459,18 @@ we mark nonces and private keys as secrets.
   \settowidth{\y}{m}
   \addtolength{\x}{-1\y}
   \newcommand{\foo}{\mbox{\hspace*{\the\x}}}
-  \begin{tabular}{lrrrrrr}
+  \begin{tabular}{llrrrrr}
       \hline
       \textbf{Algorithm} & \textbf{Implementation}  & \textbf{\# Leaks} & \textbf{\# CF}         & \textbf{\# DF}
                          & \textbf{\# Instructions}    & \textbf{Time}     \\\hline
-                                               &                        &                     &                      &              & ms                     \\\cline{6-6}
-      AES &             & 68                     & 0                   & 68                   & 39,855        & 512     \\
-      AES &                & 68                     & 0                   & 68                   & 39,855       & 520         \\
-      AES &                & 75                     & 0                   & 75                   & 1,704        & 231       \\
-      AES &                & 88                     & 0                   & 88                   & 1,350        & 36     \\
-      AES&           & 88                     & 0                   & 88                   & 1,350        & 35   \\
-      AES &         & 88                     & 0                   & 88                   & 1,420        & 36    \\
-      AES &        & 88                     & 0                   & 88                   & 1,586        & 43      \\
+                                               &                        &                     &                      &              & ms                     \\\cline{7-7}
+      AES &  mbedTLS 2.5   & 68                     & 0                   & 68                   & 39,855        & 512     \\
+      AES &  mbedTLS 2.15   & 68                     & 0                   & 68                   & 39,855       & 520         \\
+      AES &  OpenSSL 0.9.7        & 75                     & 0                   & 75                   & 1,704        & 231       \\
+      AES &  OpenSSL 1.0.2f       & 88                     & 0                   & 88                   & 1,350        & 36     \\
+      AES&   OpenSSL 1.0.2k       & 88                     & 0                   & 88                   & 1,350        & 35   \\
+      AES &  OpenSSL 1.1.0f     & 88                     & 0                   & 88                   & 1,420        & 36    \\
+      AES & OpenSSL 1.1.1      & 88                     & 0                   & 88                   & 1,586        & 43      \\
       DES &         & 15                     & 0                   & 15                   & 4,596        & 58     \\
       DES &             & 15                     & 0                   & 15                   & 4,596        & 57      \\
       DES &         & 6                      & 0                   & 6                    & 2,976         & 163    \\
@@ -478,7 +478,7 @@ we mark nonces and private keys as secrets.
       DES &           & 8                      & 0                   & 8                    & 2,593        & 165     \\
       DES &            & 8                      & 0                   & 8                    & 4,260         & 182     \\
       DES &       & 6                      & 0                   & 6                    & 8,272         & 229     \\
-                         &    &                    &                     &                      &                  & seconds                  \\\cline{6-6}
+                         &    &                    &                     &                      &                  & seconds                  \\\cline{7-7}
       Chacha20 &           & 0                      & 0                   & 0                    & 149,353        & 2         \\  
       Poly1305 &          & 0                      & 0                   & 0                    & 1,213,937      & 15     \\
       Argon2i &          & 0                      & 0                   & 0                    & 4,595,142       & 37    \\
@@ -492,7 +492,7 @@ we mark nonces and private keys as secrets.
       ECDSA &          & 0           &  0                   &  0                 &  9,266,191          & 102    \\  
 
 
-                         &                        &                     &                      &                 & minutes            \\\cline{6-6}
+                         &                        &                     &                      &                 & minutes            \\\cline{7-7}
       RSA &           & 6                       & 6                   & 0                    & 22,109,246    & 39      \\
       RSA &            & 12                      & 12                  & 0                    & 24,484,441    & 44        \\
       RSA &           & 107                    & 105                 & 2                    & 17,002,523   & 23  \\
