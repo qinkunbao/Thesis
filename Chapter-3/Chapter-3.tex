@@ -268,7 +268,7 @@ traditional symbolic execution, and it can be optimized to be as efficient
 as other methods.
 
 \subsection{Interpret Instructions Symbolically}
-Existing binary analysis \cready{tools}{frameworks}~\cite{shoshitaishvili2016state,
+Existing binary analysis frameworks~\cite{shoshitaishvili2016state,
 10.1007/978-3-642-22110-1_37, song2008bitblaze} translate machine instructions into
 intermediate languages (IR) to simplify analysis since
 the variety of machine instructions is
@@ -429,6 +429,24 @@ the original buffer. When \tool{} symbolically executes each instruction in the 
 If the value is a formula, it means the original information passes through the instruction. Since each byte in the sensitive buffer is represented as a symbol with a unique ID, \tool{} can know which byte in the origin buffer goes through the instruction.
 
 \section{Evaluation}
+We evaluate our method on real-world crypto libraries, which include  OpenSSL, mbedTLS, Libgcrypt and Monocypher\@. OpenSSL is the most commonly used crypto libraries in today's software. mbedTLS\@ (previous known as PolarSSL) is designed to be easy to understand and fit on embedded devices. We also evaluate Monocypher, a new cryptographic library that resists to most side-channel attacks. 
+Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model.
+
+Moreover, for some crypto library, we evaluate more than one versions. After that, we compare the evaluation results with the version history to track developers' patches of those leakages.  
+\begin{itemize}
+\item OpenSSL: 0.9.7, 1.0.2f, 1.0.2k, 1.1.0f, 1.1.1, 1.1.1g
+\item MbedTLS: 2.5, 2.15
+\item Libgcrypt: 1.8.5
+\item Monocyper: 3.0
+\end{itemize}
+
+We mark variables and buffers that store a secret.
+For DES and AES, we mark symmetric keys as secrets. 
+For RSA, we mark private keys as secrets. For ECDSA, 
+we mark nonces and private keys as secrets.  
+
+
+\subsection{Evaluation Result Overview}
 
 \section{Discussion}
 
