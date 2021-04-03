@@ -253,7 +253,7 @@ is $(m + k) \mod 128$. Therefore, we have the formula: $(m + k_1) \mod 128 >> 6 
 Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find
 possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can 
 also be identified by previous tools like CacheD. Similarly, we can model the memory access at line 6
-with the formula:  $(m + k_1) \mod 32 >> 6  \neq (m + k_2) \mod 32 >> 6$.
+with the formula:  $(m + k_1) \mod 32 >> 6  \neq (m + k_2) \mod 32 >> 6$. 
 
 
 \section{Scalability}
