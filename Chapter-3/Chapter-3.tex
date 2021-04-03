@@ -124,7 +124,7 @@ uint8_t T[128];
 ...
 int example3(uint8_t k, uint32_t m){
   uint32_t index = m;
-  index = (index + k) % 128;
+  index = index + k % 128;
   uint8_t t = T[index];
   ...
 }
@@ -136,8 +136,8 @@ int example3(uint8_t k, uint32_t m){
 ...
 lea    edx, [addr_T]
 mov    eax, [addr_k]
-add    eax, [addr_m]
 and    eax, 0x7f
+add    eax, [addr_m]
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
@@ -149,7 +149,7 @@ uint8_t T[32];
 ...
 int example4(uint8_t k, uint32_t m){
   uint32_t index = m;
-  index = (index + k) % 32;
+  index = index + k % 32;
   uint8_t t = T[index];
   ...
 }
@@ -161,8 +161,8 @@ int example4(uint8_t k, uint32_t m){
 ...
 lea    edx, [addr_T]
 mov    eax, [addr_k]
-add    eax, [addr_m]
 and    eax, 0x3f
+add    eax, [addr_m]
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
@@ -175,7 +175,7 @@ Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data acces
 \subsection{Performance}
 The second limitation of the current side-channel detection tool is the performance bottleneck, especially for those tools based on the symbolic analysis. For example, CaSym can only analyze small programs. CacheD perfroms better. However, it still can not handle large programs like RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks. But it is significantly less likely for cache side channels bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the solver and find side-channel leakages in a more efficient way.
 
-\section{Method}
+\section{Method}\label{chapter3:method}
 \begin{figure}
     \centering
     \includegraphics[width=.3\columnwidth]{./figures/chapter3/attack.pdf}
@@ -247,66 +247,58 @@ $$\exists k_{i1}, k_{i2} \in K, m \in M,\,f_i(\beta, k_{i1}, m) >> L \neq f_i(\b
 If the memory access equals to $t_b$, we can use the constraint $c_i :
 f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
 data accesses. Let's take a look the examples in Figure~\ref{fig:chapter3:da}(a). 
-Suppose the base address of the array \textsf{T}
-is 10. We symbolize both the $k$ and $m$. The formula that represents the memory access at line 6 
-is $(m + k) \mod 128$. Therefore, we have the formula: $(m + k_1) \mod 128 >> 6  \neq (m + k_2) \mod 128 >> 6$.
-Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find
-possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can 
-also be identified by previous tools like CacheD. Similarly, we can model the memory access at line 6
-with the formula:  $(m + k_1) \mod 32 >> 6  \neq (m + k_2) \mod 32 >> 6$. 
-
+Suppose the base address of the array \textsf{T} is 10. We symbolize both the $k$ and $m$. The formula that represents the memory access at line 6 is $10 + m + (k \mod 128)$. Therefore, we have the formula: $(10 + m + (k_1 \mod 128)) >> 6  \neq (10 + m + (k_2 \mod 128)) >> 6$.
+Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can also be identified by previous tools like CacheD. Similarly, we can model the memory access at line 6 with the formula:  $10 + m + (k_1 \mod 32) >> 6  \neq 10 + m + (k_2 \mod 32) >> 6$. If $m = 0$, we can not find satisfiable $k_1$ and $k_2$ for the above inequation, which indicates that it will always access the same cache line at line 6. It is the conclusion from Cache. However, it is possible that for some $m \in M$, we can find such a pair of $k_1$ and $k_2$ ($m = 53, k_1 = 1, k_2 = 0$). If the actual public input is $0$, existing tools (e.g., CacheD) can miss such a vulnerability. On the other hand, our tool can identify the leakages precisely.
 
 \section{Scalability}
 \subsection{Trace-oriented Symbolic Execution}
-While symbolic execution can capture fine-grained semantics of programs, it
-is also notorious for its unbearable performance cost. Previous trace-oriented
-symbolic execution based
-works~\cite{203878,Chattopadhyay:2017:QIL:3127041.3127044} all have large
-performance bottlenecks. As a result, those approaches either only apply to
-small-size programs~\cite{Chattopadhyay:2017:QIL:3127041.3127044} or apply some
-domain knowledge to simplify the analysis. 
-%Those tools interpret each
-%instruction and update memory cells and registers with formulas that
-%captured the semantics of the execution and search different input values that
-%can lead to different execution behaviors using constraint solver. 
-We implement the approach presented in \S\ref{sec:trace-qif} and model the side-channels as formulas. While the tool can finish analyzing some simple cases like AES, it can
-not handle complicated cases like RSA.
-We observe that finding side-channels using symbolic execution is different from
-traditional general symbolic execution and can be optimized to be as efficient
-as other methods with approaches below.
+Symbolic execution is notorious for its high performance cost. 
+Previous trace-oriented symbolic execution
+work~\cite{203878,Chattopadhyay:2017:QIL:3127041.3127044} has serious
+performance bottlenecks. As a result, these approaches either apply only to
+small programs~\cite{Chattopadhyay:2017:QIL:3127041.3127044} or require
+domain knowledge~\cite{Wang:2007:NCD:1250662.1250723} to simplify the analysis. 
+Those tools interpret each
+instruction and update memory cells and registers with formulas that
+captured the semantics of the execution and search different input values that
+can lead to different execution behaviors using constraint solver. 
+We implement the approach presented in \S\ref{chapter3:method} and model the side-channels as formulas. While the tools can analyze some simple cases such as AES, it cannot handle complicated examples such as RSA.
+We observe that finding side-channels using symbolic execution differs from
+traditional symbolic execution, and it can be optimized to be as efficient
+as other methods.
 
 \subsection{Interpret Instructions Symbolically}
-Existing binary analysis tools~\cite{shoshitaishvili2016state,
-10.1007/978-3-642-22110-1_37} usually translate machine instructions into
-intermediate languages (IR) to simplify analysis. 
-The reason is that the number of machine instructions is
-enormous, and the semantics of each instruction is complex. Intel Developer
-Manual~\cite{intelsys} introduces more than 1000 different x86 instructions. 
-IR typically has fewer instructions compared to the original machine ISA\@.
-However, the IR layer, which predigest the implementation
-and reduce the workload of those tools, is not suitable for side-channels 
-analysis. Memory-based side-channels are very low issues. So, in general,
-IR-based or source code side-channels analyses are not accurate enough.
-In many cases, compilers can use conditional moves or bitwise operations to eliminate
+Existing binary analysis \cready{tools}{frameworks}~\cite{shoshitaishvili2016state,
+10.1007/978-3-642-22110-1_37, song2008bitblaze} translate machine instructions into
+intermediate languages (IR) to simplify analysis since
+the variety of machine instructions is
+enormous, and their semantics is complex. The Intel Developer
+Manual~\cite{intelsys} documents more than 1000 different x86 instructions. 
+Unfortunately, the IR layer, which
+reduces the workload of these tools, is not suitable for side-channels 
+analysis because
+IR-based or source code side-channels analyses do not represent the executed instructions accurate enough to analyze fully their control and memory accesses.
+For example, a compiler may use conditional moves or bitwise operations to eliminate
 branches. Also, as some IRs are not a superset or a subset of ISA, 
 it is hard to rule out conditional jumps introduced by IR and add real branches 
 eliminated by IR transformations.
 
-Moreover, the IR design introduces significant overhead~\cite{217563}.
-Transferring machine instructions into IR is time-consuming. For example,
+Moreover, the IR causes significant overhead~\cite{217563}.
+Translating machine instructions into IR is time-consuming. For example,
 REIL IR~\cite{dullien2009reil}, adopted in CacheS~\cite{236338}, has multiple
 transform processes, from binary to VEX IR, BAP IR, and finally REIL IR\@. 
 Also, IR increases the total number of instructions. For example, x86
-instruction \textit{test eax, eax} transfers into 18 REIL IR instructions. If we
-assume the time of symbolically executing grows as the number of instructions increase, the
-design of adopting IR layers can introduce large overhead.
+instruction \textit{test eax, eax} transfers into 18 REIL IR instructions.
 
-\vspace*{2pt}
-\textbf{Our Solution to Challenge C2:}
-We adopt the approach from QSYM~\cite{217563} and implement the symbolic execution
-directly on the top of x86 instructions. Table~\ref{scala:ir} shows that
-eliminating the IR layer can reduce the number of instructions executed during
-the analysis.
+\textbf{Our Solution:}
+We abandoned IR and expended the effort to implement 
+symbolic execution directly on x86 instructions. 
+Table~\ref{scala:ir} shows that eliminating the IR reduces the number 
+of instructions examined during analysis. Previous works~\cite{217563} also 
+adopted a similar approach to speed up fuzzing. Our implementation differs
+from that work in two aspects: 1) We use complete constraints. 2) We run the
+symbolic execution on one execution path each time. Our approach is approximately 30 times faster than using an IR (transferring ISA into IR and
+symbolically executing it).
 
 \begin{table}%[ht]
       \centering\small\footnotesize
@@ -335,31 +327,32 @@ side-channels can be reduced to the question below.
             satisfy the formula $f_a(k_1) \neq f_a(k_2)$?}
 \end{quote}
 
-Existing approach relies on satisfiability modulo theories (SMT) solvers (e.g,
-Z3~\cite{DeMoura:2008:ZES:1792734.1792766}) to find satisfying $k_1$ and $k_2$.
-We argue that while it is a universal approach to solving constraints with SMT
-solvers, for constraints with the above formats, using custom heuristics and
-testing is much more efficient in practice. Constraint solving is a decision
-problem expressed in logic formulas. SMT solvers transfer the inputted SMT
-formula into the boolean conjunctive normal form (CNF) and feed it into the
-internal boolean satisfiability problem (SAT) solver. The translation process,
-called ``bit blasting'', is time-consuming. Also, as the SAT problem is a
-well-known NP-complete problem, it is also hard to deal when it comes to
-realistic uses with huge formulas. Despite the rapid development of SMT solvers
-in recent years, constraint solving remains one of the obstacles to achieve the
-scalability for real-world crypto systems.
+Existing approaches rely on satisfiability modulo theories (SMT) solvers 
+(e.g., Z3~\cite{DeMoura:2008:ZES:1792734.1792766}) to find satisfying assignments to
+$k_1$ and $k_2$.
+While this is a universal approach to solving constraints, 
+for constraints of this form, using custom 
+heuristics and testing is much more efficient in practice. Constraint 
+solving is a decision problem expressed in logic formulas. SMT solvers 
+transfer the SMT formula into the boolean conjunctive normal 
+form (CNF) and feed it into the internal boolean satisfiability 
+problem (SAT) solver. The translation process, called ``bit blasting'', 
+is time-consuming. Also, as the SAT problem is a well-known NP-complete 
+problem, it is hard to deal when it comes to
+practical uses with huge formulas. Despite the rapid improvement 
+in SMT solvers in recent years, constraint solving remains one of 
+the obstacles to scaling the analysis of real-world crypto-systems.
 
-\vspace*{2pt}
-\textbf{Our Solution to Challenge C3:}
+\textbf{Our Solution:}
 Instead of feeding the formula $f_a(k_1) \neq f_a(k_2)$ into a SMT solver, we
-just randomly pick up $k_1, k_2 \in K$ and test them if they can satisfy the
+randomly pick $k_1, k_2 \in K$ and test them if they satisfy the
 formula. Our solution is based on the following intuition. For most combination
-of $(k_{1}, k_{2} )$, the formula $f_a(k_1) \neq f_a(k_2)$ holds. As long as
+of $(k_{1}, k_{2} )$, $f_a(k_1) \neq f_a(k_2)$. As long as
 $f_a$ is not a constant function, such $k_1, k_2$ must exist. For example,
 suppose each time we only have 5\% chance to find such $k_1, k_2$, then after we
 test with different input combination with 100 times, we have $1 -
-(1-0.05)^{100} = 99.6\%$ chance find such $k_1, k_2$. Such random algorithms
-work well for our problem.
+(1-0.05)^{100} = 99.6\%$ chance find such $k_1, k_2$. This type of random algorithm
+works well for our problem.
 
 \section{Design and Implementation}
 \subsection{Trace Logging}
@@ -450,7 +443,7 @@ We may
 neglect some side-channel vulnerabilities not covered by the traces analyzed.
 However, this is not a crucial problem for analyzing crypto libraries because crypto
 libraries are designed to have the same code coverage for various inputs. Our
-evaluation also confirms the above point. For symmetric encryptions, during our
+evaluation also confirms the above point. For symmetric encryption, during our
 evaluation there is no secret-dependent control-flow transfers. RSA
 implementations have several secret-dependent control-flow transfers. 
   %But after we manually check those leakages cites. We find
