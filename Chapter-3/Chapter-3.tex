@@ -246,7 +246,14 @@ $$\exists k_{i1}, k_{i2} \in K, m \in M,\,f_i(\beta, k_{i1}, m) >> L \neq f_i(\b
 
 If the memory access equals to $t_b$, we can use the constraint $c_i :
 f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
-data accesses.
+data accesses. Let's take a look the examples in Figure~\ref{fig:chapter3:da}(a). 
+Suppose the base address of the array \textsf{T}
+is 10. We symbolize both the $k$ and $m$. The formula that represents the memory access at line 6 
+is $(m + k) \mod 128$. Therefore, we have the formula: $(m + k_1) \mod 128 >> 6  \neq (m + k_2) \mod 128 >> 6$.
+Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find
+possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can 
+also be identified by previous tools like CacheD. Similarly, we can model the memory access at line 6
+with the formula:  $(m + k_1) \mod 32 >> 6  \neq (m + k_2) \mod 32 >> 6$.
 
 
 \section{Scalability}
