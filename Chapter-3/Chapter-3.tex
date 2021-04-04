@@ -319,7 +319,7 @@ symbolically executing it).
 \end{table}
 
 \subsection{Constraint Solving}
-As discussed in \S\ref{side-channel:condition}, the problem of identifying
+As discussed in the previous section, the problem of identifying
 side-channels can be reduced to the question below.
 
 \begin{quote}
@@ -430,40 +430,39 @@ If the value is a formula, it means the original information passes through the 
 
 \section{Evaluation}
 We evaluate our method on real-world crypto libraries, which include  OpenSSL, mbedTLS, Libgcrypt and Monocypher\@. OpenSSL is the most commonly used crypto libraries in today's software. mbedTLS\@ (previous known as PolarSSL) is designed to be easy to understand and fit on embedded devices. We also evaluate Monocypher, a new cryptographic library that resists to most side-channel attacks.
-Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model.
+According to the developers, Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model. Libgcrypt is a crytpographic library from the GunPG. As some previous work (e.g., CacheD) choose to evaluate their tools on CacheD, we can compare the evaluation results by applying the tool on Libgcrypt.
 
-Moreover, for some crypto library, we evaluate more than one versions. After that, we compare the evaluation results with the version history to track developers' patches of those leakages.
+For some crypto libraries, we evaluate multiple versions. After that, we compare the evaluation results with the version history to track those leakages' patches. In summary, we evaluate our tool on the following libraries.
 \begin{itemize}
   \item OpenSSL: 0.9.7, 1.0.2f, 1.0.2k, 1.1.0f, 1.1.1, 1.1.1g
   \item MbedTLS: 2.5, 2.15
-  \item Libgcrypt: 1.8.5
+  \item Libgcrypt: 1.6.1, 1.7.3, 1.8.5
   \item Monocyper: 3.0
 \end{itemize}
 
+We refer to the examples or test cases of those libraries and write simple
+programs that use the crypto libraries. For symmetric encryption, the length
+of the keys are 256 bit. For RSA, the length of the keys is 1024. For ECDSA, the
+length of the key is 384 bit. The input public message is ``Hello World!''.
 We mark variables and buffers that store a secret.
 For DES and AES, we mark symmetric keys as secrets.
 For RSA, we mark private keys as secrets. For ECDSA,
 we mark nonces and private keys as secrets.
 
 We build the source program into 32-bit x86 Linux executables with GCC 7.5
-running on Ubuntu 16.04.
+running on Ubuntu 16.04. While our tool can work on the stripped binaries, 
+in the evaluation, we keep the debug information to get the fine-grained infromation
+(e.g., line numbers).
 We run our experiments on a 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB
-RAM. The execution time is calculated on a single-core.
-
+RAM. We run the experiments simultaneously, but the execution time is calculated on a single-core.
 
 \subsection{Evaluation Result Overview}
 \begin{table*}[]
   \centering\small\footnotesize
-  \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks),
+  \caption{Evaluation results overview: Algorithm, Implementation, Side-channel Leaks\,(Leaks),
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
-    The number of instructions\,(\# Instructions), Symbolic Execution\,(SE) and Monte Carlo\,(MC) time.
+    The number of instructions\,(\# Instructions), The Execution Time, and The Memory Usage.
   }\label{table:over_result}
-  \newlength{\x}
-  \newlength{\y}
-  \settowidth{\x}{~~}
-  \settowidth{\y}{m}
-  \addtolength{\x}{-1\y}
-  \newcommand{\foo}{\mbox{\hspace*{\the\x}}}
   \begin{tabular}{llrrrrrr}
     \hline
     \textbf{Algorithm} & \textbf{Implementation}  & \textbf{\# Leaks} & \textbf{\# CF}    & \textbf{\# DF}
@@ -482,6 +481,7 @@ RAM. The execution time is calculated on a single-core.
     DES                & OpenSSL 1.0.2f           & 8                 & 0                 & 8              & 2,593       & 166     & 11    \\
     DES                & OpenSSL 1.0.2k           & 8                 & 0                 & 8              & 2,593       & 165     & 11    \\
     DES                & OpenSSL 1.1.0f           & 8                 & 0                 & 8              & 4,260       & 182     & 21    \\
+    Triple DES         & OpenSSL 1.1.0f &  9 &0  &9   &13,105   & 369 & 56\\
     DES                & OpenSSL 1.1.1            & 6                 & 0                 & 6              & 8,272       & 229     & 43    \\
                        &                          &                   &                   &                &             & seconds         \\\cline{7-7}
     Chacha20           & Monocypher 3.0           & 0                 & 0                 & 0              & 149,353     & 2       & 15    \\
@@ -509,13 +509,13 @@ RAM. The execution time is calculated on a single-core.
     RSA                & Libgcrypt 1.7.3          & 14                & 14                & 0              & 10,513,606  & 14      & 2,701 \\
     RSA                & Libgcrypt 1.8.5          & 8                 & 8                 & 0              & 27,407,986  & 113     & 4,701 \\
 
-    Total              &                          & 904               & 241               & 663            & 167,141,947 & 341m            \\\hline
+    Total              &                          & 913               & 241               & 672            & 167,155,052 & 341m            \\\hline
   \end{tabular}
 \end{table*}
 Table~\ref{table:over_result} summarizes the results.
-\tool{} finds 904 leaks in the crypto libraries.
-Among these 904 leaks, 241 are due to secret-dependent
-control-flow transfers and 663 are due to secret-dependent data accesses.
+\tool{} finds 913 leaks in the crypto libraries.
+Among these 913 leaks, 241 are due to secret-dependent
+control-flow transfers and 672 are due to secret-dependent data accesses.
 
 \tool{} also finds that most side-channel
 vulnerabilities leak very little information in practice, which confirms our
@@ -530,19 +530,17 @@ Symmetric encryption implementations in OpenSSL and mbedTLS have significant lea
 \tool{} confirms that those leakage comes from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. Those changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
 
 We also evaluate our tool on the RSA implementation. With the optimization
-introduced in \S\ref{sec:scala}, we need not apply domain knowledge to
+introduced in the previous sections, we need not apply domain knowledge to
 simplify the analysis. Our tool identifies all leakage sites
 reported by CacheD~\cite{203878} and find new leaks in less time.
 We also find newer
-versions of RSA in OpenSSL have fewer leaks. We
-will discuss the version changes and corresponding leakages in \S\ref{eval:asym}.
+versions of RSA in OpenSSL have fewer leaks. 
 
 \subsection{Comparison with the Existing Tools}
 \label{eval:scala}
 
 In this section, we compare \tool{} with the
-existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the data in the paper. As other tools do not quantify leakage sites,
-we only include the time of detecting vulnerabilities to perform a fair comparison.
+existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the data in the paper. As other tools do not quantify leakage sites, we only include the time of detecting vulnerabilities to perform a fair comparison.
 
 The comparison result with CacheD~\cite{203878} is shown in Table~\ref{eval:cacheD}.
 Note that one statement in the source code can be compiled into several machine instructions. So it is possible that one statement can have multiple leakage points. Under the circumstance, we think it is only a leakage.
@@ -561,11 +559,12 @@ Table~\ref{eval:cacheD} shows that
 \tool{} is faster than CacheD. \tool{} is much faster than CacheD when analyzing the same
 number of instructions. For example, when we test~\tool{} on AES from OpenSSL
 0.9.7, \tool{} is over 100x faster than CacheD.
-\begin{table}[]
+\begin{table*}[]
+ \centering
   \caption{Comparison with CacheD: Time,
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF), The Number of Instructions\,(\# Instructions).}
   \label{eval:cacheD}
-  \begin{threeparttable}
+
     \begin{tabular}{@{}c|r@{~~}r@{~~}r|r@{~~}r@{~}r@{}}
       \hline
       \multicolumn{1}{l|}{} & \multicolumn{3}{c|}{CacheD} & \multicolumn{3}{c}{Abacus}                                             \\
@@ -579,25 +578,9 @@ number of instructions. For example, when we test~\tool{} on AES from OpenSSL
       Total                 & 22,788.0                    & 55,738,546                 & 84 & 4,125.0  & 51,514,721      & 155+178 \\ \hline
       \multicolumn{7}{l}{\# of Instructions per second \qquad  CacheD: 2,445 \qquad \tool: 12,489}                                 \\ \hline
     \end{tabular}
-  \end{threeparttable}
-  \begin{tablenotes}
-    \scriptsize
-    \item[1] OpenSSL\,0.9.7  \item[2] OpenSSL\,1.0.2f   \item[3] Libgcrypt\,1.6.1 \item[4] Libgcrypt\,1.7.3 \\
-  \end{tablenotes}
-  \vspace*{-20pt}
-\end{table}
-Since DATA~\cite{217537} needs to compare several execution
-traces to identify side-channel leakages, \tool{} also outperforms
-DATA in terms of performance. For
-example, it takes 234 minutes for DATA to analyze the RSA of
-implementation in OpenSSL 1.1.0f. \tool{} only spends 34 minutes
-according to Table~\ref{table:over_result}.  Also, DATA reports
-report 278 control-flow and 460 memory-access leaks. Among those
-leakages, they find one new vulnerability in RSA after some manual
-analysis.  \tool{} finds the vulnerability and reports the
-vulnerability is severe (\textsf{int\_bn\_mod\_inverse} leaks more
-than 14.9 bits and \textsf{BN\_div} leaks more than 17.2 bits),
-which eases the pain to identify real sensitive leaks.}{DATA~\cite{217537} identifies
+
+\end{table*}
+DATA~\cite{217537} identifies
 side-channel leakages by finding differences in execution traces of
 the test program under \emph{various secret inputs}. According to
 the original DATA paper, it uses 443 different traces to analyze the
@@ -627,7 +610,7 @@ severe (\textsf{int\_bn\_mod\_inverse} leaks more than 14.9 bits and
 real sensitive leaks.  For each leakage site, \tool{} can provide
 concrete examples to trigger the issue and give an estimation to
 assess the severity level of the vulnerability.
-\section{Discussion}
+\section{Discussion and Limitation}
 
 In the section, we discuss the limitations, usages, and some future work.
 %
