@@ -335,7 +335,6 @@ methods all fail in real attack models.
 Now we present our metric to quantify the amount of leaked information from
 dynamic analysis.
 
-\subsubsection{Math Notations}
 We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be 
 a finite set of keys. The program also takes known messages $M$ as its input. 
 During an AES encryption, for example, 
@@ -466,7 +465,7 @@ number multiplication.
 
 In
 contrast, an \emph{average} estimate based on random secret input information is around
-1 bit, as shown in \S\ref{sec:background_leak} and Table~\ref{shtable}, is
+1 bit, as shown in the previous section and Table~\ref{shtable}, is
 not very useful in practice as an attacker is able to get much more leaked
 information in some attack scenarios.
 
@@ -912,6 +911,101 @@ instructions. The tool uses the real values to update the registers and memory f
 Therefore, the tool may miss some leakages but will not raise false positives.
 
 \section{Evaluation}
+\begin{table}[]
+    \centering\small\footnotesize
+    \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), 
+        Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
+        The number of instructions\,(\# Instructions), Symbolic Execution\,(SE) and Monte Carlo\,(MC) time.
+    }\label{table:over_result}
+
+%    \resizebox{1.9\columnwidth}{!}{
+    \begin{threeparttable}
+    \begin{tabular}{l@{}r@{~~}rrr@{~~}rr}
+        \hline
+        \textbf{Name}   & \textbf{\# Leaks} & \textbf{\# CF}         & \textbf{\# DF}
+                           & \textbf{\# Instructions}    & \textbf{SE} & \textbf{MC}                                                    \\\hline
+                                                 &                        &                     &                      &              & ms        & ms              \\\cline{6-7}
+        AES\tnote{1}               & 68                     & 0                   & 68                   & 39,855        & 512     & 1,052         \\
+        AES\tnote{2}                & 68                     & 0                   & 68                   & 39,855       & 520    & 1,057         \\
+        AES\tnote{4}                & 75                     & 0                   & 75                   & 1,704        & 231    & 9,199        \\
+        AES\tnote{5}                & 88                     & 0                   & 88                   & 1,350        & 36      & 1,924         \\
+        AES\tnote{6}                & 88                     & 0                   & 88                   & 1,350        & 35      & 1,961        \\
+        AES\tnote{7}                & 88                     & 0                   & 88                   & 1,420        & 36     & 2,161        \\
+        AES\tnote{8}                & 88                     & 0                   & 88                   & 1,586        & 43      & 1,631        \\
+        DES\tnote{1}                & 15                     & 0                   & 15                   & 4,596        & 58      & 162          \\
+        DES\tnote{2}                & 15                     & 0                   & 15                   & 4,596        & 57      & 162           \\
+        DES\tnote{4}                & 6                      & 0                   & 6                    & 2,976         & 163    & 4,677         \\
+        DES\tnote{5}                & 8                      & 0                   & 8                    & 2,593         & 166    & 6,509        \\
+        DES\tnote{6}                & 8                      & 0                   & 8                    & 2,593        & 165    & 5,975        \\
+        DES\tnote{7}                & 8                      & 0                   & 8                    & 4,260         & 182    & 5,292        \\
+        DES\tnote{8}                & 6                      & 0                   & 6                    & 8,272         & 229     & 5,152      \\
+                           &                        &                     &                      &                  & seconds   & seconds               \\\cline{6-7}
+        Chacha20\tnote{3}           & 0                      & 0                   & 0                    & 149,353        & 2     & 0             \\  
+        Poly1305\tnote{3}           & 0                      & 0                   & 0                    & 1,213,937      & 15    & 0             \\
+        Argon2i\tnote{3}            & 0                      & 0                   & 0                    & 4,595,142       & 37    & 0             \\
+        Ed25519\tnote{3}            & 0                      & 0                   & 0                    & 5,713,619       & 271   & 0            \\
+        ECDSA\tnote{1}              & 6                      &    6                & 0                    &  4,214,946     &  48   &   31       \\ 
+        ECDSA\tnote{2}              &   4                   &   4                 & 0                    &  4,192,558    & 102   & 1639          \\   
+        ECDSA\tnote{5}              &  5                    & 4                   & 1                    &  8,248,322       & 101     & 62           \\   
+        ECDSA\tnote{6}              &  5                    & 4                   & 1                    &  8,263,599      & 100     & 58            \\   
+        ECDSA\tnote{7}              &  5                    & 4                   & 1                    &  6,100,465       & 76      & 42                  \\  
+        ECDSA\tnote{8}              & 0                      &  0                   &    0               &  10,244,076       &  121     & 0                  \\  
+        ECDSA\tnote{9}              & 0                      &  0                   &  0                 &  9,266,191          & 102     & 59        \\  
+
+
+                           &                        &                     &                      &                 & minutes   & minutes         \\\cline{6-7}
+        RSA\tnote{1}                & 6                       & 6                   & 0                    & 22,109,246    & 39     & 41           \\
+        RSA\tnote{2}                & 12                      & 12                  & 0                    & 24,484,441    & 44     & 251           \\
+        RSA\tnote{4}                & 107                    & 105                 & 2                    & 17,002,523   & 23      & 428           \\
+        RSA\tnote{5}                & 38                     & 27                  & 11                   & 14,468,307   & 29     & 436          \\
+        RSA\tnote{6}                & 36                     & 27                  & 9                    & 15,285,210   & 40     & 714          \\
+        RSA\tnote{7}                & 31                     & 22                  & 9                    & 16,390,750   & 34      & 490         \\
+        RSA\tnote{8}                & 4                      &  4                  & 0                    & 18,207,016   & 8      & 53          \\
+        RSA\tnote{9}                & 8                      &  8                  & 0                    & 18,536,796    & 5      & 780         \\
+        RSA\tnote{10} & 11& 9& 2& 9,527,231& 2 &38\\
+        RSA\tnote{11} & 14& 14& 0& 10,513,606& 14 &503 \\
+        RSA\tnote{12}               & 8                      &  8                  & 0                    & 27,407,986    & 113    & 6560       \\
+
+        Total              & 904                    & 241                 & 663                & 167,141,947      & 341m  & 10,232m     \\\hline
+    \end{tabular}
+\end{threeparttable}
+\begin{tablenotes}
+    \scriptsize
+
+    \item[1] mbedTLS\,2.5  ~~~~\item[2] mbedTLS\,2.15 ~\item[3] Monocypher\,3.0 \\
+    \item[4] OpenSSL\,0.9.7  ~~\item[5] OpenSSL\,1.0.2f  \item[6] OpenSSL\,1.0.2k \\
+    \item[7] OpenSSL\,1.1.0f ~\item[8] OpenSSL\,1.1.1 ~\item[9] OpenSSL\,1.1.1g \\
+    \item[10] Libgcrypt\,1.6.1 \item[11] Libgcrypt\,1.7.3 \item[12] Libgcrypt\,1.8.5\\
+\end{tablenotes}
+\vspace*{-20pt}
+
+\end{table}
+
+\subsection{Case Studies}
+
+\subsubsection{Symmetric Ciphers: DES and AES}\label{eval:sym}
+We test both DES and AES ciphers from mbedTLS and OpenSSL\@. Both cipher
+implementations apply lookup tables, which improve performance but can also introduce side-channels as well. During our evaluation, we find mbedTLS 2.5 and 2.15.1 have the same implementation of AES and DES\@. Therefore, our tool reports the same leakages for both versions. 
+
+We find that the DES implementations in both mbedTLS and OpenSSL have several
+severe information leakages in the key schedule function.
+We do not see any mitigation
+in the new version. We think it is not seen as worth the engineering
+efforts given the life cycles of DES\@.
+
+\tool{} shows that the AES in OpenSSL 1.1.1 has less leakage than other versions. 
+OpenSSL 1.1.1 uses 1KB lookup tables with 8-bit entries, unlike older versions that use a table with 32-bit entries. Our tool suggests a smaller lookup table might mitigate side-channel vulnerabilities. 
+
+\subsubsection{Monocypher}\label{eval:mono}
+Monocypher is a small, easy to use cryptographic library with
+performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}. 
+We choose four ciphers that are 
+designed to be side-channel resistant from the library.
+Because those ciphers have no 
+data flow from secrets to branch conditions and load addresses.
+Monocypher should be safe under our threat models. 
+We analyze those ciphers with \tool{}, and it reports no leaks.
+This indicates that \tool{} is effective for validating countermeasures.
 
 \section{Discussion}
 While recent work found many side-channel vulnerabilities,
