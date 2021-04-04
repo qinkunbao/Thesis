@@ -525,14 +525,9 @@ Table~\ref{table:over_result} summarizes the results.
 Among these 913 leaks, 241 are due to secret-dependent
 control-flow transfers and 672 are due to secret-dependent data accesses.
 
-\tool{} also finds that most side-channel
-vulnerabilities leak very little information in practice, which confirms our
-initial assumption.
-However, \tool{} finds some vulnerabilities with severe
-leakages. Prior research has confirmed that some of these
-vulnerabilities can be exploited in real attacks.
-With our tool, developers can
-distinguish non-critical ``vulnerabilities'' from severe ones.
+The evaluated algorithms can be classified into two categories: symmetric
+encryption and asymmetric encryption.  
+
 
 Symmetric encryption implementations in OpenSSL and mbedTLS have significant leakage due to their lookup table implementations.
 \tool{} confirms that those leakage comes from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. Those changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
@@ -541,8 +536,7 @@ We also evaluate our tool on the RSA implementation. With the optimization
 introduced in the previous sections, we need not apply domain knowledge to
 simplify the analysis. Our tool identifies all leakage sites
 reported by CacheD~\cite{203878} and find new leaks in less time.
-We also find newer
-versions of RSA in OpenSSL have fewer leaks. 
+We also find newer versions of RSA in OpenSSL have fewer leaks. 
 
 \subsection{Comparison with the Existing Tools}
 \label{eval:scala}
