@@ -5,39 +5,39 @@ This chapter introduces the related work in this dissertation. We present the re
 
 \section{Side-channel Attacks}
 While there are many kinds of side-channel attacks, we focus on address-based side-channel attacks in this dissertation.
-Address-based side-channel attacks happen when a program accesses different memory locations when it processes different secrets. In many situations, an attacker may shares some hardware resources (e.g., Cache, TLB, and DRAM) with the victim in today's computer system ~\cite{ge2018survey,szefer2019survey}. As a result, the attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are various approaches and an attacker can exploit the vulnerability to retrieve the information at different granularities. 
+Address-based side-channel attacks happen when a program accesses different memory locations when it processes different secrets. In many situations, an attacker may shares some hardware resources (e.g., Cache, TLB, and DRAM) with the victim in today's computer system ~\cite{ge2018survey,szefer2019survey}. As a result, the attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are various approaches and an attacker can exploit the vulnerability to retrieve the information at different granularities.
 
 \begin{table}
-\centering
-\caption{Due to the page limit, we only shows some representations of the vast side-channel attacks: Attacks, the shared hardware resources with attackers, the granularity of the attacker can observe, is there any published attacks on non-cryptography library and if the type of attack can exploit multiple leakage sites.}
-\label{table:side_channel_attack}
-\resizebox{\columnwidth}{!}{%
+    \centering
+    \caption{Due to the page limit, we only shows some representations of the vast side-channel attacks: Attacks, the shared hardware resources with attackers, the granularity of the attacker can observe, is there any published attacks on non-cryptography library and if the type of attack can exploit multiple leakage sites.}
+    \label{table:side_channel_attack}
+    \resizebox{\columnwidth}{!}{%
 
-\begin{tabular}{lllcc}
-\toprule
-Attacks & Shared Resources & Granularity  & Non-Crpyto & Multiple   \\ \midrule
-CacheBleed~\cite{yarom2017cachebleed} & Cache & Sub Cache Line (<64 B)  & \xmark & \xmark \\ 
-CopyCat~\cite{moghimi2020copycat} & Page Tables   & Instruction   & \xmark &  \xmark \\
-Prime + Probe~\cite{liu2015last} & Cache & Cache Set (64-512 B)  & \cmark &   \xmark \\
-Prime + Abort~\cite{disselkoen2017prime+} & Cache  & Cache Set (64-512 B) & \cmark &  \xmark   \\
-Flush + Reload~\cite{yarom2014flush+} & Cache & Cache Line (64 B) & \cmark  &  \cmark \\
-Flush + Flush~\cite{gruss2016flush+} & Cache & Cache Line (64 B) & \cmark & \xmark  \\
-Controlled-channel Attack~\cite{xu2015controlled} & Page Tables & Page (4 KB) & \cmark & \xmark \\
-TLBleed~\cite{gras_translation_2018} & MMUs & TLB Set (4 KB) & \cmark  & \xmark \\
-Page Cache Attacks~\cite{gruss2019page} & Page Cache &  Page (4 KB) & \xmark &  \cmark \\ 
-\bottomrule
-\end{tabular}
-}
+        \begin{tabular}{lllcc}
+            \toprule
+            Attacks                                           & Shared Resources & Granularity            & Non-Crpyto & Multiple \\ \midrule
+            CacheBleed~\cite{yarom2017cachebleed}             & Cache            & Sub Cache Line (<64 B) & \xmark     & \xmark   \\
+            CopyCat~\cite{moghimi2020copycat}                 & Page Tables      & Instruction            & \xmark     & \xmark   \\
+            Prime + Probe~\cite{liu2015last}                  & Cache            & Cache Set (64-512 B)   & \cmark     & \xmark   \\
+            Prime + Abort~\cite{disselkoen2017prime+}         & Cache            & Cache Set (64-512 B)   & \cmark     & \xmark   \\
+            Flush + Reload~\cite{yarom2014flush+}             & Cache            & Cache Line (64 B)      & \cmark     & \cmark   \\
+            Flush + Flush~\cite{gruss2016flush+}              & Cache            & Cache Line (64 B)      & \cmark     & \xmark   \\
+            Controlled-channel Attack~\cite{xu2015controlled} & Page Tables      & Page (4 KB)            & \cmark     & \xmark   \\
+            TLBleed~\cite{gras_translation_2018}              & MMUs             & TLB Set (4 KB)         & \cmark     & \xmark   \\
+            Page Cache Attacks~\cite{gruss2019page}           & Page Cache       & Page (4 KB)            & \xmark     & \cmark   \\
+            \bottomrule
+        \end{tabular}
+    }
 \end{table}
- 
- 
+
+
 Table~\ref{table:side_channel_attack} shows some representations of the recent side-channel attacks. For a detailed overview of recent side-channel attacks, we refer to the following survey paper~\cite{ge2018survey}. We classified those side-channel attacks into two categories: cache channels and page channels.
 
 \subsection{Cache-level Channel}
 A CPU cache are an essential part in modern computer systems. It is a smaller and faster memory which is designed to reduce the average data access costs to the main memory by storing copies of data from the main memory. When a CPU reads data from a memory location, it first checks the memory location in the cache. If it finds that the cache stores a copy of the memory location, a cache hit occurs. Otherwise, the CPU needs to read the data from the main memory and a cache miss happens.
-Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415} rely on the time difference between cache misses and cache hits. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. We introduce two common attack strategies, namely Prime+Probe and Flush+Reload. 
+Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415} rely on the time difference between cache misses and cache hits. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. We introduce two common attack strategies, namely Prime+Probe and Flush+Reload.
 
-\textbf{Prime+Probe.} Prime+Probe targets a single cache set. 
+\textbf{Prime+Probe.} Prime+Probe targets a single cache set.
 An attacker primes the cache set with its own data and waits until the victim executes the program. After that, the attacker probes the cache by reading previously-loaded data. If the victim accesses the cache set and evicts some lines of the data, the attacker will experience a slow measurement. Under the circumstance, the attacker can know the victim must have touched some data that mapping to the same cache set.
 
 \textbf{Flush+Reload.} Flush+Reload allows an attacker to observe the memory at the granularity of cache line instead of a cache set. While Flush+Reload targets a single cache line, it requires the attacker and victim share some memory. During the ``flush'' stage, the attacker flushes the ``monitored
@@ -67,16 +67,16 @@ Some other side-channel targets also include spell checking tools, and font libr
 Many exploits rely on the knowledge of the memory location of a certain kernel function. Since Linux 4.12, the kernel loads core kernel image and device drivers at random positions during the boot time. Jang et al.~\cite{jang2016breaking} rely on side-channels to reveal mapping status of each page. After that, they detect kernel modules with unique size signatures to break KASLR. The second example relies on the side-channel vulnerabilities~\cite{cao2019principled} inside kernels to infer the TCP sequence numbers, which can be used to hijack connections between the client and the server~\cite{cao2016off}.
 
 \section{Detection and Mitigation}
-There are several existing work on side-channel leakage detections. According to Table~\ref{table:side_channel_detection_tool}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction. 
+There are several existing work on side-channel leakage detections. According to Table~\ref{table:side_channel_detection_tool}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction.
 
-\textbf{Trace comparison.} If a program has two different execution traces under two different sensitive inputs, then attacker can distinguish the sensitive input by observing the execution trace. Therefore, we can conclude the program is vulnerable to side-channel attacks. The method is similar to UNIX tool \textsf{diff}. Moreover, the approach does not need to model or abstract the program's semantics. In general, the approach is quite fast. On the negative side, comparing the trace along can find the leakage, but it cannot find the complex relationship between the leakage site and the original buffer. For example, if two leakage sites leak the same information in the original buffer, those approaches cannot find out the two leakage sites are the same. 
+\textbf{Trace comparison.} If a program has two different execution traces under two different sensitive inputs, then attacker can distinguish the sensitive input by observing the execution trace. Therefore, we can conclude the program is vulnerable to side-channel attacks. The method is similar to UNIX tool \textsf{diff}. Moreover, the approach does not need to model or abstract the program's semantics. In general, the approach is quite fast. On the negative side, comparing the trace along can find the leakage, but it cannot find the complex relationship between the leakage site and the original buffer. For example, if two leakage sites leak the same information in the original buffer, those approaches cannot find out the two leakage sites are the same.
 
-\textbf{Abstraction.} The second category of those tools belongs to the field of abstractions. Tools based on those approaches use the abstraction to generate approximations of the semantics of computer programs. After that, by analyzing the model, those tools can identify side-channel leakages. Comparing with the trace comparison approach, the method is more precise. 
+\textbf{Abstraction.} The second category of those tools belongs to the field of abstractions. Tools based on those approaches use the abstraction to generate approximations of the semantics of computer programs. After that, by analyzing the model, those tools can identify side-channel leakages. Comparing with the trace comparison approach, the method is more precise.
 
 Those methods usually follow the below steps. Suppose a program $P$ has $k$ as the input, we can run symbolic execution on the top the victim program. So temporary values can be represented as math formulas. After that, we need to build a cache or memory access model and model the side-channel leakage as a math constraint. Then we use SMT solvers to find if there are two different secret inputs that can lead to access different locations in the memory or the cache. If so, then the program is vulnerable to side-channel attacks. Contrary to the trace comparison, the method is quite precise. Moreover, it can model multiple leakages precisely as the conjunction of those formulas. However, such approach has the following limitations.
 
 \begin{itemize}
-    \item Existing tools cannot not handle many instructions such as AVX, and SIMD instructions.  Most existing tools are research prototype or are implemented based on the research prototype. For many projects, the tool is only implemented to properly handle the benchmark in their papers. Second, many those tools rely on transferring those instructions into some intermediate languages. However, those intermediate languages do not support those architecture instructions. 
+    \item Existing tools cannot not handle many instructions such as AVX, and SIMD instructions.  Most existing tools are research prototype or are implemented based on the research prototype. For many projects, the tool is only implemented to properly handle the benchmark in their papers. Second, many those tools rely on transferring those instructions into some intermediate languages. However, those intermediate languages do not support those architecture instructions.
     \item Today's solvers can not handle many complicated constraints, especially the conjunction of those constraints. Recent studies show existing solver have bugs when it deals with floating pointer calculations.
 \end{itemize}
 
@@ -96,37 +96,37 @@ The dynamic approach, usually consists of taint analysis and symbolic execution,
 can perform a very precise analysis. CacheD~\cite{203878} takes a concrete execution trace and runs symbolic execution on the trace
 to get the formula of each memory address. CacheD is
 quite precise in avoiding false positives. However, CacheD is not able to detect secret-dependent control-flows. We adopted a similar approach to model the secret-dependent data accesses. \tool{} differs from CacheD in that we do not use traditional taint tracking or domain knowledge to cut the trace when identifying secret-dependent data access vulnerabilities. \tool{} works on machine instructions directly instead of intermediate representations. Moreover, \tool{} finds secret-dependent control-flows at the same time and gives a precise quantification of the leakage. DATA~\cite{217537} detects address-based side-channel vulnerabilities by comparing different execution traces under various test inputs. After collecting execution traces, DATA aligns them and finds the differences. It uses statistical hypothesis testing to find true leakages. However, both imperfect trace alignment and statistical testing result that DATA can produce false positives.
-MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} uses mutual information (MI) between sensitive input and execution state to detect side-channels. 
+MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} uses mutual information (MI) between sensitive input and execution state to detect side-channels.
 
 \begin{sidewaystable}
 
-%\begin{table*}
-%\centering
-\caption{Existing leakage detection tool only evaluate them on cryptography library. 1. Most recent work only evaluates their approaches on cryptography libraries. 2. All of them can not reason about the total effect of multiple leakages.}
-\label{table:side_channel_detection_tool}
-\resizebox{1\columnwidth}{!}{%
+    %\begin{table*}
+    %\centering
+    \caption{Existing leakage detection tool only evaluate them on cryptography library. 1. Most recent work only evaluates their approaches on cryptography libraries. 2. All of them can not reason about the total effect of multiple leakages.}
+    \label{table:side_channel_detection_tool}
+    \resizebox{1\columnwidth}{!}{%
 
-\begin{tabular}{lllcclc}
-\toprule
-Tool & S/D & Method  & AVX/SIMD  & Multiple & Evaluation & Available \\ \midrule
-CacheAudit~\cite{182946} & Static  & Abstraction  & \xmark & \xmark & Crypto Algorithm  & \cmark \\ 
-CacheD~\cite{203878} & Dynamic  & Symbolic Execution + Taint Analysis  & \xmark & \xmark & Libgcrypt, OpenSSL & \xmark \\
-CachSym~\cite{Brotzman19Casym} & Static & Symbolic Execution  & \xmark & \xmark & Crypto Snippet & \xmark \\
-CacheS~\cite{236338} & Static & Abstract Interpretation & \xmark & \xmark & Libgcrypt, OpenSSL, mbedTLS & \xmark \\
-DATA~\cite{217537} & Dynamic & Trace Alignment + Comparison & \cmark & \xmark & OpenSSL, PyCrypto & \cmark \\
-ctgrind~\cite{langley2010ctgrind} & Dynamic & Taint Analysis & \cmark & \xmark & Crypto Library & \cmark \\
-Satcco~\cite{xiao2017stacco} & Dynamic & Trace Comparison & \cmark & \xmark & OpenSSL, GnuTLS, mbedTLS, WolfTLS, LibreSSL & \xmark \\
-ANABLEPS~\cite{wang2019time} & Dynamic & Trace Comparison & \cmark & \xmark & gsl, Hunspell, PNG, Freetype, QRcodegen, Genometools & \xmark \\
-MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} & Dynamic & Trace Comparison & \cmark & \xmark & Intel IPP, Microsoft CNG & \cmark \\ 
-\bottomrule
-\end{tabular}
-}
-%\end{table*}
+        \begin{tabular}{lllcclc}
+            \toprule
+            Tool                                                 & S/D     & Method                              & AVX/SIMD & Multiple & Evaluation                                           & Available \\ \midrule
+            CacheAudit~\cite{182946}                             & Static  & Abstraction                         & \xmark   & \xmark   & Crypto Algorithm                                     & \cmark    \\
+            CacheD~\cite{203878}                                 & Dynamic & Symbolic Execution + Taint Analysis & \xmark   & \xmark   & Libgcrypt, OpenSSL                                   & \xmark    \\
+            CachSym~\cite{Brotzman19Casym}                       & Static  & Symbolic Execution                  & \xmark   & \xmark   & Crypto Snippet                                       & \xmark    \\
+            CacheS~\cite{236338}                                 & Static  & Abstract Interpretation             & \xmark   & \xmark   & Libgcrypt, OpenSSL, mbedTLS                          & \xmark    \\
+            DATA~\cite{217537}                                   & Dynamic & Trace Alignment + Comparison        & \cmark   & \xmark   & OpenSSL, PyCrypto                                    & \cmark    \\
+            ctgrind~\cite{langley2010ctgrind}                    & Dynamic & Taint Analysis                      & \cmark   & \xmark   & Crypto Library                                       & \cmark    \\
+            Satcco~\cite{xiao2017stacco}                         & Dynamic & Trace Comparison                    & \cmark   & \xmark   & OpenSSL, GnuTLS, mbedTLS, WolfTLS, LibreSSL          & \xmark    \\
+            ANABLEPS~\cite{wang2019time}                         & Dynamic & Trace Comparison                    & \cmark   & \xmark   & gsl, Hunspell, PNG, Freetype, QRcodegen, Genometools & \xmark    \\
+            MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} & Dynamic & Trace Comparison                    & \cmark   & \xmark   & Intel IPP, Microsoft CNG                             & \cmark    \\
+            \bottomrule
+        \end{tabular}
+    }
+    %\end{table*}
 \end{sidewaystable}
 Both hardware~\cite{Page2005PartitionedCA,
-Wang:2007:NCD:1250662.1250723,Zhang:2015:HDL:2775054.2694372,Li:2014:SLH:2541940.2541947,
-236344, 236334} and software~\cite{shih2017t,Coppens:2009:PMT:1607723.1608124,
-brickell2006software,crane2015thwarting, 197207} side-channels mitigation techniques have
+    Wang:2007:NCD:1250662.1250723,Zhang:2015:HDL:2775054.2694372,Li:2014:SLH:2541940.2541947,
+    236344, 236334} and software~\cite{shih2017t,Coppens:2009:PMT:1607723.1608124,
+    brickell2006software,crane2015thwarting, 197207} side-channels mitigation techniques have
 been proposed recently. Hardware countermeasures, including partitioning hardware resources~\cite{Page2005PartitionedCA}, randomizing cache
 accesses~\cite{Wang:2007:NCD:1250662.1250723, 236344}, and designing new
 architecture~\cite{tiwari2011crafting}, require changes to complex processors and are complex to adopt. On the contrary, software approaches are
@@ -140,20 +140,20 @@ bit-slicing~\cite{konighofer2008fast,rebeiro2006bitslice} and unifying
 control-flows~\cite{Coppens:2009:PMT:1607723.1608124}.
 
 \section{Quantification}
-Proposed by Denning~\cite{robling1982cryptography} and Gray~\cite{gray1992toward}, 
+Proposed by Denning~\cite{robling1982cryptography} and Gray~\cite{gray1992toward},
 Quantitative Information Flow (QIF) aims at providing an estimation of the amount of leaked information from the sensitive information given the public output. If zero bits
 of the information are leaked, the program is called non-interference. McCamant
 and Ernst~\cite{McCamantE2008} quantify the information leakage as the network
 flow capacity. Backes et al.~\cite{5207642} propose an automated method for QIF
 by computing an equivalence relation on the set of input keys. But the approach
-cannot handle real-world programs with bitwise operations. 
+cannot handle real-world programs with bitwise operations.
 Phan et al.~\cite{Phan:2012:SQI:2382756.2382791} propose symbolic QIF. The goal of their
 work is to ensure a program is non-interference. They adopt an over
 approximation method to estimate the total information leakage and their method
 does not work for secret-dependent memory access side-channels.
 Pasareanu et al.~\cite{pasareanu2016multi} combine symbolic analysis and Max-SMT solving to synthesize the concrete public input that can lead to the worst case leakage. They assume the target program has multiple different input secrets and calculate the average leakage for one-fixed public input.
 CHALICE~\cite{Chattopadhyay:2017:QIL:3127041.3127044} quantifies the leaked
-information for a given cache behavior. 
+information for a given cache behavior.
 It symbolically reasons about cache
 behavior and estimates the amount of leaked information based on cache miss/hit.
 Their approach only scale to small programs, which limits its usage in
@@ -161,20 +161,20 @@ real-world applications. On the contrary, \tool{} assesses the sensitive level
 of side-channels with different granularities. It can also analyze side-channels
 in real-world crypto libraries.
 
-Model counting refers to the problem of computing the number of 
+Model counting refers to the problem of computing the number of
 models for a propositional formula (\#SAT). There are two approaches to
-solving the problem, exact model counting and approximate model 
+solving the problem, exact model counting and approximate model
 counting. We focus on approximate model counting since it is our approach. Wei and Selman~\cite{wei2005new} introduce
-ApproxCount, a local search based method using Markov Chain Monte 
-Carlo (MCMC). ApproxCount has the better scalability than 
-exact model counters. Other approximate model counter includes 
+ApproxCount, a local search based method using Markov Chain Monte
+Carlo (MCMC). ApproxCount has the better scalability than
+exact model counters. Other approximate model counter includes
 SampleCount~\cite{gomes2007sampling},
-Mbound~\cite{gomes2006model}, and MiniCount~\cite{kroc2008leveraging}. 
+Mbound~\cite{gomes2006model}, and MiniCount~\cite{kroc2008leveraging}.
 Unlike ApproxCount,
 these model counters can give lower or upper bounds with guarantees.
-Despite the rapid development of model counters for SAT and some 
+Despite the rapid development of model counters for SAT and some
 research~\cite{chistikov2017approximate,phan2015model} on Modulo Theories model counting (\#SMT),
-they cannot be directly applied to 
+they cannot be directly applied to
 side channel leakage quantification.
 ApproxFlow~\cite{biondi2018scalable} uses ApproxMC~\cite{chakraborty2016algorithmic} for information flow quantification,
 but it has only been tested with small programs.

@@ -11,7 +11,7 @@ It is typically hard to fix all side-channel vulnerabilities for real-world soft
 
 When we examine those side-channel attacks, many of them stem from the two code patterns, \emph{secret-dependent control-flow transfers} and \emph{secret-dependent data accesses}.
 \begin{figure}[h]
-\begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
+    \begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
 int secret[32];
 ...
 while(i>0){
@@ -20,14 +20,14 @@ while(i>0){
         r = (r * x) % n;   
 }
 \end{lstlisting}
-\caption{Secret-dependent control-flow transfers}
-\label{fig:secret:cf}
+    \caption{Secret-dependent control-flow transfers}
+    \label{fig:secret:cf}
 \end{figure}
 
-Secret-dependent control-flow transfers happen when the value of secret can affect which branch the code executes. Figure~\ref{fig:secret:cf} shows an example. Depending on the value of \textsf{secret}, the code may or may not execute the code at line 6. As attackers, they can retrieve some information based on the execution control-flow. 
+Secret-dependent control-flow transfers happen when the value of secret can affect which branch the code executes. Figure~\ref{fig:secret:cf} shows an example. Depending on the value of \textsf{secret}, the code may or may not execute the code at line 6. As attackers, they can retrieve some information based on the execution control-flow.
 
 \begin{figure}[h]
-\begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
+    \begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
 static char FSb[256] = {...}
 ... 
 uint32_t a = *RK++ ^ \ 
@@ -37,21 +37,21 @@ uint32_t a = *RK++ ^ \
 (FSb[(secret >>24)] << 24 );
 ...
 \end{lstlisting}
-\caption{Secret-dependent data accesses}
-\label{fig:secret:da}
+    \caption{Secret-dependent data accesses}
+    \label{fig:secret:da}
 \end{figure}
 
 Secret-dependent data accesses happen when the value of the secret can affect which memory cell the code reads or writes. Figure~\ref{fig:secret:da} shows an example. \textsf{FSb} is an array. Depending on the value of \textsf{secret}, the code may read or write different items in the array.
 
 The key intuition is that above side-channel attacks happen when a
 program accesses different memory addresses if the program has different
-sensitive inputs. As shown in Figure~\ref{fig:secret:cf} and Figure~\ref{fig:secret:da}, 
+sensitive inputs. As shown in Figure~\ref{fig:secret:cf} and Figure~\ref{fig:secret:da},
 if a program shows different patterns in
 control transfers or data accesses when the program processes different
 sensitive inputs, the program could possibly have side channels vulnerabilities.
 Different kinds of side-channels can be exploited to retrieve information in
 various granularities. For example, cache channels can observe cache
-accesses at the level of cache sets~\cite{liu2015last}, cache lines~\cite{184415} or other granularities. 
+accesses at the level of cache sets~\cite{liu2015last}, cache lines~\cite{184415} or other granularities.
 Other kinds of side-channels like controlled-channel attack~\cite{7163052},
 can observe the memory access at the level of memory pages.
 
@@ -61,22 +61,22 @@ side channel attacks. Hardware-level solutions, such as reducing shared
 resources, adopting oblivious RAM, and using transnational
 memory~\cite{203878,217537,shih2017t,Zhang:2015:HDL:2775054.2694372}, need new
 hardware features and changes in modern complex computer systems, which are
-hard to adopt in reality. Therefore, a promising and universal direction is software countermeasures, detecting and eliminating side channel vulnerabilities from code base. It is due to the following reason: many side-channel attacks originate in two code patterns: data flow from secrets to load addresses and data flow from secrets to branch conditions. We refer to them as secret-dependent data accesses and control flows respectively in the dissertation. 
+hard to adopt in reality. Therefore, a promising and universal direction is software countermeasures, detecting and eliminating side channel vulnerabilities from code base. It is due to the following reason: many side-channel attacks originate in two code patterns: data flow from secrets to load addresses and data flow from secrets to branch conditions. We refer to them as secret-dependent data accesses and control flows respectively in the dissertation.
 
 On the contrary, software approaches are
 usually easy to implement. The basic idea is to eliminate key-dependent
-control-flow transfers and data accesses. By removing the above two kinds of code patterns, developers protect their 
+control-flow transfers and data accesses. By removing the above two kinds of code patterns, developers protect their
 code from a series of side-channel attacks.
 
 However, eliminating side channel vulnerabilities from real-world software code base is not easy. First, some vulnerable implementations perform better. For example, RSA implementations usually adopt the CRT optimization,
-which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}. Fixing vulnerabilities can introduce new 
-weaknesses. Second, it is hard to detect side channels in reality. While recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities, they either suffer from expensive computation cost or high false positives and false negatives. Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities. For example, DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA implementation in OpenSSL 1.1.0f\@. Further analysis shows 1,510 leaks can be dismissed. But that leaves 460 data-access leaks and 278 control-flow leaks. Many of these vulnerabilities have not been fixed by developers for a variety of reasons. Third, most vulnerabilities pose a negligible risk. 
-Although some vulnerabilities result in the key being 
-entirely compromised~\cite{184415, aumuller2002fault}, 
+which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}. Fixing vulnerabilities can introduce new
+weaknesses. Second, it is hard to detect side channels in reality. While recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities, they either suffer from expensive computation cost or high false positives and false negatives. Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} can detect many side-channel vulnerabilities. For example, DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA implementation in OpenSSL 1.1.0f\@. Further analysis shows 1,510 leaks can be dismissed. But that leaves 460 data-access leaks and 278 control-flow leaks. Many of these vulnerabilities have not been fixed by developers for a variety of reasons. Third, most vulnerabilities pose a negligible risk.
+Although some vulnerabilities result in the key being
+entirely compromised~\cite{184415, aumuller2002fault},
 many others are less severe in reality. Therefore, we need a proper quantification metric to assess the sensitivity of side-channel vulnerabilities, so a developer can efficiently triage them.
 
 Previous work~\cite{182946,5207642} can identify numerous leakages or even provide an upper bound on the amount of leakage, which is useful to verify that an implementation is secure if it incurs zero leakage.
-However, these techniques cannot quantify the severity of a leak because they over approximate the leakage. For example, CacheAudit~\cite{182946} 
+However, these techniques cannot quantify the severity of a leak because they over approximate the leakage. For example, CacheAudit~\cite{182946}
 reports that the upper-bound leakage of AES-128 exceeds the original key size. Besides, existing side-channel quantification work~\cite{182946,5207642} assumes an attacker runs the target program multiple times with different
 input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, those results are less useful to assess the severity level of each leakage site.
 
@@ -84,19 +84,19 @@ input secrets and calculates an ``average'' estimation, which is different from 
 In summary, it is hard to apply software approaches in practice due to the following reasons.
 
 \begin{enumerate}
-    \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of original secret inputs. Recent work can identify side-channel leakages. But those tools can only work on small programs or need to apply some domain knowledge to simplify the analysis. 
-    \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because those leakages are either false positives or leaked very little information.  
+    \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of original secret inputs. Recent work can identify side-channel leakages. But those tools can only work on small programs or need to apply some domain knowledge to simplify the analysis.
+    \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because those leakages are either false positives or leaked very little information.
 \end{enumerate}
 
 We try to address the above problem from the following two aspects.
 \begin{enumerate}
-\item \textbf{Detection.} We propose a fast and precise side-channel detection method. Different from previous trace comparison based methods, our method has fewer false positives and false negatives. Compared with methods based on symbolic execution and abstract interpretation, our methods can work on real-world cryptography libraries. Symbolic execution provides fine-grained information, but it is expensive to compute. Therefore, prior symbolic
-execution work~\cite{203878,236338,Brotzman19Casym} either analyzes only
-small programs or applies domain knowledge~\cite{203878} to simplify the analysis. We examine the bottleneck of the trace-oriented symbolic execution and optimize it to work for real-world crypto-systems.
-\item \textbf{Quantification.} We propose methods to quantify information 
-leakage precisely from a single trace attack. We quantify the number of bits that can leak during a real execution and define the amount of leaked information as the cardinality of possible secrets based on an attacker's observation. Before an attack, an adversary has a large but finite input space. Whenever the adversary observes a leakage site, they can eliminate some impossible inputs and reduce the input space's size. In an extreme case, if the input space's size reduces to one, an adversary has determined the input, which means all secret information (e.g., the entire secret key) is
-leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely. We use symbolic execution to generate constraints to model the relation 
-between the original sensitive input and an attacker's observations. 
+    \item \textbf{Detection.} We propose a fast and precise side-channel detection method. Different from previous trace comparison based methods, our method has fewer false positives and false negatives. Compared with methods based on symbolic execution and abstract interpretation, our methods can work on real-world cryptography libraries. Symbolic execution provides fine-grained information, but it is expensive to compute. Therefore, prior symbolic
+          execution work~\cite{203878,236338,Brotzman19Casym} either analyzes only
+          small programs or applies domain knowledge~\cite{203878} to simplify the analysis. We examine the bottleneck of the trace-oriented symbolic execution and optimize it to work for real-world crypto-systems.
+    \item \textbf{Quantification.} We propose methods to quantify information
+          leakage precisely from a single trace attack. We quantify the number of bits that can leak during a real execution and define the amount of leaked information as the cardinality of possible secrets based on an attacker's observation. Before an attack, an adversary has a large but finite input space. Whenever the adversary observes a leakage site, they can eliminate some impossible inputs and reduce the input space's size. In an extreme case, if the input space's size reduces to one, an adversary has determined the input, which means all secret information (e.g., the entire secret key) is
+          leaked. By counting the number of inputs~\cite{10.1007/11499107_24}, we can quantify the information leakage precisely. We use symbolic execution to generate constraints to model the relation
+          between the original sensitive input and an attacker's observations.
 \end{enumerate}
 
 
@@ -115,20 +115,20 @@ To address Problem 2, we make the following contributions on quantifying side-ch
 
 \begin{itemize}
     \item We propose a method that can quantify fine-grained leaked
-    information from side-channel vulnerabilities that result from actual attack
-    scenarios in a single trace attack. Our approach differs from previous ones in that we
-    model real attack scenarios for one execution. 
-    We model the information quantification problem as a counting problem 
-    and use a Monte Carlo sampling method to estimate the information leakage.
+          information from side-channel vulnerabilities that result from actual attack
+          scenarios in a single trace attack. Our approach differs from previous ones in that we
+          model real attack scenarios for one execution.
+          We model the information quantification problem as a counting problem
+          and use a Monte Carlo sampling method to estimate the information leakage.
     \item We implement the method into a tool and apply it
-    to several pieces of real software. \tool{} successfully identifies
-    previous unknown and known side-channel vulnerabilities and calculates the corresponding information leakage. 
-    Our results are useful in practice.
-    The leakage estimates and the corresponding trigger inputs can 
-    help developers to triage and fix the vulnerabilities.
+          to several pieces of real software. \tool{} successfully identifies
+          previous unknown and known side-channel vulnerabilities and calculates the corresponding information leakage.
+          Our results are useful in practice.
+          The leakage estimates and the corresponding trigger inputs can
+          help developers to triage and fix the vulnerabilities.
 \end{itemize}
 
-To address Problem 2, we make the following contributions on quantifying side-channel leakages on chosen plaintext side-channel attacks: 
+To address Problem 2, we make the following contributions on quantifying side-channel leakages on chosen plaintext side-channel attacks:
 \begin{itemize}
     \item We propose a novel method that can detect and analyze the effect of each side-channel leakage sites automatically. Our analysis combine information from both the source code and the run-time execution, which makes the method more effective in finding the leakages. The method can combine multiple leakage sites to retrieve more information as well.
     \item We analyze the amount of information leakage from side-channel vulnerabilities based on the channel capacity. We propose a method that can estimate the lower bound of information leakages. The theory can serve as the foundation of the future work on quantify the information leakage based on the fuzzing.
