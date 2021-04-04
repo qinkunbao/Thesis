@@ -331,7 +331,7 @@ methods all fail in real attack models.
     \caption{The gap between the real attack and previous models}\label{fig:gap}
 \end{figure}
 
-\subsection{Theoretical Analysis}
+\subsection{Precise Analysis}
 Now we present our metric to quantify the amount of leaked information from
 dynamic analysis.
 
@@ -485,10 +485,12 @@ information in some attack scenarios.
         \hline
     \end{tabular}
 \end{table}
+
+\subsection{Model Leakages}
 \section{Approximate Model Counting}
 \label{MCreasons}
 According to
-Definition~\ref{def} introduced in \S\ref{sec:trace-qif},
+Definition~\ref{def} introduced in the previous section,
 the problem of quantifying the amount of leaked information can be reduced to
 the problem of computing the number of items in $K^o$. However, we find that while
 there are various propositional model counters (e.g., \#SAT), they are not
@@ -858,10 +860,9 @@ Carlo (MC) simulation to estimate the amount of leaked information.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.45\textwidth]{./figures/chapter4/workflow.pdf}
+    \includegraphics[width=0.85\textwidth]{./figures/chapter4/workflow.pdf}
     \caption{The workflow of \tool{}.}
     \label{fig:workflow}
-    \vspace*{-15pt}
 \end{figure}
 
 \subsection{Execution trace generation} The design goal of \tool{} is to estimate the information leakage as precisely as possible. 
