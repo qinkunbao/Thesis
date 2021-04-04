@@ -14,20 +14,6 @@ By observing inadvertent interactions between two programs, attackers can infer 
 execution flows that manipulate secrets and guess secrets such as encryption
 keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
 
-%% to deal with side channels, we can protect or detect them and detection is better
-%%arious countermeasures have been proposed to defend against software-based
-%%side-channel attacks. Hardware-level solutions, such as reducing shared
-%%resources, adopting oblivious RAM, and using transnational
-%%memory~\cite{203878,217537,shih2017t,Zhang:2015:HDL:2775054.2694372}, need new
-%%hardware features and changes in modern complex computer systems, which are
-%%impractical and hard to adopt in reality. Therefore, a promising and
-%%universal direction is software countermeasures, detecting and eliminating
-%%side-channel vulnerabilities from code base.
-
-Many side-channel attacks originate
-in two code patterns: data flow from secrets to load
-addresses and data flow from secrets to branch conditions. We refer to them as
-secret-dependent data accesses and control flows, respectively.
 
 Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946}
 can detect many side-channel vulnerabilities. For example,
@@ -141,16 +127,13 @@ In summary, we make the following contributions:
 
 \section{Threat Model}
 
-We assume that an attacker shares the same hardware platform with the target.
-The attacker attempts to retrieve sensitive information through address-based
-side-channel attacks. The attacker has no direct access to the target's memory or cache,
-but it can probe its memory or cache at each program point. In reality, the
-attacker will face many possible obstacles such as the noisy observations
-of the memory or cache. However, for this project, we assume
-the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}.
-The threat model captures most cache-based and address-based side-channel attacks.
-We only consider deterministic programs and assume an attacker
-has access to the source code or binary executable of the target program.
+The threat model is similar to our previous work. That is, we assume 
+an attacker can share some hardware resource with the victim. The attacker has
+the ability to probe the victim at any time of the execution. We also assume 
+an attacker has noise-free observations. The attacker has the access to the victim's
+binary executable. The threat mode is similar to 
+the previous work~\cite{203878,182946,Brotzman19Casym} and can catch most of 
+the address-based side-channel attacks in the literature.
 
 
 \section{Background}
@@ -169,7 +152,7 @@ of a char variable in the C program.
 Existing works on information leakage quantification typically use Shannon
 entropy~\cite{clark2007static,Wichelmann:2018:MFF:3274694.3274741},
 min-entropy~\cite{10.1007/978-3-642-00596-1_21}, and max-entropy~\cite{182946,
-    Doychev:2017:RAS:3062341.3062388}. In these frameworks, the input sensitive
+Doychev:2017:RAS:3062341.3062388}. In these frameworks, the input sensitive
 information $K$ is considered as a random variable.
 
 Let $k$ be one of the possible
@@ -203,7 +186,7 @@ control-flows, A and B.
 
 \begin{figure}[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.03\textwidth,xrightmargin=.01\textwidth]
+    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
 uint8_t key[2], t1, t2;
 get_key(key);              // 0 <= key[0], key[1] < 256
 t1 = key[0] + key[1];
@@ -230,7 +213,6 @@ attacker knows which branch is executed?
 \begin{table}[ht]
     \centering\small\footnotesize
     \caption{The distribution of observation}\label{shtable}
-    \vspace*{-0pt}
     %    \resizebox{\columnwidth}{!}{
     \begin{tabular}{l|cc|cc}
         \hline
@@ -299,7 +281,7 @@ information leakage is reported, a program is secure. However, when a tool using
 
 \begin{figure}[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.03\textwidth,xrightmargin=.01\textwidth]
+    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
 char key[9] = input();
 if(strcmp(key, "password"))   // leakage site C
     pass();                   // branch 1
@@ -342,9 +324,7 @@ bit (e.g., Kocher's timing attacks~\cite{kocher1996timing}), as in Figure~\ref{f
 theory for dynamic analysis that if the theory says an attack leaks $x$ bits of
 secret information from a side-channel vulnerability, then $x$ should be useful
 in estimating the sensitive level of the vulnerability. However, the above
-methods all fail in real attack models. This is the first challenge we face
-\textbf{(Challenge C1)}.
-
+methods all fail in real attack models. 
 \begin{figure}
     \centering
     \includegraphics[width=.65\columnwidth]{./figures/chapter4/RA.pdf}
@@ -354,6 +334,36 @@ methods all fail in real attack models. This is the first challenge we face
 \subsection{Theoretical Analysis}
 Now we present our metric to quantify the amount of leaked information from
 dynamic analysis.
+
+\subsubsection{Math Notations}
+We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be 
+a finite set of keys. The program also takes known messages $M$ as its input. 
+During an AES encryption, for example, 
+$\beta$ is the encryption function. $K$ is the set of all possible AES keys, 
+and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have 
+some observations ($O$) of the program. This paper only
+uses secret-dependent control flows and secret-dependent data 
+accesses as observations.
+
+With the above definition, we have the following mapping between $\beta$,
+$K$, $M$, and $O$:
+%\vspace*{-0pt}
+\begin{displaymath}
+    \beta(K, M) \rightarrow O
+\end{displaymath}
+
+
+We model a side-channel in the following way. An adversary does not have
+access to $K$, but he knows $\beta$, $M$, and $O$. For one execution of a
+deterministic program, once $k \in K$ and $m \in M$ are fixed, the observation
+($o \in O$) should also be determined. An attacker knows $\beta$, $o$,
+and $m$. The attacker wants to infer the value of $k$. We use $K^o$ to denote
+the set of possible $k$ values that produce the same observation: $K^o = \{ k \in K \, |\, \beta(k, m) \rightarrow o\}$
+
+Then the problem of quantifying the amount of leaked information can be
+restated as the following question:
+
+\emph{How much uncertainty of $K$ is reduced if an attacker knows $\beta$, $m$, and $o$?}
 
 In information theory, the mutual information (I) is a measure of the mutual
 dependence between two variables. Here we use I to describe the
