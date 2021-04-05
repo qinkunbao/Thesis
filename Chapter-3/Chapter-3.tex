@@ -21,7 +21,7 @@ CPUs process data in a much faster speed than the main memory (DRAM) can supply.
 Figure~\ref{fig:memory_hierarchy} shows the overview of the hierarchy memory. For a CPU with multiple cores, each core has two private level-1 (L1) cache, an instruction cache (iCache), and a data cache (dCache). Because instructions and data have different access patterns, separating iCache and dCache makes it possible for CPUs to fetch the code and data and improve performance simultaneously. Followed by the level-1 cache, each core also has the unified private level-2 cache for both the code and the data. The level-3 cache is the last level cache (LLC). The LLC is shared among all the cores. The main memory is the bottom-most under the memory hierarchy.
 \begin{figure}
   \centering
-  \includegraphics[width=.65\columnwidth]{./figures/chapter3/architecture.pdf}
+  \includegraphics[width=.5\columnwidth]{./figures/chapter3/architecture.pdf}
   \caption{Computer Memory Hierarchy}\label{fig:memory_hierarchy}
 \end{figure}
 
@@ -393,7 +393,7 @@ If a conditional jump uses the CPU status flag, we will generate the constraint 
 
 For examples, considering the below x86 code snippet,
 
-\begin{lstlisting}
+\begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
  ...
 0x0000e781      add dword [local_14h], 1
 0x0000e785      cmp dword [local_14h], 4
