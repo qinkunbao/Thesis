@@ -127,12 +127,12 @@ In summary, we make the following contributions:
 
 \section{Threat Model}
 
-The threat model is similar to our previous work. That is, we assume 
+The threat model is similar to our previous work. That is, we assume
 an attacker can share some hardware resource with the victim. The attacker has
-the ability to probe the victim at any time of the execution. We also assume 
+the ability to probe the victim at any time of the execution. We also assume
 an attacker has noise-free observations. The attacker has the access to the victim's
-binary executable. The threat mode is similar to 
-the previous work~\cite{203878,182946,Brotzman19Casym} and can catch most of 
+binary executable. The threat mode is similar to
+the previous work~\cite{203878,182946,Brotzman19Casym} and can catch most of
 the address-based side-channel attacks in the literature.
 
 
@@ -152,7 +152,7 @@ of a char variable in the C program.
 Existing works on information leakage quantification typically use Shannon
 entropy~\cite{clark2007static,Wichelmann:2018:MFF:3274694.3274741},
 min-entropy~\cite{10.1007/978-3-642-00596-1_21}, and max-entropy~\cite{182946,
-Doychev:2017:RAS:3062341.3062388}. In these frameworks, the input sensitive
+    Doychev:2017:RAS:3062341.3062388}. In these frameworks, the input sensitive
 information $K$ is considered as a random variable.
 
 Let $k$ be one of the possible
@@ -324,7 +324,7 @@ bit (e.g., Kocher's timing attacks~\cite{kocher1996timing}), as in Figure~\ref{f
 theory for dynamic analysis that if the theory says an attack leaks $x$ bits of
 secret information from a side-channel vulnerability, then $x$ should be useful
 in estimating the sensitive level of the vulnerability. However, the above
-methods all fail in real attack models. 
+methods all fail in real attack models.
 \begin{figure}
     \centering
     \includegraphics[width=.65\columnwidth]{./figures/chapter4/RA.pdf}
@@ -335,13 +335,13 @@ methods all fail in real attack models.
 Now we present our metric to quantify the amount of leaked information from
 dynamic analysis.
 
-We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be 
-a finite set of keys. The program also takes known messages $M$ as its input. 
-During an AES encryption, for example, 
-$\beta$ is the encryption function. $K$ is the set of all possible AES keys, 
-and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have 
+We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be
+a finite set of keys. The program also takes known messages $M$ as its input.
+During an AES encryption, for example,
+$\beta$ is the encryption function. $K$ is the set of all possible AES keys,
+and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have
 some observations ($O$) of the program. This paper only
-uses secret-dependent control flows and secret-dependent data 
+uses secret-dependent control flows and secret-dependent data
 accesses as observations.
 
 With the above definition, we have the following mapping between $\beta$,
@@ -488,8 +488,18 @@ information in some attack scenarios.
 \subsection{Model Leakages}
 \section{Approximate Model Counting}
 \label{MCreasons}
-According to
-Definition~\ref{chapter4:def} introduced in the previous section,
+In the previous section, we propose an information leakage definition for
+realistic attack scenarios to model two types of address-based side-channel
+leakages and showed how to quantify them by calculating the number of input
+keys ($K^o$) that satisfy the formulas. Intuitively, we can use
+symbolic execution to capture math formulas and model counting
+to obtain the number of satisfying input keys ($K^o$). However, preliminary
+experiments showed that this approach was far too expensive to use with real-world
+applications. In this section, we discuss the bottlenecks in
+this approach and propose a practical solution.
+
+
+According to Definition~\ref{chapter4:def} introduced in the previous section,
 the problem of quantifying the amount of leaked information can be reduced to
 the problem of computing the number of items in $K^o$. However, we find that while
 there are various propositional model counters (e.g., \#SAT), they are not
@@ -647,7 +657,6 @@ with Theorem~\ref{IndependentConstraint}.
     equation in regard to the size of $K_c$
     $$|K_{c_t(\addr{1},\addr{2},\ldots,\addr{n})}| = |K_{g_{1}}|*|K_{g_{2}}|*\ldots*|K_{g_{n}}|$$
 \end{theorem}
-\vspace{-3pt}
 With Theorem~\ref{IndependentConstraint}, we change the problem of
 counting the number of solutions to a complicated constraint in a high-dimension
 space into counting solutions to several small constraints. We compute the
@@ -687,39 +696,12 @@ $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
 \DecMargin{1em}
 
 
-%% \IncMargin{1em}
-%% \begin{algorithm}[h]
-%%       \DontPrintSemicolon
-%%       \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-%%       \Input{$c_t(\addr{1},\addr{2},\ldots,\addr{n}) = c_{\addr{1}} \land c_{\addr{2}} \land \ldots \land c_{\addr{m}}$}
-%%       \Output{The Maximum Independent Partition of $G = \{g_{1}, g_{2}  , \ldots,  g_{m} \}$ }
-%%       \For{$i\leftarrow 1$ \KwTo $n$}
-%%       {
-%%             $S_{c_i}$ $\leftarrow$ $\pi(c_{\addr{i}})$ \;
-%%             \For{$g_{i} \in G$}
-%%             {
-%%                   $S_{g_i}$ $\leftarrow$ $\pi(g_{i})$ \;
-%%                   $S$ $\leftarrow$ $S_{C_i} \cap S_{G_i}$  \;
-%%                   \If{$S \neq \emptyset$}
-%%                   {
-%%                         $g_{i} \leftarrow g_{i} \land g_{\addr{i}}$ \;
-%%                         \textbf{break} \;
-%%                   }
-%%                   Insert $c_{\addr{i}}$ to $G$
-%%             }
-%%       }
-%%       \caption{The Maximum Independent Partition}
-%%       \label{algo:max-inde}
-%% \end{algorithm}
-%% \DecMargin{1em}
-
 \subsection{Multiple-step Monte Carlo Sampling}
 
 After we split those constraints into several small constraints, we count the
 number of solutions for each constraint. Even though the dimension has been
 significantly reduced by the previous step, this is still a \#P problem.
-For our
-project, we apply the approximate counting instead of exact counting for two
+For our project, we apply the approximate counting instead of exact counting for two
 reasons. First, we do not need to have a very precise result of the exact number of total solutions since the information is defined with a logarithmic function.
 We do not need to distinguish between constraints having $10^{10}$ or $10^{10}
     10$ solutions; they are very close to after taking logarithmic. Second, the
@@ -784,41 +766,6 @@ while still ensuring accuracy.
     \caption{Multiple Step Monte Carlo Sampling}
 \end{algorithm}
 \DecMargin{1em}
-%% the algorithm
-%\IncMargin{1em}
-%\begin{algorithm}
-%\SetAlgoLined
-%\DontPrintSemicolon
-
-%\KwIn{{The constraint $G_{i}= C_{i_1} \land C_{i_2}
-%\land \ldots \land C_{i_m}$}}    
-%\KwOut{{The number of assignments that satisfy $G_{i}$ $|K_{G_{i}}|$}}
-
-%\SetKwProg{RW}{RandomWalk}{}{}
-%\SetKwProg{MM}{MetropolisMove}{}{} 
-%$n$: the number of sampling times \;
-%$P$: a probability generator \;
-%$k$: the input assignment \;
-%$n_{s}$: the number of satisfying assignments \;
-%$\#k$: the satisfying number of k \fixme{this number is not used syntactically} \; 
-%Initialization: \;
-%$\#{k_0}$ $\leftarrow$ $\sum_{j=1}^{m}C_{i_j}(k_0)$ \;
-%\For{$t\leftarrow 1$ \KwTo $n$} {
-%      $p$ $\leftarrow$ $P$ \;
-%      \If{$p \geq 0.5$}
-%      {
-%        $v$ $\leftarrow$ \RW{$v$} {}
-%      }
-%      \Else{
-%            $v$ $\leftarrow$ \MM{$v$} {}
-%      }
-%      \If{$v$ satisfies $G_{i}$}
-%      {$n_{s}$ $\leftarrow$ $n_{s} + 1$}
-%}
-%$|K_{G_{i}}|$ $\leftarrow$ $n_s|K| / n$
-%\caption{Metropolis Sampling}
-%\end{algorithm}
-%\DecMargin{1em}
 
 \subsection{Error Estimation}
 \label{sssec:errest}
@@ -864,7 +811,7 @@ Carlo (MC) simulation to estimate the amount of leaked information.
     \label{fig:workflow}
 \end{figure}
 
-\subsection{Execution trace generation} The design goal of \tool{} is to estimate the information leakage as precisely as possible. 
+\subsection{Execution trace generation} The design goal of \tool{} is to estimate the information leakage as precisely as possible.
 We run the target binary under a dynamic binary instrumentation (DBI) tool
 to record execution traces and runtime information.
 Once the sensitive information is loaded into memory, we start to collect the trace.
@@ -874,13 +821,13 @@ In this step, we mark variables and buffers that hold the sensitive data by eith
 observations from side-channel vulnerabilities with logic formulas.
 Each formula captures the fine-grained information between input
 secrets and leakage sites. The engine only symbolically executes
-instruction that might be affected by the input sensitive data. \tool{} works on one path at a time. The memory model is conceptually similar to other offline executors (e.g., SAGE~\cite{godefroid2008automated} and the trace-based executor of BitBlaze~\cite{song2008bitblaze}). That is, we use symbolic execution to track secrets. When secrets are loaded into the memory, \tool{} starts to interpret instructions symbolically. We treat secrets as symbols ($S$). For other variables, we use concrete values ($C$) 
+instruction that might be affected by the input sensitive data. \tool{} works on one path at a time. The memory model is conceptually similar to other offline executors (e.g., SAGE~\cite{godefroid2008automated} and the trace-based executor of BitBlaze~\cite{song2008bitblaze}). That is, we use symbolic execution to track secrets. When secrets are loaded into the memory, \tool{} starts to interpret instructions symbolically. We treat secrets as symbols ($S$). For other variables, we use concrete values ($C$)
 from the execution. We do not know which instruction may manipulate a secret until we execute it. For each instruction, if all its operands and implicit memory accesses are concrete values, we perform concrete calculation and update the destination with the concrete value according to the instruction semantics. Otherwise, we symbolically interpret the instruction and update the destination with a formula.
 
-\subsection{Leakage estimation} We change the information leakage 
+\subsection{Leakage estimation} We change the information leakage
 quantification problem into the counting problem. We propose a
 Monte Carlo method to estimate the number of satisfying solutions.
-With the help of the Central Limit Theorem (CLT), we also give an error 
+With the help of the Central Limit Theorem (CLT), we also give an error
 estimate with the probability, which provides us with the \emph{precision guarantee}.
 
 \tool{} consists of 16,729 lines of code in C++17 and Python. It has three
@@ -913,71 +860,71 @@ Therefore, the tool may miss some leakages but will not raise false positives.
 \section{Evaluation}
 \begin{table}[]
     \centering\small\footnotesize
-    \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), 
+    \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks),
         Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
         The number of instructions\,(\# Instructions), Symbolic Execution\,(SE) and Monte Carlo\,(MC) time.
     }\label{table:over_result}
 
-%    \resizebox{1.9\columnwidth}{!}{
+    %    \resizebox{1.9\columnwidth}{!}{
     \begin{threeparttable}
-    \begin{tabular}{l@{}r@{~~}rrr@{~~}rr}
-        \hline
-        \textbf{Name}   & \textbf{\# Leaks} & \textbf{\# CF}         & \textbf{\# DF}
-                           & \textbf{\# Instructions}    & \textbf{SE} & \textbf{MC}                                                    \\\hline
-                                                 &                        &                     &                      &              & ms        & ms              \\\cline{6-7}
-        AES\tnote{1}               & 68                     & 0                   & 68                   & 39,855        & 512     & 1,052         \\
-        AES\tnote{2}                & 68                     & 0                   & 68                   & 39,855       & 520    & 1,057         \\
-        AES\tnote{4}                & 75                     & 0                   & 75                   & 1,704        & 231    & 9,199        \\
-        AES\tnote{5}                & 88                     & 0                   & 88                   & 1,350        & 36      & 1,924         \\
-        AES\tnote{6}                & 88                     & 0                   & 88                   & 1,350        & 35      & 1,961        \\
-        AES\tnote{7}                & 88                     & 0                   & 88                   & 1,420        & 36     & 2,161        \\
-        AES\tnote{8}                & 88                     & 0                   & 88                   & 1,586        & 43      & 1,631        \\
-        DES\tnote{1}                & 15                     & 0                   & 15                   & 4,596        & 58      & 162          \\
-        DES\tnote{2}                & 15                     & 0                   & 15                   & 4,596        & 57      & 162           \\
-        DES\tnote{4}                & 6                      & 0                   & 6                    & 2,976         & 163    & 4,677         \\
-        DES\tnote{5}                & 8                      & 0                   & 8                    & 2,593         & 166    & 6,509        \\
-        DES\tnote{6}                & 8                      & 0                   & 8                    & 2,593        & 165    & 5,975        \\
-        DES\tnote{7}                & 8                      & 0                   & 8                    & 4,260         & 182    & 5,292        \\
-        DES\tnote{8}                & 6                      & 0                   & 6                    & 8,272         & 229     & 5,152      \\
-                           &                        &                     &                      &                  & seconds   & seconds               \\\cline{6-7}
-        Chacha20\tnote{3}           & 0                      & 0                   & 0                    & 149,353        & 2     & 0             \\  
-        Poly1305\tnote{3}           & 0                      & 0                   & 0                    & 1,213,937      & 15    & 0             \\
-        Argon2i\tnote{3}            & 0                      & 0                   & 0                    & 4,595,142       & 37    & 0             \\
-        Ed25519\tnote{3}            & 0                      & 0                   & 0                    & 5,713,619       & 271   & 0            \\
-        ECDSA\tnote{1}              & 6                      &    6                & 0                    &  4,214,946     &  48   &   31       \\ 
-        ECDSA\tnote{2}              &   4                   &   4                 & 0                    &  4,192,558    & 102   & 1639          \\   
-        ECDSA\tnote{5}              &  5                    & 4                   & 1                    &  8,248,322       & 101     & 62           \\   
-        ECDSA\tnote{6}              &  5                    & 4                   & 1                    &  8,263,599      & 100     & 58            \\   
-        ECDSA\tnote{7}              &  5                    & 4                   & 1                    &  6,100,465       & 76      & 42                  \\  
-        ECDSA\tnote{8}              & 0                      &  0                   &    0               &  10,244,076       &  121     & 0                  \\  
-        ECDSA\tnote{9}              & 0                      &  0                   &  0                 &  9,266,191          & 102     & 59        \\  
+        \begin{tabular}{l@{}r@{~~}rrr@{~~}rr}
+            \hline
+            \textbf{Name}     & \textbf{\# Leaks}        & \textbf{\# CF} & \textbf{\# DF}
+                              & \textbf{\# Instructions} & \textbf{SE}    & \textbf{MC}                                      \\\hline
+                              &                          &                &                &             & ms      & ms      \\\cline{6-7}
+            AES\tnote{1}      & 68                       & 0              & 68             & 39,855      & 512     & 1,052   \\
+            AES\tnote{2}      & 68                       & 0              & 68             & 39,855      & 520     & 1,057   \\
+            AES\tnote{4}      & 75                       & 0              & 75             & 1,704       & 231     & 9,199   \\
+            AES\tnote{5}      & 88                       & 0              & 88             & 1,350       & 36      & 1,924   \\
+            AES\tnote{6}      & 88                       & 0              & 88             & 1,350       & 35      & 1,961   \\
+            AES\tnote{7}      & 88                       & 0              & 88             & 1,420       & 36      & 2,161   \\
+            AES\tnote{8}      & 88                       & 0              & 88             & 1,586       & 43      & 1,631   \\
+            DES\tnote{1}      & 15                       & 0              & 15             & 4,596       & 58      & 162     \\
+            DES\tnote{2}      & 15                       & 0              & 15             & 4,596       & 57      & 162     \\
+            DES\tnote{4}      & 6                        & 0              & 6              & 2,976       & 163     & 4,677   \\
+            DES\tnote{5}      & 8                        & 0              & 8              & 2,593       & 166     & 6,509   \\
+            DES\tnote{6}      & 8                        & 0              & 8              & 2,593       & 165     & 5,975   \\
+            DES\tnote{7}      & 8                        & 0              & 8              & 4,260       & 182     & 5,292   \\
+            DES\tnote{8}      & 6                        & 0              & 6              & 8,272       & 229     & 5,152   \\
+                              &                          &                &                &             & seconds & seconds \\\cline{6-7}
+            Chacha20\tnote{3} & 0                        & 0              & 0              & 149,353     & 2       & 0       \\
+            Poly1305\tnote{3} & 0                        & 0              & 0              & 1,213,937   & 15      & 0       \\
+            Argon2i\tnote{3}  & 0                        & 0              & 0              & 4,595,142   & 37      & 0       \\
+            Ed25519\tnote{3}  & 0                        & 0              & 0              & 5,713,619   & 271     & 0       \\
+            ECDSA\tnote{1}    & 6                        & 6              & 0              & 4,214,946   & 48      & 31      \\
+            ECDSA\tnote{2}    & 4                        & 4              & 0              & 4,192,558   & 102     & 1639    \\
+            ECDSA\tnote{5}    & 5                        & 4              & 1              & 8,248,322   & 101     & 62      \\
+            ECDSA\tnote{6}    & 5                        & 4              & 1              & 8,263,599   & 100     & 58      \\
+            ECDSA\tnote{7}    & 5                        & 4              & 1              & 6,100,465   & 76      & 42      \\
+            ECDSA\tnote{8}    & 0                        & 0              & 0              & 10,244,076  & 121     & 0       \\
+            ECDSA\tnote{9}    & 0                        & 0              & 0              & 9,266,191   & 102     & 59      \\
 
 
-                           &                        &                     &                      &                 & minutes   & minutes         \\\cline{6-7}
-        RSA\tnote{1}                & 6                       & 6                   & 0                    & 22,109,246    & 39     & 41           \\
-        RSA\tnote{2}                & 12                      & 12                  & 0                    & 24,484,441    & 44     & 251           \\
-        RSA\tnote{4}                & 107                    & 105                 & 2                    & 17,002,523   & 23      & 428           \\
-        RSA\tnote{5}                & 38                     & 27                  & 11                   & 14,468,307   & 29     & 436          \\
-        RSA\tnote{6}                & 36                     & 27                  & 9                    & 15,285,210   & 40     & 714          \\
-        RSA\tnote{7}                & 31                     & 22                  & 9                    & 16,390,750   & 34      & 490         \\
-        RSA\tnote{8}                & 4                      &  4                  & 0                    & 18,207,016   & 8      & 53          \\
-        RSA\tnote{9}                & 8                      &  8                  & 0                    & 18,536,796    & 5      & 780         \\
-        RSA\tnote{10} & 11& 9& 2& 9,527,231& 2 &38\\
-        RSA\tnote{11} & 14& 14& 0& 10,513,606& 14 &503 \\
-        RSA\tnote{12}               & 8                      &  8                  & 0                    & 27,407,986    & 113    & 6560       \\
+                              &                          &                &                &             & minutes & minutes \\\cline{6-7}
+            RSA\tnote{1}      & 6                        & 6              & 0              & 22,109,246  & 39      & 41      \\
+            RSA\tnote{2}      & 12                       & 12             & 0              & 24,484,441  & 44      & 251     \\
+            RSA\tnote{4}      & 107                      & 105            & 2              & 17,002,523  & 23      & 428     \\
+            RSA\tnote{5}      & 38                       & 27             & 11             & 14,468,307  & 29      & 436     \\
+            RSA\tnote{6}      & 36                       & 27             & 9              & 15,285,210  & 40      & 714     \\
+            RSA\tnote{7}      & 31                       & 22             & 9              & 16,390,750  & 34      & 490     \\
+            RSA\tnote{8}      & 4                        & 4              & 0              & 18,207,016  & 8       & 53      \\
+            RSA\tnote{9}      & 8                        & 8              & 0              & 18,536,796  & 5       & 780     \\
+            RSA\tnote{10}     & 11                       & 9              & 2              & 9,527,231   & 2       & 38      \\
+            RSA\tnote{11}     & 14                       & 14             & 0              & 10,513,606  & 14      & 503     \\
+            RSA\tnote{12}     & 8                        & 8              & 0              & 27,407,986  & 113     & 6560    \\
 
-        Total              & 904                    & 241                 & 663                & 167,141,947      & 341m  & 10,232m     \\\hline
-    \end{tabular}
-\end{threeparttable}
-\begin{tablenotes}
-    \scriptsize
+            Total             & 904                      & 241            & 663            & 167,141,947 & 341m    & 10,232m \\\hline
+        \end{tabular}
+    \end{threeparttable}
+    \begin{tablenotes}
+        \scriptsize
 
-    \item[1] mbedTLS\,2.5  ~~~~\item[2] mbedTLS\,2.15 ~\item[3] Monocypher\,3.0 \\
-    \item[4] OpenSSL\,0.9.7  ~~\item[5] OpenSSL\,1.0.2f  \item[6] OpenSSL\,1.0.2k \\
-    \item[7] OpenSSL\,1.1.0f ~\item[8] OpenSSL\,1.1.1 ~\item[9] OpenSSL\,1.1.1g \\
-    \item[10] Libgcrypt\,1.6.1 \item[11] Libgcrypt\,1.7.3 \item[12] Libgcrypt\,1.8.5\\
-\end{tablenotes}
-\vspace*{-20pt}
+        \item[1] mbedTLS\,2.5  ~~~~\item[2] mbedTLS\,2.15 ~\item[3] Monocypher\,3.0 \\
+        \item[4] OpenSSL\,0.9.7  ~~\item[5] OpenSSL\,1.0.2f  \item[6] OpenSSL\,1.0.2k \\
+        \item[7] OpenSSL\,1.1.0f ~\item[8] OpenSSL\,1.1.1 ~\item[9] OpenSSL\,1.1.1g \\
+        \item[10] Libgcrypt\,1.6.1 \item[11] Libgcrypt\,1.7.3 \item[12] Libgcrypt\,1.8.5\\
+    \end{tablenotes}
+    \vspace*{-20pt}
 
 \end{table}
 
@@ -985,7 +932,7 @@ Therefore, the tool may miss some leakages but will not raise false positives.
 
 \subsubsection{Symmetric Ciphers: DES and AES}\label{eval:sym}
 We test both DES and AES ciphers from mbedTLS and OpenSSL\@. Both cipher
-implementations apply lookup tables, which improve performance but can also introduce side-channels as well. During our evaluation, we find mbedTLS 2.5 and 2.15.1 have the same implementation of AES and DES\@. Therefore, our tool reports the same leakages for both versions. 
+implementations apply lookup tables, which improve performance but can also introduce side-channels as well. During our evaluation, we find mbedTLS 2.5 and 2.15.1 have the same implementation of AES and DES\@. Therefore, our tool reports the same leakages for both versions.
 
 We find that the DES implementations in both mbedTLS and OpenSSL have several
 severe information leakages in the key schedule function.
@@ -993,17 +940,17 @@ We do not see any mitigation
 in the new version. We think it is not seen as worth the engineering
 efforts given the life cycles of DES\@.
 
-\tool{} shows that the AES in OpenSSL 1.1.1 has less leakage than other versions. 
-OpenSSL 1.1.1 uses 1KB lookup tables with 8-bit entries, unlike older versions that use a table with 32-bit entries. Our tool suggests a smaller lookup table might mitigate side-channel vulnerabilities. 
+\tool{} shows that the AES in OpenSSL 1.1.1 has less leakage than other versions.
+OpenSSL 1.1.1 uses 1KB lookup tables with 8-bit entries, unlike older versions that use a table with 32-bit entries. Our tool suggests a smaller lookup table might mitigate side-channel vulnerabilities.
 
 \subsubsection{Monocypher}\label{eval:mono}
 Monocypher is a small, easy to use cryptographic library with
-performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}. 
-We choose four ciphers that are 
+performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}.
+We choose four ciphers that are
 designed to be side-channel resistant from the library.
-Because those ciphers have no 
+Because those ciphers have no
 data flow from secrets to branch conditions and load addresses.
-Monocypher should be safe under our threat models. 
+Monocypher should be safe under our threat models.
 We analyze those ciphers with \tool{}, and it reports no leaks.
 This indicates that \tool{} is effective for validating countermeasures.
 
