@@ -915,10 +915,7 @@ Monocyper is designed to be side-channel resistant. We use the library to test i
 false positives. Besides, we also test \tool{} on some simple countermeasure implementations. 
 
 We write simple encryption and decryption function with the above libraries. After that, we build
-the source code into 32-bit binary executions. The configuration of our experiment is shown as
-\begin{itemize}
-\end{itemize}
-follows.
+the source code into 32-bit binary executions. The configuration of our experiment is shown as follows.
 \begin{itemize}
 \item CPU: 2.90GHz Intel Xeon(R) E5-2690 CPU
 \item Memory: 128 GB
@@ -926,6 +923,28 @@ follows.
 \item Compiler: GCC 7.5
 \end{itemize}
 
+Table~\ref{chapter4:table:over_result} shows the overview of evaluation results. 
+\tool{} also finds that most side-channel
+vulnerabilities leak very little information in practice, which confirms our
+initial assumption.  
+However, \tool{} finds some vulnerabilities with severe
+leakages. Prior research has confirmed that some of these
+vulnerabilities can be exploited in real attacks.
+With our tool, developers can
+distinguish non-critical ``vulnerabilities'' from severe ones.
+
+Symmetric encryption implementations in OpenSSL and mbedTLS have significant leakage due to their lookup table implementations. 
+\tool{} confirms that those leakage comes from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. Those changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
+
+\tool{} can estimate how
+much information is leaked from each vulnerability. During the evaluation,
+for each leakage site, \tool{} will stop once 1) it has 95\% confidence
+that the error of the estimated leaked information is less than 1 bit,
+which gives the leakage quantification a \emph{precision guarantee}, 
+or 2) it cannot reach the termination condition after 10 minutes.  In
+the latter case, it means \tool{} cannot estimate the amount of leakage with a
+probabilistic guarantee. We manually check these leakage sites and find most of them are quite severe.
+We will present the details in the subsequent sections.
 
 \subsection{Case Studies}
 
