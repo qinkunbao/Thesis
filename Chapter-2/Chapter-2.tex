@@ -65,7 +65,8 @@ There is a vast number of studies\cite{yarom2017cachebleed,191010,184415,Osvik20
         \begin{tabular}{lll}
             \toprule
             Implementation & Common Vulnerable Point             & Mitigation \\ \midrule
-            AES &  T-table and S-table lookups   & AES instructions (AES-NI) \\&&Scalar bit-slicing \\&& Preloading tables     \\
+            AES &  T-table and S-table lookups   & AES instructions (AES-NI) 
+            \\&&Scalar bit-slicing \\&& Preloading tables     \\
             DES & Table lookups & Scalar bit-slicing (No implmentation) \\
             RSA & CRT optimization & Verifying the consistency with the public key\\
             & Modular exponentiation& Montgomery modular multiplication\\
