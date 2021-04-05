@@ -425,7 +425,7 @@ For any $k' \in K \setminus K^o$, $p(k'|o) = 0$. We get
 
 
 \begin{mydef}
-    \label{chatper4:def}
+    \label{chapter4:def}
     Given a program $\beta$ with the input set $K$,
     an adversary has the observation $o$ when the input $k{\in}K^o$.
     We denote it as
@@ -463,10 +463,7 @@ Those kinds of branches can be vulnerable when an attacker's data is incorporate
 For example, the code will skip some of the calculation if the value is 0 in big
 number multiplication.
 
-In
-contrast, an \emph{average} estimate based on random secret input information is around
-1 bit, as shown in the previous section and Table~\ref{shtable}, is
-not very useful in practice as an attacker is able to get much more leaked
+In contrast, an \emph{average} estimate based on random secret input information is around 1 bit, as shown in the previous section and Table~\ref{shtable}, is not very useful in practice as an attacker is able to get much more leaked
 information in some attack scenarios.
 
 \begin{table}[ht]
@@ -488,15 +485,7 @@ information in some attack scenarios.
 \subsection{Model Leakages}
 \section{Approximate Model Counting}
 \label{MCreasons}
-In the previous section, we propose an information leakage definition for
-realistic attack scenarios to model two types of address-based side-channel
-leakages and showed how to quantify them by calculating the number of input
-keys ($K^o$) that satisfy the formulas. Intuitively, we can use
-symbolic execution to capture math formulas and model counting
-to obtain the number of satisfying input keys ($K^o$). However, preliminary
-experiments showed that this approach was far too expensive to use with real-world
-applications. In this section, we discuss the bottlenecks in
-this approach and propose a practical solution.
+In the previous section, we propose an information leakage definition for realistic attack scenarios to model two types of address-based side-channel leakages and showed how to quantify them by calculating the number of input keys ($K^o$) that satisfy the formulas. Intuitively, we can use symbolic execution to capture math formulas and model counting to obtain the number of satisfying input keys ($K^o$). However, preliminary experiments showed that this approach was far too expensive to use with real-world applications. In this section, we discuss the bottlenecks in this approach and propose a practical solution.
 
 
 According to Definition~\ref{chapter4:def} introduced in the previous section,
@@ -517,32 +506,22 @@ For example, the length of an RSA private key can be as long as 4096 bits. If we
 take each byte (8 bits) in the original buffer as one symbol, the formula can
 have as many as 512 symbols.
 
-%\vspace*{2pt}
-%\textbf{Our Solution to Challenge C3:}
 We adopt multiple-step Monte Carlo sampling methods to count the number of
 possible inputs that satisfy the logic formula groups. The key idea is to split
 those constraints into several small formulas and sample them independently.
 We will introduce the method in the following subsection.
 
-\subsection{Information Leakage Estimation}
 
 \newcommand{\addr}[1]{{l}_{#1}}
 \renewcommand{\addr}[1]{{\gamma}_{#1}}
 \renewcommand{\addr}[1]{{\zeta}_{#1}}
 \renewcommand{\addr}[1]{{\xi}_{#1}}
 
-In this section, we present the algorithm to calculate the information leakage
-based on Definition~\ref{def} (\S\ref{sec:trace-qif}), answering to
-\textbf{Challenge C3}.
+In this section, we present the algorithm to calculate the information leakage based on Definition~\ref{chapter4:def}. 
 
 \subsection{Problem Statement}
 For each leakage site, we model it with a constraint using the
-method presented in~\S\ref{side-channel:condition}. Suppose the address of the
-leakage site is $\addr{i}$, we use $c_{\addr{i}}$ to denote the constraint
-that models its side-channel leakage.
-%For
-%multiple leakage sites, we take the conjunction of those constraints to
-%represent those leakage sites.
+method presented in the previous section. Suppose the address of the leakage site is $\addr{i}$, we use $c_{\addr{i}}$ to denote the constraint that models its side-channel leakage. For multiple leakage sites, we take the conjunction of those constraints to represent those leakage sites.
 
 According to the Definition~\ref{def}, to calculate the amount of leaked
 information, the key is to calculate the cardinality
@@ -568,7 +547,6 @@ However, the above sampling method fails in practice due to the following two pr
           of each constraints will also be the input variables of the
           $c_t({\addr{1}},\ldots,{\addr{n}})$. The sampling method fails
           as $n$ grows.
-
           For example, if the program has $2$ input whose size is
           one byte, the whole search space is a $256^2$ cube. If we want
           the sampling distance between each point equals to $d$, we need
@@ -657,11 +635,8 @@ with Theorem~\ref{IndependentConstraint}.
     equation in regard to the size of $K_c$
     $$|K_{c_t(\addr{1},\addr{2},\ldots,\addr{n})}| = |K_{g_{1}}|*|K_{g_{2}}|*\ldots*|K_{g_{n}}|$$
 \end{theorem}
-With Theorem~\ref{IndependentConstraint}, we change the problem of
-counting the number of solutions to a complicated constraint in a high-dimension
-space into counting solutions to several small constraints. We compute the
-maximum independent partition by iterating each $\addr{i}$ and applying the function
-$\pi$ over the constraint $\addr{i}$.
+With Theorem~\ref{IndependentConstraint}, we change the problem of counting the number of solutions to a complicated constraint in a high-dimension
+space into counting solutions to several small constraints. We compute the maximum independent partition by iterating each $\addr{i}$ and applying the function $\pi$ over the constraint $\addr{i}$.
 
 We apply the following
 algorithm~\ref{algo:max-inde} to get the Maximum Independent Partition of the
@@ -698,27 +673,20 @@ $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
 
 \subsection{Multiple-step Monte Carlo Sampling}
 
-After we split those constraints into several small constraints, we count the
-number of solutions for each constraint. Even though the dimension has been
-significantly reduced by the previous step, this is still a \#P problem.
-For our project, we apply the approximate counting instead of exact counting for two
-reasons. First, we do not need to have a very precise result of the exact number of total solutions since the information is defined with a logarithmic function.
-We do not need to distinguish between constraints having $10^{10}$ or $10^{10}
-    10$ solutions; they are very close to after taking logarithmic. Second, the
+After we split those constraints into several small constraints, we count the number of solutions for each constraint. Even though the dimension has been
+significantly reduced by the previous step, this is still a \#P problem. For our project, we apply the approximate counting instead of exact counting for two reasons. First, we do not need to have a very precise result of the exact number of total solutions since the information is defined with a logarithmic function. We do not need to distinguish between constraints having $10^{10}$ or $10^{10} + 10$ solutions; they are very close to after taking logarithmic. Second, the
 precise model counting approaches, like Davis-Putnam-Logemann-Loveland (DPLL)
 search, have difficulty scaling up to large problem sizes.
 
 We apply the ``counting by sampling'' method. For
-the constraint $g_{i}= c_{i_1} \land c_{i_2} \land ,\ldots, \land c_{i_j} \land
-    ,\ldots, \land c_{i_m}$, if the solution satisfies $g_{i}$, it should also
+the constraint $g_{i}= c_{i_1} \land c_{i_2} \land ,\ldots, \land c_{i_j} \land ,\ldots, \land c_{i_m}$, if the solution satisfies $g_{i}$, it should also
 satisfy any constraint from $c_{i_1}$ to $c_{i_m}$. In other words, $K_{c_gi}$
 should be the subset of $K_{c_1}$, $K_{c_2}$, \ldots , $K_{c_m}$. We notice that
 $c_i$ usually has fewer inputs than $g_{i}$. For example, if
 $c_{i_j}$ has only one 8-bit input variable, we can find the exact solution set
 $K_{c_{i_j}}$ of $c_{i_j}$ by trying every possible 256 solution. After that,
 we only generate random input numbers for the other input variables in
-constraint $g_{i}$. With this simple yet effective trick, we reduce the number of input
-while still ensuring accuracy.
+constraint $g_{i}$. With this simple yet effective trick, we reduce the number of input while still ensuring accuracy. The detailed of the algorithm is shown in Algorithm~\ref{chapter4:alg2}.
 
 
 \IncMargin{1em}
@@ -763,7 +731,7 @@ while still ensuring accuracy.
     }
 
     $|K_{g_{i}}|$ $\leftarrow$ $n_s|K| / (n * r * range(k))$
-    \caption{Multiple Step Monte Carlo Sampling}
+    \caption{Multiple Step Monte Carlo Sampling}\label{chapter4:alg2}
 \end{algorithm}
 \DecMargin{1em}
 
@@ -821,19 +789,15 @@ In this step, we mark variables and buffers that hold the sensitive data by eith
 observations from side-channel vulnerabilities with logic formulas.
 Each formula captures the fine-grained information between input
 secrets and leakage sites. The engine only symbolically executes
-instruction that might be affected by the input sensitive data. \tool{} works on one path at a time. The memory model is conceptually similar to other offline executors (e.g., SAGE~\cite{godefroid2008automated} and the trace-based executor of BitBlaze~\cite{song2008bitblaze}). That is, we use symbolic execution to track secrets. When secrets are loaded into the memory, \tool{} starts to interpret instructions symbolically. We treat secrets as symbols ($S$). For other variables, we use concrete values ($C$)
-from the execution. We do not know which instruction may manipulate a secret until we execute it. For each instruction, if all its operands and implicit memory accesses are concrete values, we perform concrete calculation and update the destination with the concrete value according to the instruction semantics. Otherwise, we symbolically interpret the instruction and update the destination with a formula.
+instruction that might be affected by the input sensitive data. \tool{} works on one path at a time. The memory model is conceptually similar to other offline executors (e.g., SAGE~\cite{godefroid2008automated} and the trace-based executor of BitBlaze~\cite{song2008bitblaze}). That is, we use symbolic execution to track secrets. When secrets are loaded into the memory, \tool{} starts to interpret instructions symbolically. We treat secrets as symbols ($S$). For other variables, we use concrete values ($C$) from the execution. We do not know which instruction may manipulate a secret until we execute it. For each instruction, if all its operands and implicit memory accesses are concrete values, we perform concrete calculation and update the destination with the concrete value according to the instruction semantics. Otherwise, we symbolically interpret the instruction and update the destination with a formula.
 
-\subsection{Leakage estimation} We change the information leakage
-quantification problem into the counting problem. We propose a
-Monte Carlo method to estimate the number of satisfying solutions.
-With the help of the Central Limit Theorem (CLT), we also give an error
+\subsection{Leakage estimation} 
+We change the information leakage quantification problem into the counting problem. We propose a
+Monte Carlo method to estimate the number of satisfying solutions. With the help of the Central Limit Theorem (CLT), we also give an error
 estimate with the probability, which provides us with the \emph{precision guarantee}.
 
-\tool{} consists of 16,729 lines of code in C++17 and Python. It has three
-components: an Intel Pin tool that collects the execution trace, the
-instruction-level symbolic execution engine, and the back-end that estimates
-the information leakage.
+\tool{} consists of 16,729 lines of code in C++17 and Python. It has three components: an Intel Pin tool that collects the execution trace, the
+instruction-level symbolic execution engine, and the back-end that estimates the information leakage. Table~\ref{tbl:implementation} shows the breakdown of the implementation of \tool{}.
 
 \begin{table}[h!]
     \centering
@@ -852,14 +816,12 @@ the information leakage.
     %    }
 \end{table}
 
-Our current implementation supports most Intel 32-bit instructions that are essential to find address-based side-channel
-vulnerabilities, including bitwise operations, control transfer, data movement, and logic
-instructions. The tool uses the real values to update the registers and memory for instructions that the implementation does not support.
-Therefore, the tool may miss some leakages but will not raise false positives.
+Our current implementation supports most Intel 32-bit instructions that are essential to find address-based side-channel vulnerabilities, including bitwise operations, control transfer, data movement, and logic instructions. The tool uses the real values to update the registers and memory for instructions that the implementation does not support. Therefore, the tool may miss some leakages but will not raise false positives.
 
 \section{Evaluation}
 \begin{table}[]
-    \centering\small\footnotesize
+    \centering
+    \small
     \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks),
         Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
         The number of instructions\,(\# Instructions), Symbolic Execution\,(SE) and Monte Carlo\,(MC) time.
@@ -867,10 +829,13 @@ Therefore, the tool may miss some leakages but will not raise false positives.
 
     %    \resizebox{1.9\columnwidth}{!}{
     \begin{threeparttable}
-        \begin{tabular}{l@{}r@{~~}rrr@{~~}rr}
+    \renewcommand\TPTminimum{\linewidth}
+   % \captionsetup{font=small}
+    \makebox[\linewidth]{
+        \begin{tabular}{lrrrrrr}
             \hline
             \textbf{Name}     & \textbf{\# Leaks}        & \textbf{\# CF} & \textbf{\# DF}
-                              & \textbf{\# Instructions} & \textbf{SE}    & \textbf{MC}                                      \\\hline
+                              & \textbf{\# Instructions} & \textbf{Detection}    & \textbf{Quantification}                                      \\\hline
                               &                          &                &                &             & ms      & ms      \\\cline{6-7}
             AES\tnote{1}      & 68                       & 0              & 68             & 39,855      & 512     & 1,052   \\
             AES\tnote{2}      & 68                       & 0              & 68             & 39,855      & 520     & 1,057   \\
@@ -914,34 +879,167 @@ Therefore, the tool may miss some leakages but will not raise false positives.
             RSA\tnote{12}     & 8                        & 8              & 0              & 27,407,986  & 113     & 6560    \\
 
             Total             & 904                      & 241            & 663            & 167,141,947 & 341m    & 10,232m \\\hline
-        \end{tabular}
+        \end{tabular}}
     \end{threeparttable}
     \begin{tablenotes}
         \scriptsize
 
-        \item[1] mbedTLS\,2.5  ~~~~\item[2] mbedTLS\,2.15 ~\item[3] Monocypher\,3.0 \\
-        \item[4] OpenSSL\,0.9.7  ~~\item[5] OpenSSL\,1.0.2f  \item[6] OpenSSL\,1.0.2k \\
+        \item[1] mbedTLS\,2.5  \,~~~~~\item[2] mbedTLS\,2.15 ~\item[3] Monocypher\,3.0 \\
+        \item[4] OpenSSL\,0.9.7  ~~~\item[5] OpenSSL\,1.0.2f  \item[6] OpenSSL\,1.0.2k 
         \item[7] OpenSSL\,1.1.0f ~\item[8] OpenSSL\,1.1.1 ~\item[9] OpenSSL\,1.1.1g \\
-        \item[10] Libgcrypt\,1.6.1 \item[11] Libgcrypt\,1.7.3 \item[12] Libgcrypt\,1.8.5\\
+        \item[10] Libgcrypt\,1.6.1 ~\item[11] Libgcrypt\,1.7.3 \item[12] Libgcrypt\,1.8.5\\
     \end{tablenotes}
     \vspace*{-20pt}
 
 \end{table}
 
+\subsection{Overview}
+
 \subsection{Case Studies}
 
 \subsubsection{Symmetric Ciphers: DES and AES}\label{eval:sym}
-We test both DES and AES ciphers from mbedTLS and OpenSSL\@. Both cipher
-implementations apply lookup tables, which improve performance but can also introduce side-channels as well. During our evaluation, we find mbedTLS 2.5 and 2.15.1 have the same implementation of AES and DES\@. Therefore, our tool reports the same leakages for both versions.
+We test both DES and AES ciphers from mbedTLS and OpenSSL\@. Both cipher implementations apply lookup tables, which improve performance but can also introduce side-channels as well. During our evaluation, we find mbedTLS 2.5 and 2.15.1 have the same implementation of AES and DES\@. Therefore, our tool reports the same leakages for both versions.
 
-We find that the DES implementations in both mbedTLS and OpenSSL have several
-severe information leakages in the key schedule function.
-We do not see any mitigation
-in the new version. We think it is not seen as worth the engineering
-efforts given the life cycles of DES\@.
+We find that the DES implementations in both mbedTLS and OpenSSL have several severe information leakages in the key schedule function. We do not see any mitigation
+in the new version. We think it is not seen as worth the engineering efforts given the life cycles of DES\@.
 
 \tool{} shows that the AES in OpenSSL 1.1.1 has less leakage than other versions.
 OpenSSL 1.1.1 uses 1KB lookup tables with 8-bit entries, unlike older versions that use a table with 32-bit entries. Our tool suggests a smaller lookup table might mitigate side-channel vulnerabilities.
+
+\subsubsection{Asymmetric Ciphers: RSA}\label{eval:asym}
+
+\begin{figure*}
+    \centering
+    \vspace*{-9pt}
+    \hspace*{-15pt}
+    \subfloat[OpenSSL 0.9.7]{
+        \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-0-9-7.pdf}
+        \label{fig:rsa-1}
+    }
+    \subfloat[OpenSSL 1.0.2f]{
+        \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-1-0-2f.pdf}
+        \label{fig:rsa-2}
+    }
+    \subfloat[OpenSSL 1.0.2k]{
+        \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-1-0-2k.pdf}
+        \label{fig:rsa-3}
+    }
+        \hfill
+
+    \subfloat[OpenSSL 1.1.0f]{
+        \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-1-1-0f.pdf}
+        \label{fig:rsa-4}
+    }
+    \subfloat[OpenSSL 1.1.1]{
+        \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-1-1-1.pdf}
+        \label{fig:rsa-5}
+    }
+    \subfloat[OpenSSL 1.1.1g]{
+        \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-1-1-1g.pdf}
+        \label{fig:rsa-6}
+    }
+    \caption{Side-channel leakages in different implementations of RSA in OpenSSL\@. 
+        We round the number of leaked information into the nearest integer. 
+        The mark $*$ means timeout.}
+    \label{fig:rsa}
+\end{figure*}
+We also evaluate \tool{} on RSA. Due to the page limit,
+we do not present the detailed leakage report. %, which is available online at the tool release website.
+%% \jl{where?}. In general,
+%% developers are interested in fixing side-channel vulnerabilities for the RSA implementations.
+%% \jl{Then maybe find some space to present these results?}
+ As shown in Figure~\ref{fig:rsa}, the result indicates that the newer
+versions of OpenSSL leak less information than earlier
+versions. After version 0.9.7g, OpenSSL adopts a fixed-window \textsf{mod\_exp\_mont}
+implementation for RSA\@. With this design, the sequence of squares and
+multiples and the memory access patterns are independent of the secret key.
+\tool{}'s result confirms the new exponentiation implementation has mitigated 
+most leakages effectively because the four newer versions have fewer
+leakages than version 0.9.7, which introduced this change.
+OpenSSL version 1.0.2f, 1.0.2k, and 1.1.0f almost have the
+same amount of leakage. We check the ChangeLog and find only one change to
+patch vulnerability CVE-2016-0702. 
+\tool{} finds OpenSSL 1.1.1 and 1.1.1g have significantly less
+leaked information than other versions.
+We check the ChangeLog of these two versions and find a claim that
+the new RSA implementation adopts ``numerous side-channel attack mitigation'', 
+which proves the effectiveness of our quantifying method.
+%We also observe the latest version (1.1.1g) contains some new leakages. We have
+%contacted the developers and they have confirmed our findings.
+
+
+
+Our quantification result shows vulnerabilities
+that leak significant amounts of information
+are more likely to be fixed in the updated version.
+As presented in Figure~\ref{fig:rsa}, 
+OpenSSL 0.9.7 has several severe leaks from
+function \textsf{bn\_sqr\_comba8}, which is a main 
+component of the OpenSSL big number implementation.
+Shown in Figure~\ref{fig:old_sqr2}, it has a 
+secret-dependent control flow at line 8.
+The value of the function parameter \textbf{a} is derived from
+the secret key. 
+As function \textsf{bn\_sqr\_comba8}
+calls the macro (\textsf{sqr\_add\_c2}) multiple times, 
+and the code can leak some information each time.
+\tool{} indicates the vulnerability is quite serious. 
+It was patched in OpenSSL 1.1.1\@. In 
+Figure~\ref{fig:new_sqr2}, control-flows transfers are replaced
+so there are no leaks in the function
+\textsf{sqr\_add\_c2} in OpenSSL 1.1.1\@. We note
+that line 4 and 9 in Figure~\ref{fig:old_sqr2} both contain if branches.
+However, they are not leaks because
+most compilers use \emph{add with carry} instruction to eliminate the branch.
+In addition, branches can be compiled into non-branch machine instructions 
+with conditional moves. 
+We notice a bitwise operation in Libgcrypt 1.8.5 is compiled to a conditional 
+jump, which leads to a side-channel leakage.
+Therefore, source-level code reviews are not accurate
+enough to detect side-channels. 
+
+For vulnerabilities that leak less amount of information,
+developers are more reluctant to fix them or fixing them unintentionally. For example, OpenSSL 0.9.7 adds a fixed windows version of function \textsf{BN\_mod\_exp\_mont\_consttime} to replace original function \textsf{BN\_mod\_exp\_mont}.
+\tool{} detects a minor vulnerability in the original function that can leak the last bit of the big number \textbf{m}. In the updated version, developers make the fixed windows the default option and rewrite most of the function. However, the leakage site still exists in OpenSSL 1.1.1.
+\begin{figure}
+    \centering
+    \begin{lstlisting}[xleftmargin=.02\textwidth,xrightmargin=.01\textwidth]
+# define mul_add_c2(a,b,c0,c1,c2)                    \
+    t=(BN_ULLONG)a*b;                                \
+    tt=(t+t)&BN_MASK;                                \
+    if (tt < t) c2++;                                \
+    t1=(BN_ULONG)Lw(tt);                             \
+    t2=(BN_ULONG)Hw(tt);                             \
+    c0=(c0+t1)&BN_MASK2;                             \
+    if ((c0 < t1) && (((++t2)&BN_MASK2) == 0)) c2++; \
+    c1=(c1+t2)&BN_MASK2; if ((c1) < t2) c2++;
+\end{lstlisting}
+    \vspace*{-6pt}
+    \caption{Macro \textsf{sqr\_add\_c2} in OpenSSL 0.9.7}
+    \label{fig:old_sqr2}
+    \vspace*{-8pt}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}[xleftmargin=.02\textwidth,xrightmargin=.01\textwidth]
+# define mul_add_c2(a,b,c0,c1,c2)      do { \
+    BN_ULONG ta = (a), tb = (b);            \
+    BN_ULONG lo, hi, tt;                    \
+    BN_UMULT_LOHI(lo,hi,ta,tb);             \
+    c0 += lo; tt = hi+((c0<lo)?1:0);        \
+    c1 += tt; c2 += (c1<tt)?1:0;            \
+    c0 += lo; hi += (c0<lo)?1:0;            \
+    c1 += hi; c2 += (c1<hi)?1:0;            \
+    } while(0)
+\end{lstlisting}
+    \vspace*{-6pt}
+    \caption{Macro \textsf{sqr\_add\_c2} in OpenSSL 1.1.1}
+    \label{fig:new_sqr2}
+    \vspace*{-10pt}
+\end{figure}
+
 
 \subsubsection{Monocypher}\label{eval:mono}
 Monocypher is a small, easy to use cryptographic library with
@@ -1001,8 +1099,4 @@ caused by the imprecise memory model during our evaluation.
 Sampling introduces imprecision but with a probabilistic guarantee.
 However, during the evaluation, we find that \tool{} cannot estimate
 the amount of leakage for some leakage sites in a reasonable time,
-which means the number of $K^o$ is very small. According to Definition~\ref{def},
-it means the leakage is very severe. The sampling method in \S\ref{sec:scala} seems
-simple and may miss some leakages (e.g., chosen ciphertext attacks) in theory.
-However, the evaluation result
-shows \tool{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.
+which means the number of $K^o$ is very small. According to Definition~\ref{def}, it means the leakage is very severe. 
