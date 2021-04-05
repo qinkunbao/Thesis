@@ -61,6 +61,7 @@ There is a vast number of studies\cite{yarom2017cachebleed,191010,184415,Osvik20
     \centering
     \caption{This table shows some common vulnerable points in cryptography implementations and the corresponding protections.}
     \label{chapter2:table:crypto}
+    \resizebox{\columnwidth}{!}{%
 
         \begin{tabular}{lll}
             \toprule
@@ -71,11 +72,12 @@ There is a vast number of studies\cite{yarom2017cachebleed,191010,184415,Osvik20
             RSA & CRT optimization & Verifying the consistency with the public key\\
             & Modular exponentiation& Montgomery modular multiplication\\
             & & Base blinding and exponent blinding\\
-            (EC)DSA & Scalar multiplication& Constant time implementation\\
-            &Modular inversion &\\
+            (EC)DSA & Scalar multiplication& Constant time scalar implementation\\
+            &Modular inversion & Blinding\\
             &Modular reduction &\\
             \bottomrule
         \end{tabular}
+        }
 \end{table}
 
 The first side-channel attack of cryptography libraries can be traced back to Kocher's timing attacks~\cite{kocher1996timing} in 1996. It exploits the the simple modular exponentiation algorithm function in many algorithms (Diffie-Helloman, RSA) implementations. The function does not run in a fixed time. By measuring the time differences between the modular exponentiation algorithm computes the exponent bits (0 or 1), Kocher's attack can recover the whole secret key bit by bit. Since then, researchers start to break all kinds of cipher implementation through side-channel attacks.  Table~\ref{chapter2:table:crypto} summarizes some common vulnerable points in cryptography library implementations.  Note that Cryptography libraries usually have several implementations for some symmetric ciphers.
