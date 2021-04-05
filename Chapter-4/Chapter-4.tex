@@ -825,7 +825,7 @@ Our current implementation supports most Intel 32-bit instructions that are esse
     \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks),
         Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
         The number of instructions\,(\# Instructions), Symbolic Execution\,(SE) and Monte Carlo\,(MC) time.
-    }\label{table:over_result}
+    }\label{chapter4:table:over_result}
 
     %    \resizebox{1.9\columnwidth}{!}{
     \begin{threeparttable}
@@ -894,6 +894,38 @@ Our current implementation supports most Intel 32-bit instructions that are esse
 \end{table}
 
 \subsection{Overview}
+In this section, we evaluate \tool{} on a series of popular crypto libraries.
+In particular, we are interested in following aspects:
+\begin{itemize}
+\item Can \tool{} precisely report the number of leaked bits in crypto
+          libraries? 
+\item Are the numbers of leaked bits reported by \tool{} useful
+          to justify the severity levels of the side-channel vulnerabilities?
+\end{itemize}
+
+Our testbed is comprised of several popular cryptography libraries. We choose them based
+on the following aspects. First, they should be widely used in many popular software.
+In general, it is hard to implement a secure cryptography library from scratch. So most
+software only use a few number of different cryptography libraries. Second, we choose some
+libraries which are well studied in the previous work. We can refer to those conslusions to
+verify our results. Based on the two requirements, we evaluate \tool{} on the following libraries:
+OpenSSL, Libgcrypt, mbedTLS, Monocypher. OpenSSL, Libgcrypt, and mebdTLS are the most widely used
+cryptography libraries. OpenSSL and mbedTLS have been widely studied in the previous research.
+Monocyper is designed to be side-channel resistant. We use the library to test if our tool has any
+false positives. Besides, we also test \tool{} on some simple countermeasure implementations. 
+
+We write simple encryption and decryption function with the above libraries. After that, we build
+the source code into 32-bit binary executions. The configuration of our experiment is shown as
+\begin{itemize}
+\end{itemize}
+follows.
+\begin{itemize}
+\item CPU: 2.90GHz Intel Xeon(R) E5-2690 CPU
+\item Memory: 128 GB
+\item OS: Ubuntu 18.04 LTS
+\item Compiler: GCC 7.5
+\end{itemize}
+
 
 \subsection{Case Studies}
 
