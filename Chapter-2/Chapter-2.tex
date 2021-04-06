@@ -103,7 +103,7 @@ Contrary to the trace comparison, the method is quite precise. Moreover, it can 
 
 \begin{itemize}
     \item Many tools can only analyze the source code or the intermediate representation level. However, side-channel are low-level problems in general.  Most existing tools are research prototype or are implemented based on the research prototype. For some projects, the tool is only implemented to handle the benchmark in their papers properly. 
-    \item Today's solvers can not handle some complicated constraints, especially the conjunction of those constraints. Recent studies show existing solvers have bugs when it deals with floating pointer calculations.
+    \item Those tools heavily rely on SMT solvers. Despite SMT solvers have made incredible progress in terms of the performance, SMT solving is still the main bottlenecks of the many frameworks. SMT solvers are not good at non-linear arithmetic. However, such non-linear arithmetics are quite common in some cryptography algorithms.  Recent studies show existing solvers still have plenty of bugs when it deals with real number calculations. Those calculations are also common in media libraries and machine learning applications.
 \end{itemize}
 
 According to Table~\ref{table:side_channel_detection_tool}, some methods may choose to analyze the source code or the intermediate representations of the vulnerable software. However, it still cannot solve the problem. First, many widely-used libraries (e.g., Intel MKL) do not open the source code. Second, some libraries use hand code assembly code to pursue the maximum performance. CacheAudit~\cite{182946} uses abstract domains to compute an
