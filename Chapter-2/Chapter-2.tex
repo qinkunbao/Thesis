@@ -168,11 +168,16 @@ control-flows~\cite{Coppens:2009:PMT:1607723.1608124}.
 \section{Quantification}
 Proposed by Denning~\cite{robling1982cryptography} and Gray~\cite{gray1992toward},
 Quantitative Information Flow (QIF) aims at providing an estimation of the amount of leaked information from the sensitive information given the public output. If zero bits
-of the information are leaked, the program is called non-interference. McCamant
-and Ernst~\cite{McCamantE2008} quantify the information leakage as the network
-flow capacity. Backes et al.~\cite{5207642} propose an automated method for QIF
-by computing an equivalence relation on the set of input keys. But the approach
-cannot handle real-world programs with bitwise operations.
+of the information are leaked, the program is called non-interference. 
+McCamant and Ernst~\cite{McCamantE2008} quantify the information leakage as the network
+flow capacity. They model the possible information leakage as a network of limited-capacity
+channel. After that, they use the maximum rate of the channel to represent the amount of 
+secret information that the execution can reveal.
+Backes et al.~\cite{5207642} propose an automated method for QIF
+by computing an equivalence relation on the set of input keys. However,
+the evaluation shows the approach only works on small programs.
+Besides, their approach cannot handle programs with bitwise operations.
+However, such bitwise operations are quite common in cryptographic libraries.
 Phan et al.~\cite{Phan:2012:SQI:2382756.2382791} propose symbolic QIF. The goal of their
 work is to ensure a program is non-interference. They adopt an over
 approximation method to estimate the total information leakage and their method
@@ -185,10 +190,10 @@ behavior and estimates the amount of leaked information based on cache miss/hit.
 Their approach only scale to small programs, which limits its usage in
 real-world applications. On the contrary, \tool{} assesses the sensitive level
 of side-channels with different granularities. It can also analyze side-channels
-in real-world crypto libraries.
+in real-world cryptographic libraries.
 
 Model counting refers to the problem of computing the number of
-models for a propositional formula (\#SAT). There are two approaches to
+solutions for a propositional formula (\#SAT). There are two approaches to
 solving the problem, exact model counting and approximate model
 counting. We focus on approximate model counting since it is our approach. Wei and Selman~\cite{wei2005new} introduce
 ApproxCount, a local search based method using Markov Chain Monte
@@ -196,11 +201,7 @@ Carlo (MCMC). ApproxCount has the better scalability than
 exact model counters. Other approximate model counter includes
 SampleCount~\cite{gomes2007sampling},
 Mbound~\cite{gomes2006model}, and MiniCount~\cite{kroc2008leveraging}.
-Unlike ApproxCount,
-these model counters can give lower or upper bounds with guarantees.
+Unlike ApproxCount, these model counters can give lower or upper bounds with guarantees.
 Despite the rapid development of model counters for SAT and some
-research~\cite{chistikov2017approximate,phan2015model} on Modulo Theories model counting (\#SMT),
-they cannot be directly applied to
-side channel leakage quantification.
-ApproxFlow~\cite{biondi2018scalable} uses ApproxMC~\cite{chakraborty2016algorithmic} for information flow quantification,
-but it has only been tested with small programs.
+research~\cite{chistikov2017approximate,phan2015model} on Modulo Theories model counting (\#SMT), they cannot be directly applied to side channel leakage quantification.
+ApproxFlow~\cite{biondi2018scalable} uses ApproxMC~\cite{chakraborty2016algorithmic} for information flow quantification, but it has only been tested with small programs.
