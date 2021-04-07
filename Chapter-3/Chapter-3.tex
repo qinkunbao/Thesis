@@ -623,8 +623,7 @@ leakages in RSA occur in the big number implementation. We also find the newer
 versions of RSA in OpenSSL tend to have fewer leakages detected by \tool{}. 
 
 Even for the up-to-date version of OpenSSL, \tool{} still find several
-side-channel leakages. Shown in Figure~\ref{fig:unknown_leakage}.
-It is a secret-dependent control flow transfers. 
+side-channel leakages. Figure~\ref{chapter3:fig:unknown_leakage} shows an unknown leakage site in OpenSSL 1.1.1. It is a secret-dependent control flow transfers. 
 However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer.
 
 \begin{figure}[h]
@@ -647,7 +646,7 @@ while (!BN_is_bit_set(B, shift)) { /* note that 0 < B */
              function \textsf{BN\_rshift1}. Each time function \textsf{BN\_rshift1}
              will shift \textbf{X} right by one and places the result in \textbf{X}. Therefore,
              an attacker can infer multiple bits of \textbf{X} by observing the branch at line 3.}
-    \label{fig:unknown_leakage}
+    \label{chapter3:fig:unknown_leakage}
 \end{figure}
 
 
