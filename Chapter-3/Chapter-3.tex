@@ -614,7 +614,7 @@ assess the severity level of the vulnerability.
 Our tool confirms that both implementations in OpenSSL and mbedTLS have side-channel leakages
 sites. Moreover, we find that all the leakages belong to the secret-dependent data accesses. The reference implementation of AES uses four lookup tables to speed up the computation. However, such implementation are vulnerable to side-channel attacks. Previous work has shown an end-to-end attack to fully recover the key. Our findings is similar to the previous work. We also notice that later version of OpenSSL (after 1.0.1) uses a modified version with smaller S-table. However, \tool{} also find the leakage sites in the version. Recent work also finds the sites through theoretical analysis.
 
-\subsection{RSA}
+\subsubsection{RSA}
 We also evaluates our tool on the RSA implementations. With the optimizations
 introduced in the previous section, we do not apply any domain knowledge to
 simplify the analysis. Therefore, our tools can identify all the leakage sites
