@@ -198,8 +198,9 @@ solving the problem, exact model counting and approximate model
 counting. Exact model counting for propositional formulas (\#SAT) should determine
 the number of solutions. Intuitively, such model counter should traverse the whole
 search space to find all the satisfying solutions. Consequently, exact model counter is 
- very slow. Those model counters have difficulty scaling up to real-world programs.
-We focus on approximate model counting since it is our approach. Wei and Selman~\cite{wei2005new} introduce
+very slow. Those model counters have difficulty scaling up to real-world programs.
+On the other hand, approximate model counter is much faster compared with the exact 
+model counter. The related work focus on approximate model counting since it is close to our approach. Wei and Selman~\cite{wei2005new} introduce
 ApproxCount, a local search based method using Markov Chain Monte
 Carlo (MCMC). ApproxCount has the better scalability than
 exact model counters. Other approximate model counter includes
@@ -207,5 +208,5 @@ SampleCount~\cite{gomes2007sampling},
 Mbound~\cite{gomes2006model}, and MiniCount~\cite{kroc2008leveraging}.
 Unlike ApproxCount, these model counters can give lower or upper bounds with guarantees.
 Despite the rapid development of model counters for SAT and some
-research~\cite{chistikov2017approximate,phan2015model} on Modulo Theories model counting (\#SMT), existing tools cannot be directly applied to side channel leakage quantification.
+research~\cite{chistikov2017approximate,phan2015model}, existing tools cannot be directly applied to side channel leakage quantification for the following two reasons.
 ApproxFlow~\cite{biondi2018scalable} uses ApproxMC~\cite{chakraborty2016algorithmic} for information flow quantification, but it has only been tested with small programs.
