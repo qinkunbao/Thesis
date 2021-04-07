@@ -623,7 +623,8 @@ leakages in RSA occur in the big number implementation. We also find the newer
 versions of RSA in OpenSSL tend to have fewer leakages detected by \tool{}. 
 
 Even for the up-to-date version of OpenSSL, \tool{} still find several
-side-channel leakages. It is a secret-dependent control flow transfers. 
+side-channel leakages. Shown in Figure~\ref{fig:unknown_leakage}.
+It is a secret-dependent control flow transfers. 
 However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer.
 
 \begin{figure}[h]
@@ -641,17 +642,25 @@ while (!BN_is_bit_set(B, shift)) { /* note that 0 < B */
     ...
 }
 \end{lstlisting}
-    \vspace*{-6pt}
     \caption{Unknown sensitive secret-dependent branch leaks from function 
-             \textsf{int\_bn\_mod\_inverse} in OpenSSL 1.1.1. Same as the example
-             in \S\ref{appendix:minor:vul}, the code can leak the last digit from
-             big number \textbf{X}. However, the leak is more severe because of the 
+             \textsf{int\_bn\_mod\_inverse} in OpenSSL 1.1.1. The function can leak the last digit from big number \textbf{X}. However, the leak is more severe because of the 
              function \textsf{BN\_rshift1}. Each time function \textsf{BN\_rshift1}
              will shift \textbf{X} right by one and places the result in \textbf{X}. Therefore,
              an attacker can infer multiple bits of \textbf{X} by observing the branch at line 3.}
-    \label{fig:unknown}
-    \vspace*{-6pt}
+    \label{fig:unknown_leakage}
 \end{figure}
+
+
+\subsubsection{Monocypher}\label{eval:mono}
+Monocypher is a small, easy to use cryptographic library with
+performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}.
+We choose four ciphers that are
+designed to be side-channel resistant from the library.
+Because those ciphers have no
+data flow from secrets to branch conditions and load addresses.
+Monocypher should be safe under our threat models.
+We analyze those ciphers with \tool{}, and it reports no leaks.
+This indicates that \tool{} is effective for validating countermeasures.
 
 \section{Discussion}
 

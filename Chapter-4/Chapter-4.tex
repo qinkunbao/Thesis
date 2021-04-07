@@ -1135,16 +1135,6 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
 \end{figure}
 
 
-\subsubsection{Monocypher}\label{eval:mono}
-Monocypher is a small, easy to use cryptographic library with
-performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}.
-We choose four ciphers that are
-designed to be side-channel resistant from the library.
-Because those ciphers have no
-data flow from secrets to branch conditions and load addresses.
-Monocypher should be safe under our threat models.
-We analyze those ciphers with \tool{}, and it reports no leaks.
-This indicates that \tool{} is effective for validating countermeasures.
 
 \subsection{Analysis of Software Countermeasures}\label{sec:eval_countermeasures}
 \subsubsection{Bit-slicing}
