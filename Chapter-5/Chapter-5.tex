@@ -129,6 +129,7 @@ In reality, noiseless loss channel is more common. We define the channel is nois
 
 Figure~\ref{fig:channel}b  shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
 
+\subsection{Chi-squared Test}
 
 
 \subsection{Threat Model and Math Notation}
@@ -311,6 +312,8 @@ There are some possible solutions that can assign the value.
 
 We propose to combine both the information from the source code and the runtime to align the memory access during the execution. At the point the memory is allocated, we use the tuple $(start\ address, length)$ to represent the buffer. In the following execution, we check if any memory access falls into the range of those tuples. If so, we add the memory access into the tuple. After the execution, the tuple can be mapped into the location of the source code and we only compare the memory access that belongs to the same lines in the source code.
 
+\section{Multiple Leakages Sites}
+
 \section{Design}
 In this section, we explain the implementation of \tool{}.
 we first present the overview of \tool{}. After that, we discuss some design details to implement \tool{}.
@@ -462,9 +465,13 @@ k8  00
 \section{Implementation}
 We have implemented a prototype of \tool{}. It takes an input of ELF binary as well as the source code of the corresponding problem. The front-end of \tool{} is implemented in Python. It can generate random inputs and test the program with those inputs many times.  The address record part is implemented as an Intel Pin tool plugin in C++ to record the bitmap for each input. The main component uses libelfin, an open source library to parse ELF binaries and read DWARF debug information. The current implementation can support both 64-bits and 32-bits ELF binary in Linux. \tool{} will be open-sourced.
 
+\section{Evaluation}
+
+
+
 \section{Discussion}
 
-This paper presents an approach that tries to give the conservative estimate of the amount of leaked information by address-based side-channel attacks. Those attacks exploit the data-flow from secrets to load address and the data-flow from the data-flow from secrets to branch conditions to retrieve secrets based on the observation on the memory accesses. Despite those kinds of side-channel leakages have been discovered for decades, the up-to-date software still has some side channel leakages. For some of those vulnerabilities, developers don't fix them because they think those side-channel vulnerabilities are not important. To show the importance of those side-channel leakages, one way is to demonstrate an end-to-end attack based on the vulnerability. However, demonstrating an end-to-end attack often need a lots of manual efforts and the domain knowledge of the victim program, which is not often the case in practices. It is good to have a tool that can assess the severity level of those side channel leakages automatically. So it would be better to have a proper metric to quantify the side-channel leakage. However, we find previous side-channel quantification tools are developed to  ensure the noninterference of the program. They use over approximation heuristics method to quantify the leakage. For example, CacheAudit estimate that a 128-bit AES encryption can leaks more than 128 bits. As a result, even those tool reports severe leakage, it does not mean the program has a truly severe leakage.
+This paper presents an approach that tries to give the conservative estimate of the amount of leaked information by address-based side-channel attacks. Those attacks exploit the data-flow from secrets to load address and the data-flow from the data-flow from secrets to branch conditions to retrieve secrets based on the observation on the memory accesses. Despite those kinds of side-channel leakages have been discovered for decades, the up-to-date software still has some side channel leakages. For some of those vulnerabilities, developers don't fix them because they think those side-channel vulnerabilities are not important. To show the importance of those side-channel leakages, one way is to demonstrate an end-to-end attack based on the vulnerability. However, demonstrating an end-to-end attack often need a lots of manual efforts and the domain knowledge of the victim program, which is not often the case in practices. It is good to have a tool that can assess the severity level of those side channel leakages automatically. So it would be better to have a proper metric to quantify the side-channel leakage. However, we find previous side-channel quantification tools are developed to  ensure the noninterference of the program. They use over approximation heuristics method to quantify the leakage. For example, CacheAudit estimates that a 128-bit AES encryption can leaks more than 128 bits. As a result, even those tool reports severe leakage, it does not mean the program has a truly severe leakage.
 
 Our tool can give the conservative estimation of the side-channel leakage based on Channel Capacity. The channel capacity measures  the information flow between the source and the destination. One useful characteristic of channel capacity is not affected by the distribution of the input, which is useful because in practice we can not have an assumption on the input secrets of the software. In the paper, we use the sampling result to over approximate the true value of the channel capacity. We prove the sampling method presented in the paper can only give the conservative estimation of the amount of the true leakage.
 
@@ -488,3 +495,4 @@ int foo(uint8_t secret){
   \caption{A code fragment}
   \label{fig:limitation}
 \end{figure}
+
