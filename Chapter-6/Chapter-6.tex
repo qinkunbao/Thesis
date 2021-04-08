@@ -1,4 +1,8 @@
 \chapter{Conclusion and Future Work}\label{chapter6}
 This dissertation research studies the address-based side-channel leakages in two aspects: detection and quantification. In the side-channel vulnerability detection research, we explore and solve the two bottlenecks in today's automated side-channel vulnerability detection tool, performance and precision. In the side-channel vulnerability quantification research, we propose two different side-channel leakage quantification tools based on information theory. 
 
-In Chapter~\ref{chapter3}, we present the first technique \detect{}.
+In Chapter~\ref{chapter3}, we present a practical address-based side-channel detection tool, \detect{}, that is capable of detecting 
+
+In Chapter~\ref{chapter4}, we present a novel method to quantify address-based side-channel leakage. We implement the method in a prototype called \tool{} and show its effectiveness in finding and quantifying side-channel leakage. With the new definition of information leakage that models actual side-channel attackers, quantifying the number of leaked bits helps understand the severity level of side-channel vulnerabilities. The evaluation confirms that \tool{} is useful in estimating the amount of leaked information in real-world applications.
+
+In Chapter~\ref{chapter5}, we propose a fuzzing method to automatically detect and quantify the address-based side-channel leakages automatically. The proposed method can produce the conservative estimation of the side-channel leakage of the deterministic program. As a result, any severe leakage reported by \ctool{} is the true severe leakage. Our evaluation result on both several libraries and benchmarks show that \ctool{} is effective and accurate in detecting the side-channel leakage.

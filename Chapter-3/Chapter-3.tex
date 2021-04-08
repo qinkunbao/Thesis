@@ -421,12 +421,12 @@ $$F(\vec{K}) >> L = Addr1 >> L$$
 $L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6.
 
 \subsubsection{Information Flow Check}
-\tool{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing the bug, we also track the information flow for each byte of the input
+\detect{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing the bug, we also track the information flow for each byte of the input
 buffer.
 The step can be seen as the multiple-tag taint analysis. With the help of the information from symbolic execution, we can implement a relatively simple but relatively precise information flow track.
-At the beginning of the analysis, \tool{} keep a track for each byte in
-the original buffer. When \tool{} symbolically executes each instruction in the trace, it will check every value read from registers or memory. If the value is concrete, it means the instruction has nothing to do with the original buffer.
-If the value is a formula, it means the original information passes through the instruction. Since each byte in the sensitive buffer is represented as a symbol with a unique ID, \tool{} can know which byte in the origin buffer goes through the instruction.
+At the beginning of the analysis, \detect{} keep a track for each byte in
+the original buffer. When \detect{} symbolically executes each instruction in the trace, it will check every value read from registers or memory. If the value is concrete, it means the instruction has nothing to do with the original buffer.
+If the value is a formula, it means the original information passes through the instruction. Since each byte in the sensitive buffer is represented as a symbol with a unique ID, \detect{} can know which byte in the origin buffer goes through the instruction.
 
 \section{Evaluation}
 We evaluate our method on real-world crypto libraries, which include  OpenSSL, mbedTLS, Libgcrypt and Monocypher\@. OpenSSL is the most commonly used crypto libraries in today's software. mbedTLS\@ (previous known as PolarSSL) is designed to be easy to understand and fit on embedded devices. We also evaluate Monocypher, a new cryptographic library that resists to most side-channel attacks.
@@ -459,7 +459,7 @@ RAM. We run the experiments simultaneously, but the execution time is calculated
 During our evaluation process, we are interested in the following
 aspects:
 \begin{enumerate}
-    \item Is \tool{} effective to detect side-channels in real-world crypto systems? (Effectiveness)
+    \item Is \detect{} effective to detect side-channels in real-world crypto systems? (Effectiveness)
     \item How much performance overhead does the method introduce? (Performance)
     \item How effective are the design choices made by the tool method? (Design Choices)
 \end{enumerate}
@@ -521,7 +521,7 @@ aspects:
   \end{tabular}
 \end{table*}
 Table~\ref{table:over_result} summarizes the results.
-\tool{} finds 913 leaks in the crypto libraries.
+\detect{} finds 913 leaks in the crypto libraries.
 Among these 913 leaks, 241 are due to secret-dependent
 control-flow transfers and 672 are due to secret-dependent data accesses.
 
@@ -538,15 +538,15 @@ finish all the analysis in less than 6 hours.
 \subsection{Comparison with the Existing Tools}
 \label{eval:scala}
 
-In this section, we compare \tool{} with the
+In this section, we compare \detect{} with the
 existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the data in the paper. As other tools do not quantify leakage sites, we only include the time of detecting vulnerabilities to perform a fair comparison.
 
 The comparison result with CacheD~\cite{203878} is shown in Table~\ref{eval:cacheD}.
 Note that one statement in the source code can be compiled into several machine instructions. So it is possible that one statement can have multiple leakage points. Under the circumstance, we think it is only a leakage.
-We have confirmed that \tool{} can identify all the secret-dependent data access vulnerabilities reported by CacheD. In addition, \tool{} finds many new ones.
+We have confirmed that \detect{} can identify all the secret-dependent data access vulnerabilities reported by CacheD. In addition, \detect{} finds many new ones.
 CacheD fails to detect some vulnerabilities for two
 reasons. First, CacheD can only detect secret-dependent data access
-vulnerabilities. \tool{} can detect secret-dependent control-flows as well.
+vulnerabilities. \detect{} can detect secret-dependent control-flows as well.
 Second, according to the CacheD paper, CacheD times out after 20 hours to process
 asymmetric ciphers. CacheD applies some domain knowledge to simplify and speed up
 the analysis.
@@ -556,9 +556,9 @@ Third, CacheD only symbolizes the encryption keys. Some side-channel leakages wh
 leakages as we have discussion the previous sections.
 We notice that the number of instructions in those traces are different due to the different analysis starting functions and building options during the evaluation.
 Table~\ref{eval:cacheD} shows that
-\tool{} is faster than CacheD. \tool{} is much faster than CacheD when analyzing the same
-number of instructions. For example, when we test~\tool{} on AES from OpenSSL
-0.9.7, \tool{} is over 100x faster than CacheD.
+\detect{} is faster than CacheD. \detect{} is much faster than CacheD when analyzing the same
+number of instructions. For example, when we test~\detect{} on AES from OpenSSL
+0.9.7, \detect{} is over 100x faster than CacheD.
 \begin{table*}[]
  \centering
   \caption{Comparison with CacheD: Time,
@@ -587,32 +587,32 @@ the test program under \emph{various secret inputs}. According to
 the original DATA paper, it uses 443 different traces to analyze the
 side-channel vulnerabilities in symmetric cyphers and 450 different
 traces to analyze the side-channel vulnerabilities in asymmetric
-cyphers. On the other hand, \tool{} detects side-channel
-vulnerabilities from one execution trace. \tool{} uses symbolic
+cyphers. On the other hand, \detect{} detects side-channel
+vulnerabilities from one execution trace. \detect{} uses symbolic
 analysis to extract formulas that model each side-channel
 leakage. After that, we sample the formula with \emph{various
   secret inputs} to detect and quantify each leakage site. In
-theory, DATA might have better code coverage than \tool{} because it
-uses more execution traces,  but \tool{} has the following
-advantages. a) \tool{} is faster than DATA. For example, it takes
-116 minutes for DATA to detect vulnerabilities in the RSA implementation in OpenSSL 1.1.0f\@. \tool{} only spends 34 minutes, as shown in Table~\ref{table:over_result}. It takes 13 minutes and 20 minutes
+theory, DATA might have better code coverage than \detect{} because it
+uses more execution traces,  but \detect{} has the following
+advantages. a) \detect{} is faster than DATA. For example, it takes
+116 minutes for DATA to detect vulnerabilities in the RSA implementation in OpenSSL 1.1.0f\@. \detect{} only spends 34 minutes, as shown in Table~\ref{table:over_result}. It takes 13 minutes and 20 minutes
 for DATA to analyze the side-channel leakages in AES and DES,
-respectively. On the other hand, \tool{} finishes its analysis in
+respectively. On the other hand, \detect{} finishes its analysis in
 less than ten seconds while finding all the leakages reported by
-DATA. b) Because \tool{} does not run the test program again when wedinghao w
-have a new \emph{secret input}, \tool{} can test more input secrets
+DATA. b) Because \detect{} does not run the test program again when wedinghao w
+have a new \emph{secret input}, \detect{} can test more input secrets
 on those formulas within the same time to achieve better precision.
 c) DATA tries to use leakage models (domain knowledge) to classify each leakage.
 The strength of Abacus is that it does not need such domain knowledge.
 DATA reports 278 control-flow and 460 memory-access leaks for the RSA implementation in OpenSSL 1.1.0f. Among those leakages, they find one new vulnerability in RSA after some manual analysis.
-\tool{} finds the vulnerability.  For each leakage site, \tool{} can provide
+\detect{} finds the vulnerability.  For each leakage site, \detect{} can provide
 concrete examples to trigger the issue and give an estimation to
 assess the severity level of the vulnerability.
 
 \subsection{Case Studies}
 \subsubsection{DES and AES}
 Our tool confirms that both implementations in OpenSSL and mbedTLS have side-channel leakages
-sites. Moreover, we find that all the leakages belong to the secret-dependent data accesses. The reference implementation of AES uses four lookup tables to speed up the computation. However, such implementation are vulnerable to side-channel attacks. Previous work has shown an end-to-end attack to fully recover the key. Our findings is similar to the previous work. We also notice that later version of OpenSSL (after 1.0.1) uses a modified version with smaller S-table. However, \tool{} also find the leakage sites in the version. Recent work also finds the sites through theoretical analysis.
+sites. Moreover, we find that all the leakages belong to the secret-dependent data accesses. The reference implementation of AES uses four lookup tables to speed up the computation. However, such implementation are vulnerable to side-channel attacks. Previous work has shown an end-to-end attack to fully recover the key. Our findings is similar to the previous work. We also notice that later version of OpenSSL (after 1.0.1) uses a modified version with smaller S-table. However, \detect{} also find the leakage sites in the version. Recent work also finds the sites through theoretical analysis.
 
 \subsubsection{RSA}
 We also evaluates our tool on the RSA implementations. With the optimizations
@@ -620,9 +620,9 @@ introduced in the previous section, we do not apply any domain knowledge to
 simplify the analysis. Therefore, our tools can identify all the leakage sites
 reported by CacheD~\cite{203878} in a shorter time. Our tool finds that most
 leakages in RSA occur in the big number implementation. We also find the newer
-versions of RSA in OpenSSL tend to have fewer leakages detected by \tool{}. 
+versions of RSA in OpenSSL tend to have fewer leakages detected by \detect{}. 
 
-Even for the up-to-date version of OpenSSL, \tool{} still find several
+Even for the up-to-date version of OpenSSL, \detect{} still find several
 side-channel leakages. Figure~\ref{chapter3:fig:unknown_leakage} shows an unknown leakage site in OpenSSL 1.1.1. It is a secret-dependent control flow transfers. 
 However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer.
 
@@ -658,12 +658,12 @@ designed to be side-channel resistant from the library.
 Because those ciphers have no
 data flow from secrets to branch conditions and load addresses.
 Monocypher should be safe under our threat models.
-We analyze those ciphers with \tool{}, and it reports no leaks.
-This indicates that \tool{} is effective for validating countermeasures.
+We analyze those ciphers with \detect{}, and it reports no leaks.
+This indicates that \detect{} is effective for validating countermeasures.
 
 \section{Discussion}
 
 
-\tool{} works on native x86 execution traces. The design, which is very precise in terms of true leakages compared to other static source code method~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, also has the common limitations of dynamic approaches. \tool{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may neglect some side-channel vulnerabilities not covered by the traces analyzed.However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage for various inputs. Our evaluation also confirms the above point. For symmetric encryption, during our evaluation there is no secret-dependent control-flow transfers. RSA implementations have several secret-dependent control-flow transfers. Most of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
+\detect{} works on native x86 execution traces. The design, which is very precise in terms of true leakages compared to other static source code method~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, also has the common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may neglect some side-channel vulnerabilities not covered by the traces analyzed.However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage for various inputs. Our evaluation also confirms the above point. For symmetric encryption, during our evaluation there is no secret-dependent control-flow transfers. RSA implementations have several secret-dependent control-flow transfers. Most of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
 
-While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. For RSA, the latest OpenSSL only has one leakage site that can leak more than 3 bits while there are 22 leakage sites according to \tool{}. DES implementation of OpenSSL has several sensitive leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. The sampling method  seems simple and may miss some leakages in theory. However, the evaluation result shows \tool{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.
+While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. For RSA, the latest OpenSSL only has one leakage site that can leak more than 3 bits while there are 22 leakage sites according to \detect{}. DES implementation of OpenSSL has several sensitive leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. The sampling method  seems simple and may miss some leakages in theory. However, the evaluation result shows \detect{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.
