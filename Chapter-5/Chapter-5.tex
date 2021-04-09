@@ -64,7 +64,7 @@ $|K|$ represents the number of symbols in $K$.
 Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
 
 \begin{figure}
-  \begin{minipage}{0.48\linewidth}
+  \begin{minipage}{0.45\linewidth}
     \resizebox{\linewidth}{!}{
 
       \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
@@ -89,7 +89,7 @@ Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under t
     \caption*{(a) Noiseless Lossless}
   \end{minipage}
   \hfill
-  \begin{minipage}{0.48\linewidth}
+  \begin{minipage}{0.45\linewidth}
     \resizebox{\linewidth}{!}{
 
       \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
@@ -237,7 +237,7 @@ void bar(uint8_t secret)
 On the other hand, the second example also have a side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker can not uniquely determine the secret based on the observation of table $T$. For example. both $0$ and $4$ read the first the item of the table. Therefore, we think the vulnerability is slightly minor than the previous one. Here comes with the definition of the amount of leaked information of the vulnerability.
 
 \begin{mydef}
-  \label{def}
+  \label{chapter5:def}
   Suppose we have a program $\beta$ with the input set $K$. We randomly select $k_1, k_2, \dots, k_n \in K' \subseteq K$ as the input. We denote it as
   $$\beta(K') \rightarrow	O'$$
 
@@ -246,10 +246,10 @@ On the other hand, the second example also have a side-channel leakages at line 
 \end{mydef}
 
 
-With Definition~\ref{def}, we can calculate the information leakage in Figure~\ref{fig:example1} and Figure~\ref{fig:example2} respectively. In Figure~\ref{fig:example1}, we have $8$ kinds of observations and each observation is uniformly distributed. Therefore, the information leakage is $log_2{8} = 3$ bits. In Figure~\ref{fig:example2}, we have $4$ kinds of observations and each observation is also uniformly distributed. Therefore, the information leakage is $log_2{4} = 2$ bits. We test the program with $8$ inputs. Therefore, the Shannon entropy of the original K $H(K)$ is also $3\,\mathrm{bits}$, according to Equation~\ref{eq1}. Therefore, the leakage in Figure~\ref{fig:example1} show the leakage is leaked totally.
+With Definition~\ref{chapter5:def}, we can calculate the information leakage in Figure~\ref{fig:example1} and Figure~\ref{fig:example2} respectively. In Figure~\ref{fig:example1}, we have $8$ kinds of observations and each observation is uniformly distributed. Therefore, the information leakage is $log_2{8} = 3$ bits. In Figure~\ref{fig:example2}, we have $4$ kinds of observations and each observation is also uniformly distributed. Therefore, the information leakage is $log_2{4} = 2$ bits. We test the program with $8$ inputs. Therefore, the Shannon entropy of the original K $H(K)$ is also $3\,\mathrm{bits}$. According to Equation~\ref{chapter5:eq1}. the secret-dependent data accesses in Figure~\ref{fig:example1} can leak the sensitive information totally.
 
 \subsection{A Conservative Estimation}
-In this section, we prove Definition~\ref{def} is the conservative estimation of the amount of leaked information based on the channel capacity.
+In this section, we prove Definition~\ref{chapter5:def} is the conservative estimation of the amount of leaked information based on the channel capacity.
 
 \begin{theorem}\label{the1}
   If an attacker launches a side-channel attack on  deterministic programs, then the channel between the secret and the observation is a noiseless loss channel.
