@@ -54,14 +54,14 @@ Here $I(K;O)$ is the mutual information between $K$ and $O$.
 While the channel capacity in general situations is hard to compute, we consider two special channels.
 
 \subsubsection{Noiseless Lossless Channel}
-The channel of the system is noiseless and lossless if
+An information channel is noiseless and lossless if
 
-\begin{equation} \label{eq:1}
+\begin{equation} \label{chapter5:eq4}
   C(K;O) = \max_{p(k)} I(K;O) = \max_{p(k)} H|O| =\max_{p(k)} H|K|
 \end{equation}
 $|K|$ represents the number of symbols in $K$.
 
-Figure~\ref{fig:channel}a shows the example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
+Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
 
 \begin{figure}
   \begin{minipage}{0.48\linewidth}
@@ -124,7 +124,7 @@ In reality, noiseless loss channel is more common. We define the channel is nois
   C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O| = \log_2 {|O|}
 \end{equation}
 
-Figure~\ref{fig:channel}b  shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
+Figure~\ref{fig:channel}(b) shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
 
 \subsection{Chi-squared Test}
 
