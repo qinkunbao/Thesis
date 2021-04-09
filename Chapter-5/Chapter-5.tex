@@ -28,30 +28,30 @@ This paper makes the following contributions:
 \end{itemize}
 
 \section{Background and Threat Model}
-In the section, we give an overview of the background knowledge of information theory. Finally, we present the threat model of the paper.
+In the section, we give an overview of the background knowledge of information theory, and present the threat model of the paper.
 
 
 \subsection{Channel Capacity}
 Let $k$ be one of the possible
 value of $K$. The Shannon entropy $H(K)$ is defined as
-\begin{equation}\label{eq1}
+\begin{equation}\label{chapter5:eq1}
   H(K) = - \sum_{k {\in} K}p(k)\log_2(k)
 \end{equation}
 
-Shannon entropy can be used to quantify the initial uncertainty about the sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose every key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
+Shannon entropy can be used to quantify the initial uncertainty about the sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose each key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
 
 
-In the paper, we use the channel capacity to describe the information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
+In the paper, we use the channel capacity to describe the amount of information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
 
-\begin{equation}\label{eq2}
+\begin{equation}\label{chapter5:eq2}
   C(K;O) = \max_{p(x)} I(K;O)
 \end{equation}
 Here $I(K;O)$ is the mutual information between $K$ and $O$.
-\begin{equation} \label{eq3}
+\begin{equation} \label{chapter5:eq3}
   I(K;O) = \sum_{k {\in} K}{\sum_{o {\in} O}{p(k, o)\log_2\frac{p(k, o)}{p(k)p(o)}}}
 \end{equation}
 
-While the general case of channel capacity is hard to execute, we consider the two special channels.
+While the channel capacity in general situations is hard to compute, we consider two special channels.
 
 \subsubsection{Noiseless Lossless Channel}
 The channel of the system is noiseless and lossless if
@@ -476,7 +476,7 @@ In this section, we evaluate \tool{} on several small benchmarks and real-world 
 
 \textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default compilation settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. The server has many cores, but we do not use all cores during the evaluation. We sometimes run several experiments concurrently. The evaluation time presented in the following section is based on a single-core.
 
-\begin{table*}[h]
+\begin{sidewaystable}
 \footnotesize
 \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DA),The number of instructions\,(Program Size), Symbolic Execution\,(SE), and Monte Carlo\,(MC).}\label{table:over_result}
 \begin{tabular}{lrrrrrrrrrrrr}\toprule
@@ -499,7 +499,7 @@ Total             \\
 \end{tabular}
 
 
-\end{table*}
+\end{sidewaystable}
 
 \subsection{Overview}
 
