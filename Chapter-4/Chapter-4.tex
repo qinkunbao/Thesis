@@ -522,7 +522,7 @@ In this section, we present the algorithm to calculate the information leakage b
 For each leakage site, we model it with a constraint using the
 method presented in the previous section. Suppose the address of the leakage site is $\addr{i}$, we use $c_{\addr{i}}$ to denote the constraint that models its side-channel leakage. For multiple leakage sites, we take the conjunction of those constraints to represent those leakage sites.
 
-According to the Definition~\ref{def}, to calculate the amount of leaked
+According to the Definition~\ref{chapter4:def}, to calculate the amount of leaked
 information, the key is to calculate the cardinality
 of $K^o$. Suppose an attacker can observe $n$ leakage sites, and each leakage
 site has the following constraints: $c_{\addr{1}}, c_{\addr{2}}, \ldots,
@@ -754,7 +754,7 @@ $$ |\Delta p| \leq 1.96\sqrt{\frac{ \hat{p} (1- \hat{p} )}{n}}$$
 
 Since we use $L = \log_{2}p$ to estimate the amount of leaked information, we
 can have the following error propagation formula $\Delta L = \frac{\Delta
-        p}{p\ln2}$ by taking the derivative from Definition~\ref{def}. For \tool, we want the error of estimated leaked
+        p}{p\ln2}$ by taking the derivative from Definition~\ref{chapter4:def}. For \tool, we want the error of estimated leaked
 information ($\Delta L$) to be less than 1 bit. So we get $\frac{\Delta
         p}{p\ln2} \leq 1$. Therefore, as long as $ n \geq \frac{1.96^2(1-p)}{p(\ln2)^2}$, we have
 95\% confidence that the error of estimated leaked information is less than 1 bit.
@@ -1186,7 +1186,7 @@ has a range check on the password input and a secret-dependent table lookup whil
 
 \tool\ reports that there are control-flow and data access types of leakages
 in the non-bit-slicing implementation (line 6 and line 7 in Figure~\ref{fig:SBOX_da}). The number of leaked bits is
-5.0 and 4.4, respectively. At line 6, according to Definition~\ref{def}, the
+5.0 and 4.4, respectively. At line 6, according to Definition~\ref{chapter4:def}, the
 input set $K$ is $[0,2^8-1]$, the observed input set $K^o$ is $[0,2^3-1]$. Thus,
 the leakage $L_{\beta(k)\rightarrow o}$ based on the observation ($o$) is
 $L_{\beta(k)\rightarrow o} = \log_2{|K|} - \log_2{|K^o|} = 8-3 = 5$ bit, which
@@ -1304,11 +1304,11 @@ from several bytes in the original key. \tool{} can capture the dependency among
 reports more precise leakage information.
 
 \tool{} reaches full precision if the number of estimated leaked bits
-equals to Definition~\ref{def}.
+equals to Definition~\ref{chapter4:def}.
 \tool{} may lose precision from the
 memory model it uses in theory. However, we did not find false positives
 caused by the imprecise memory model during our evaluation.
 Sampling introduces imprecision but with a probabilistic guarantee.
 However, during the evaluation, we find that \tool{} cannot estimate
 the amount of leakage for some leakage sites in a reasonable time,
-which means the number of $K^o$ is very small. According to Definition~\ref{def}, it means the leakage is very severe. 
+which means the number of $K^o$ is very small. According to Definition~\ref{chapter4:def}, it means the leakage is very severe. 

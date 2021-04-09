@@ -120,7 +120,7 @@ Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under t
 \subsubsection{Noiseless Loss Channel}
 In reality, noiseless loss channel is more common. We define the channel is noiseless loss if
 
-\begin{equation} \label{eq:2}
+\begin{equation} \label{chapter:eq:5}
   C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O| = \log_2 {|O|}
 \end{equation}
 
@@ -193,7 +193,7 @@ void bar(uint8_t secret)
       \end{tabular}%
     }
   \end{minipage}
-  \caption{A Serious Leakage}\label{fig:example1}
+  \caption{A Serious Leakage}\label{chapter5:fig:example1}
 \end{figure}
 
 To assess the sensitive level of the vulnerability, we use the sampling method to estimate the leakage. Suppose we give the function input from $0, 1, \dots, 7$ and observe the array $T$, we can find each different input have one unique observation. Therefore, the secret can be uniquely determined.
@@ -232,7 +232,7 @@ void bar(uint8_t secret)
       \end{tabular}%
     }
   \end{minipage}
-  \caption{A Minor Leakage. }\label{fig:example2}
+  \caption{A Minor Leakage. }\label{chapter5:fig:example2}
 \end{figure}
 On the other hand, the second example also have a side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker can not uniquely determine the secret based on the observation of table $T$. For example. both $0$ and $4$ read the first the item of the table. Therefore, we think the vulnerability is slightly minor than the previous one. Here comes with the definition of the amount of leaked information of the vulnerability.
 
@@ -246,7 +246,7 @@ On the other hand, the second example also have a side-channel leakages at line 
 \end{mydef}
 
 
-With Definition~\ref{chapter5:def}, we can calculate the information leakage in Figure~\ref{fig:example1} and Figure~\ref{fig:example2} respectively. In Figure~\ref{fig:example1}, we have $8$ kinds of observations and each observation is uniformly distributed. Therefore, the information leakage is $log_2{8} = 3$ bits. In Figure~\ref{fig:example2}, we have $4$ kinds of observations and each observation is also uniformly distributed. Therefore, the information leakage is $log_2{4} = 2$ bits. We test the program with $8$ inputs. Therefore, the Shannon entropy of the original K $H(K)$ is also $3\,\mathrm{bits}$. According to Equation~\ref{chapter5:eq1}. the secret-dependent data accesses in Figure~\ref{fig:example1} can leak the sensitive information totally.
+With Definition~\ref{chapter5:def}, we can calculate the information leakage in Figure~\ref{chapter5:fig:example1} and Figure~\ref{chapter5:fig:example2} respectively. In Figure~\ref{chapter5:fig:example1}, we have $8$ kinds of observations and each observation is uniformly distributed. Therefore, the information leakage is $log_2{8} = 3$ bits. In Figure~\ref{chapter5:fig:example2}, we have $4$ kinds of observations and each observation is also uniformly distributed. Therefore, the information leakage is $log_2{4} = 2$ bits. We test the program with $8$ inputs. Therefore, the Shannon entropy of the original K $H(K)$ is also $3\,\mathrm{bits}$. According to Equation~\ref{chapter5:eq1}. the secret-dependent data accesses in Figure~\ref{chapter5:fig:example1} can leak the sensitive information totally.
 
 \subsection{A Conservative Estimation}
 In this section, we prove Definition~\ref{chapter5:def} is the conservative estimation of the amount of leaked information based on the channel capacity.
@@ -272,7 +272,7 @@ With THEOREM~\ref{the1}, we can have
   \max_{p(k)} H |O| >= \max_{p(k')} H |O'| >= H |O'|
 \end{align*}
 
-Accordingly, if Definition~\ref{chapter5:def} says the vulnerability leakage has $m$ bits of leakages, then the vulnerability can have at least $m$ bits of leakages. We can use the definition to detect those severe leakages. In the examples of Figure~\ref{fig:example1} and Figure~\ref{fig:example2}, because the input secret range from $0$ to $255$, we can calculate the precise value of the amount of information leakage by iterating each input keys. In Figure~\ref{fig:example1}, each item in the array could be read. Therefore, the channel capacity in Figure~\ref{fig:example1} is $\log_2{128} = \,7\, \mathrm{bits}$. In Figure~\ref{fig:example2}, there could be $4$ kinds of information, so the information leakages defined by channel capacity is $\log_2{4} = \,2\, \mathrm{bits}$. Compared with the result from Definition~\ref{chapter5:def}, we can see that the amount of leakages by Definition is a conservative estimation.
+Accordingly, if Definition~\ref{chapter5:def} says the vulnerability leakage has $m$ bits of leakages, then the vulnerability can have at least $m$ bits of leakages. We can use the definition to detect those severe leakages. In the examples of Figure~\ref{chapter5:fig:example1} and Figure~\ref{chapter5:fig:example2}, because the input secret range from $0$ to $255$, we can calculate the precise value of the amount of information leakage by iterating each input keys. In Figure~\ref{chapter5:fig:example1}, each item in the array could be read. Therefore, the channel capacity in Figure~\ref{chapter5:fig:example1} is $\log_2{128} = \,7\, \mathrm{bits}$. In Figure~\ref{chapter5:fig:example2}, there could be $4$ kinds of information, so the information leakages defined by channel capacity is $\log_2{4} = \,2\, \mathrm{bits}$. Compared with the result from Definition~\ref{chapter5:def}, we can see that the amount of leakages by Definition is a conservative estimation.
 
 \section{Align Address Access Across Multiple Executions}
 We compare address accesses of different executions generated by different inputs to quantify the amount of leakage information. A meaningful comparison requires we align executions across multiple runs before we quantify the leakage. In this work, we combine the information from both the source code and the binary executable to align the memory access during the execution.
@@ -319,12 +319,12 @@ In this section, we explain the implementation of \ctool{}.
 we first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
 
 \subsection{Overview}
-Figure~\ref{fig:workflow} shows an overview of our side-channel leakages quantification tool. Given the source code of the victim program, \ctool{} can find the address-based side-channel leakages by fuzzing the victim program. To assist the illustration, we divide the workflow of ~\ctool{} into three steps. For the first step, we build the target program from the source code. After that, we give them random inputs to the victim program and run the target program and record each of the address in the binary file is hit or not and store the information in a bitmap. Next, we analyze the side-channel leakage from the address access bitmap. We split the address space into several segments to speed up the comparison according to Meta information. Finally, \ctool{} Generate the final leakage report. For each leakage sites, \ctool{} gives the conservative estimation of the information leakage. Every leakage site in the report is a true leakage and there is no false positives.
+Figure~\ref{chapter5:fig:workflow} shows an overview of our side-channel leakages quantification tool. Given the source code of the victim program, \ctool{} can find the address-based side-channel leakages by fuzzing the victim program. To assist the illustration, we divide the workflow of ~\ctool{} into three steps. For the first step, we build the target program from the source code. After that, we give them random inputs to the victim program and run the target program and record each of the address in the binary file is hit or not and store the information in a bitmap. Next, we analyze the side-channel leakage from the address access bitmap. We split the address space into several segments to speed up the comparison according to Meta information. Finally, \ctool{} Generate the final leakage report. For each leakage sites, \ctool{} gives the conservative estimation of the information leakage. Every leakage site in the report is a true leakage and there is no false positives.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\columnwidth]{./figures/chapter5/workflow.pdf}
-  \caption{The workflow of \ctool{}. We try to divide the \ctool{} into three steps to assist the illustration. }\label{fig:workflow}
+  \caption{The workflow of \ctool{}. We try to divide the \ctool{} into three steps to assist the illustration. }\label{chapter5:fig:workflow}
 \end{figure}
 
 \subsection{Step 1: Fuzzing}
@@ -377,7 +377,7 @@ cache line     1   1   1   1   1   1   1   1    0 (No Leaks)
 \end{myexample}
 
 \subsubsection{Estimate The Leaked Information}
-According to Definition~\ref{def}, we quantify the information leakage based on the distribution of the observation. If we calculate the information leakage from an $4MB$ memory area, then the length of the byte-level bitmap is $4*1024*1024 = 4194304$. While it is possible to compute the distribution of the bitmap theoretically, it is hard to compare the bitmap of such length in practice.
+According to Definition~\ref{chapter5:def}, we quantify the information leakage based on the distribution of the observation. If we calculate the information leakage from an $4MB$ memory area, then the length of the byte-level bitmap is $4*1024*1024 = 4194304$. While it is possible to compute the distribution of the bitmap theoretically, it is hard to compare the bitmap of such length in practice.
 
 To solve the problem, we use the debug information to split the bitmap into several segments and map the leakage site into the location of the source code. Each segment maps the address access situation of the function in the source code. In our setting, the max length of the bitmap of each segment is $1024$, the length of \textsf{uint1024\_t}. So we can put the bitmap into a variable. The split operation ease the computation. But it also adds the limitation of max address range when we quantify the side-channel leakage shown in Table~\ref{tab:size_limitation}. We think the range of the memory is big enough for us to quantify the most of the cache side-channel attacks.
 
@@ -478,7 +478,7 @@ In this section, we evaluate \tool{} on several small benchmarks and real-world 
 
 \begin{sidewaystable}
 \footnotesize
-\caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DA),The number of instructions\,(Program Size), Symbolic Execution\,(SE), and Monte Carlo\,(MC).}\label{table:over_result}
+\caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DA),The number of instructions\,(Program Size), Symbolic Execution\,(SE), and Monte Carlo\,(MC).}\label{chapter5:table:over_result}
 \begin{tabular}{lrrrrrrrrrrrr}\toprule
 
 \textbf{Name}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{Output Leakage (bits)}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{2}{c}{\textbf{Performance}}    \\ 
