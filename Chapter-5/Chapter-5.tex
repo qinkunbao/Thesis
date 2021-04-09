@@ -466,12 +466,12 @@ k8  00
 We have implemented a prototype of \ctool{}. It takes an input of ELF binary as well as the source code of the corresponding problem. The front-end of \ctool{} is implemented in Python. It can generate random inputs and test the program with those inputs many times.  The address record part is implemented as an Intel Pin tool plugin in C++ to record the bitmap for each input. The main component uses libelfin, an open source library to parse ELF binaries and read DWARF debug information. The current implementation can support both 64-bits and 32-bits ELF binary in Linux. \ctool{} will be open-sourced.
 
 \section{Evaluation}
-In this section, we evaluate \tool{} on several small benchmarks and real-world software trying to answer the following questions:
+In this section, we evaluate \ctool{} on several small benchmarks and real-world software trying to answer the following questions:
 
 \begin{itemize}
-\item \textbf{Effectiveness:} Can \tool{} quantify the information leakage with an conservative estimation? If so, what is loss compared it with the real leakage?
-\item \textbf{Performance:} How much overhead can \tool{} produce?
-\item \textbf{Usage:} What is the real usage of \tool{}? Can \tool{} handle both Cryptography and Non-cryptography libraries? Can \tool{} help developers find and fix side-channel leakages?
+\item \textbf{Effectiveness:} Can \ctool{} quantify the information leakage with an conservative estimation? If so, what is the loss compared it with the real leakage?
+\item \textbf{Performance:} How much overhead can \ctool{} produce?
+\item \textbf{Usage:} What is the real usage of \ctool{}? Can \ctool{} handle both Cryptography and Non-cryptography libraries? Can \ctool{} help developers find and fix side-channel leakages?
 \end{itemize}
 
 \textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default compilation settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. The server has many cores, but we do not use all cores during the evaluation. We sometimes run several experiments concurrently. The evaluation time presented in the following section is based on a single-core.
@@ -479,6 +479,7 @@ In this section, we evaluate \tool{} on several small benchmarks and real-world 
 \begin{sidewaystable}
 \footnotesize
 \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DA),The number of instructions\,(Program Size), Symbolic Execution\,(SE), and Monte Carlo\,(MC).}\label{chapter5:table:over_result}
+\centering
 \begin{tabular}{lrrrrrrrrrrrr}\toprule
 
 \textbf{Name}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{Output Leakage (bits)}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{2}{c}{\textbf{Performance}}    \\ 
