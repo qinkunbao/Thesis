@@ -28,10 +28,7 @@ This paper makes the following contributions:
 \end{itemize}
 
 \section{Background and Threat Model}
-In the section, we first provide a brief introduction of the side-channel attacks that exploit the memory access patterns. After that, we give an overview of the background knowledge of information theory. Finally, we present the threat model of the paper.
-
-
-In this paper, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
+In the section, we give an overview of the background knowledge of information theory. Finally, we present the threat model of the paper.
 
 
 \subsection{Channel Capacity}
@@ -153,6 +150,9 @@ $K$, $M$, and $O$:
 
 
 Side-channel attacks can be seen as a process that refers the secret ($K$) based on the observations ($O$) shown in the figure~\ref{fig:side_channel}. As an attacker, he can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of paper, we use $\beta(K) \rightarrow O$ to denote a victim program with side-channel vulnerabilities.
+
+
+In this paper, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
 
 \section{Method}
 In this section, we first provide two examples shows how we rank the side-channel vulnerability. After that, we prove that our method is the conservative estimate of the amount of the each leakage.
@@ -466,7 +466,64 @@ k8  00
 We have implemented a prototype of \ctool{}. It takes an input of ELF binary as well as the source code of the corresponding problem. The front-end of \ctool{} is implemented in Python. It can generate random inputs and test the program with those inputs many times.  The address record part is implemented as an Intel Pin tool plugin in C++ to record the bitmap for each input. The main component uses libelfin, an open source library to parse ELF binaries and read DWARF debug information. The current implementation can support both 64-bits and 32-bits ELF binary in Linux. \ctool{} will be open-sourced.
 
 \section{Evaluation}
+In this section, we evaluate \tool{} on several small benchmarks and real-world software trying to answer the following questions:
 
+\begin{itemize}
+\item \textbf{Effectiveness:} Can \tool{} quantify the information leakage with an conservative estimation? If so, what is loss compared it with the real leakage?
+\item \textbf{Performance:} How much overhead can \tool{} produce?
+\item \textbf{Usage:} What is the real usage of \tool{}? Can \tool{} handle both Cryptography and Non-cryptography libraries? Can \tool{} help developers find and fix side-channel leakages?
+\end{itemize}
+
+\textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default compilation settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. The server has many cores, but we do not use all cores during the evaluation. We sometimes run several experiments concurrently. The evaluation time presented in the following section is based on a single-core.
+
+\begin{table*}[h]
+\footnotesize
+\caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DA),The number of instructions\,(Program Size), Symbolic Execution\,(SE), and Monte Carlo\,(MC).}\label{table:over_result}
+\begin{tabular}{lrrrrrrrrrrrr}\toprule
+
+\textbf{Name}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{Output Leakage (bits)}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{2}{c}{\textbf{Performance}}    \\ 
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-11}\cmidrule(lr){12-13}& \# & bits & Byte & Cache Line& Page & Byte & Cache Line& Page & LoC & Size & Fuzzing & Comparison
+\\\midrule
+AES       \\
+AES       \\
+AES \\
+RC4 \\
+RC4 \\
+RC4 \\
+RSA \\
+RSA \\
+Tiny DNN \\
+GDK \\
+Total             \\
+\bottomrule
+\end{tabular}
+
+
+\end{table*}
+
+\subsection{Overview}
+
+
+\subsection{Benchmarks}
+\subsubsection{Password Checker}
+
+\subsubsection{Electronic Purse}
+
+\subsubsection{Lookup Table}
+
+
+
+\subsection{Cryptography Library}
+
+
+\subsection{Case Study: Attacks on Multi-class Classification Inference Engine}
+In the section, we demonstrate an attack that can recover the deep learning model inference output by the controlled-channel attack. Running the machine learning inference engine inside the enclave is a typical scenario for machine learning as service. The machine learning service provider upload the the trained model into an enclave running on the cloud platform and provide machine learning service to a third party user. With the help of the enclave, both the model and the user's inferred result is protected from the outside. However, we will show that the above information can be easily retrieved from the untrusted world through the side-channel attack.
+
+We use MNIST as the dataset and LeNet-5 for MNIST digits recognition task. LeNet-5 is known to work well on handwritten digit recognition. We first train the network. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%.
+
+Then we use the model to infer the images. During the inference, we also record the page access information. 
+
+\subsection{Case Study: Graphic Libraries}
 
 
 \section{Discussion}
