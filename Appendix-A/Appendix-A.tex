@@ -1,7 +1,7 @@
 % !TEX root = ../YourName-Dissertation.tex
 \Appendix{Abacus Usage Manual}
 
-\section{Introduction}
+\section*{Introduction}
 
 \tool{}~\cite{bao2021abacus} is an address-based side-channel vulnerability analysis tool. Different from previous tools~\cite{203878,236338,182946}, it can also give a precise estimation of the amount of the leaked information for each leakage site. \tool{} is open source under the MIT License. 
 
@@ -34,7 +34,7 @@ set\_key.c& 355&DES\_set\_key\_unchecked&3.1 &DA\\
 %}
 \end{table}
 
-\section{Requirements}
+\section*{Requirements}
 We have tested \tool{} on both macOS and Ubuntu. You can refer to the continuous integration scripts to build \tool{} on your operating system. However, we strongly recommend you to build \tool{} inside a container to avoid any dependency problems. To simplify the illustration, we only include the instructions of installations within the docker in this paper.
 \begin{itemize}
 \item Supported OS: Ubuntu 18.04
@@ -42,7 +42,7 @@ We have tested \tool{} on both macOS and Ubuntu. You can refer to the continuous
      accordingly. Otherwise the program may be terminated by the system.)
 \end{itemize}
 
-\section{Installation}
+\section*{Installation}
 
 \tool{} can be built within a docker, simply run the following command:
 
@@ -57,7 +57,7 @@ The ``docker.sh'' script creates a docker image automatically and enters the con
 \begin{lstlisting}[language=bash]
 $ ./build.sh
 \end{lstlisting}
-\section{Run the hello world example}
+\section*{Run the hello world example}
 In this section, we walk you through the steps to test a simple function with \tool{}.
 
 \begin{figure}[h]
@@ -79,7 +79,7 @@ void is_odd(uint16_t secret) {
 
 As shown in Figure~\ref{fig:example0}, the function takes a 32-bit integer as the secret input and checks the last digit of the integer. An attacker can know the last bit of the input integer by observing which branch is actually executed. So in the above function, we think the code has one secret-dependent control-flow vulnerability, and it can leak one bit of the secret information.
 
-\subsection{Mark secret data as symbolic}
+\subsection*{Mark secret data as symbolic}
 In order to test this function with \tool{}, we need to mark the variable that representing the secret data as a symbolic variable. We use the function \textsf{abacus\_make\_symbolic}. The function takes three arguments: the type of the symbol, the address of the secret, and the length of the secret input. In the below example, the secret input is the variable \textsf{secret}, and its length is two bytes. We add the \textsf{main} function in Figure~\ref{fig:example1} and compile the source code into an executable.
 
 \begin{figure}[h]
@@ -97,7 +97,7 @@ int main() {
 \end{figure}
 
 
-\subsection{Build the example}
+\subsection*{Build the example}
 
 Abacus analyzes vulnerabilities on the binary executable. Here we build it into  a 32-bit ELF executable. Note that while Abacus can work on stripped binaries without the source code, we use debug information to get a more detailed result (e.g., the line number in the source code) in this example.
 \begin{lstlisting}[language=bash]
@@ -106,7 +106,7 @@ $ gcc -m32 -g example1.c
 \end{lstlisting}
 
 
-\subsection{Collect the trace}
+\subsection*{Collect the trace}
 We use the pin tool to collect the execution trace. The tool can automatically collect the trace and other necessary runtime information.
 \begin{lstlisting}[language=bash]
 $ cd /abacus/Pintools
@@ -119,7 +119,7 @@ $ /abacus/Intel-Pin-Archive/pin \
 
 You will get two files \textsf{Function.txt} and \textsf{Inst\_data.txt}. \textsf{Inst\_data.txt} is the mandatory input of \tool{}. \textsf{Function.txt} is optional. 
 
-\subsection{Quantify the leakage}
+\subsection*{Quantify the leakage}
 To analyze the execution trace and generate the report, run the below command:
 \begin{lstlisting}[language=bash]
 $ ./build/App/QIF/QIF ./Inst_data.txt -f Function.txt \ 
@@ -142,7 +142,7 @@ Function Name:  is_odd Module Name:  a.out Offset: 30
 
 As expected, it shows that the function \textsf{is\_odd} has one secret-dependent control-flow vulnerability at line 5. Also, Abacus shows the vulnerability leaks 1 bit information.
 
-\section{Analyze Cryptography Function}
+\section*{Analyze Cryptography Function}
 We have applied \tool{} on the following libraries:
 \begin{itemize}
 \item OpenSSL: 0.9.7, 1.0.2f, 1.0.2k, 1.1.0f, 1.1.1, 1.1.1g
@@ -160,7 +160,7 @@ $ cd /abacus/script/AES_MBEDTLS_2.5
 $ ./start.sh
 \end{lstlisting}
 
-\section{Command-line Options}
+\section*{Command-line Options}
 \tool{} takes the trace file as the input (\textsf{Inst\_data.txt}). Besides the trace file, \tool{} has the following command-line options:
 \vspace{6pt}
 \\\textsf{-d {<executable file>}}
