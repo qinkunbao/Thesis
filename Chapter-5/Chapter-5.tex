@@ -313,6 +313,19 @@ There are some possible solutions that can assign the value.
 We propose to combine both the information from the source code and the runtime to align the memory access during the execution. At the point the memory is allocated, we use the tuple $(start\ address, length)$ to represent the buffer. In the following execution, we check if any memory access falls into the range of those tuples. If so, we add the memory access into the tuple. After the execution, the tuple can be mapped into the location of the source code and we only compare the memory access that belongs to the same lines in the source code.
 
 \section{Multiple Leakages Sites}
+Real-world software can have various side-channel vulnerabilities. Those vulnerabilities may spread in the whole program. An adversary may exploit more than one side-channel vulnerabilities to gain more information~\cite{7163052, 191010}. In order to precisely quantify the
+total information leakage, we need to know the relation of those leakage sites. 
+
+Suppose one program has two side-channel vulnerabilities A and B, which can leak $L_A$ and $L_B$ bits respectively according to the definition~\ref{chapter5:def}. 
+Depending on the relation between A and B, the total leaked information $L_{\mathit{total}}$ will be:
+
+\subsection{Independent Leakages}
+If A and B are independent leakages, the total information leakage will be:
+$$L_{\mathit{total}} = L_A + L_B $$
+
+\subsection{Dependent Leakages}
+If A and B are dependent leakages, the total information leakage will be:
+$$\max{\{L_A, L_B\}}  \leq L_{\mathit{total}} < L_A + L_B$$
 
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
