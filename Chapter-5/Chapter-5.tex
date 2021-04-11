@@ -126,10 +126,7 @@ In reality, noiseless loss channel is more common. We define the channel is nois
 
 Figure~\ref{fig:channel}(b) shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
 
-\subsection{Chi-Squared Test}
-A chi-squared test can determine if there is a relationship between two categorical variables. Suppose we can summarize the data in a $rxc$  two-way contingency table. The chi-square test statistic is calculated with the below formula:
-\[\tilde{\chi}^2=\sum_{k=1}^{rc} \frac{(O_k - E_k)^2}{E_k}\]
-$O$ is the observe value and $E$ is the expected value. A low value means that there is a high correlation between the two variables. 
+
 \subsection{Threat Model and Math Notation}
 
 
@@ -363,9 +360,13 @@ $$L_{\mathit{total}} = L_A + L_B $$
 
 \subsection{Dependent Leakages}
 If A and B are dependent leakages, the total information leakage will be:
-$$\max{\{L_A, L_B\}}  \leq L_{\mathit{total}} < L_A + L_B$$
+\[\max{\{L_A, L_B\}}  \leq L_{\mathit{total}} < L_A + L_B\]
 
-We use the chi-square test to check if two leakage sites are independent. Here we run the example in Figure~\ref{chapter5:fig:multiple} many times. We record the times of the observation of the execution. Because each time, the execution is independent of the previous execution. The times of the observation for each event should satisfy the normal distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
+We use the chi-square test to check if two leakage sites are independent. A chi-squared test can determine if there is a relationship between two categorical variables. Suppose we can summarize the data in a $rxc$  two-way contingency table. The chi-square test statistic is calculated with the below formula:
+\[\tilde{\chi}^2=\sum_{k=1}^{rc} \frac{(O_k - E_k)^2}{E_k}\]
+$O$ is the observe value and $E$ is the expected value. A low value means that there is a high correlation between the two variables. 
+
+Here we run the example in Figure~\ref{chapter5:fig:multiple} many times. We record the times of the observation of the execution. Because each time, the execution is independent of the previous execution. The times of the observation for each event should satisfy the normal distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
 
 \begin{figure}[h]
   \begin{minipage}{0.4\linewidth}
