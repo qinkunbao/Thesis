@@ -330,7 +330,7 @@ void function1(uint8_t* secret)
     b();
   ...
 }
-\end{lstlisting}
+\end{lstlisting}\caption*{(a) Independent Leakages}
 \end{minipage}
 \hfill
 \begin{minipage}{0.4\linewidth}
@@ -341,12 +341,12 @@ void function2(uint8_t* secret)
   k1 = secret[1];
   k2 = secret[2];
   if (k1 + k2 > 128)
-    a();
+    c();
   if (k1 > 64)
-    b();
+    d();
   ...
 }
-\end{lstlisting}
+\end{lstlisting} \caption*{(b) Dependent Leakages}
 \end{minipage}
 \caption{Mutiple Leakages}\label{chapter5:fig:mutiple}
 \end{figure}
