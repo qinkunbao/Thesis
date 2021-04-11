@@ -48,7 +48,7 @@ brought by cache hits and misses, the attacker can further infer the sensitive i
 
 Based on the above attacks, some work~\cite{brickell2011technologies} suggests not having secret-dependent memory accesses at coarser than cache line granularity should be secure enough. However, recent studies shows that having memory accesses within a cache line is also dangerous. One example is the CacheBleed attack~\cite{yarom2017cachebleed}. It is a cache channel attack can exploits cache-bank collisions.
 \subsection{Page-level Channel}
-Page channel attacks allow an attacker can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}. It is a primary threats for the trusted execution environments (TEEs).  A privileged adversary (e.g., Kernel) can infer the sensitive information by manipulating the enclave page access. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the OS can observe the page faults and  know which page is accessed. While the granularity of the controlled-channel attacks is coarse-grained, the controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack, DDRAM attacks share the same page-level granularity.
+Page channel attacks allow an attacker can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}. It is a primary threats for the trusted execution environments (TEEs).  A privileged adversary (e.g., Kernel) can infer the sensitive information by manipulating the enclave page access. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the OS can observe the page faults and  know which page is accessed. While the granularity of the controlled-channel attacks is coarse-grained,  controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack, DDRAM attacks share the same page-level granularity.
 
 
 Based on the above discussion, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs) in the dissertation. To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in the literature.
@@ -56,10 +56,11 @@ Based on the above discussion, we consider three types of granularity: byte (1 B
 \subsection{Attack Models}
 Previous work~\cite{182946} classifies the address-based side-channel attacks into three type based on the type of information that an attacker can learn during the attack.
 \subsubsection*{Time-based Attacks}
-In time-based attacks, an adversary can monitor the execution time of a victim. It could be the overall execution time or the execution time of some interesting points (e.g. a function).  The execution time is correlated to some events (e.g., cache hits, cache misses, page faults) during the execution. Example of those attacks include remote timing attacks, Bernstein attack on AES, and Kocher’s original attack from CRYPTO 96.
+In time-based attacks, an adversary can monitor the execution time of a victim. It could be the overall execution time or the execution time of some interesting points (e.g. a function).  The execution time is correlated to some events (e.g., cache hits, cache misses, page faults) during the execution. Examples of those attacks include remote timing attacks~\cite{brumley2005remote}, Bernstein attack on AES~\cite{bernstein2005cache}, and Kocher’s original attack~\cite{kocher1996timing} from CRYPTO 96.
 \subsubsection*{Access-based Attacks}
-In access-based attacks, an adversary can 
+In access-based attacks, an adversary can probe one time only after the termination of the victim program. The attacker can learn the outcome of each memory access. For example, a cache-based channel attack can know which memory access incurs a cache hit and which memory access incurs a cache miss. Because an attacker can probe the victim program after the execution, the attacker do not know the order of accesses. Access-based attacks often happen in the cloud computing environment when the attacker and victim share the same hardware (e.g., L3 Cache). Examples of those attacks include cache template attacks~\cite{191010}, Prime and Probe attacks~\cite{liu2015last}, and Flush and Reload attacks~\cite{yarom2014flush+}.
 \subsubsection*{Trace-based Attacks}
+In trace-based attacks, an adversary can probe the victim program at any point. The attacker can learn the order of memory accesses. Suppose the victim program has two functions \textsf{a} and \textsf{b}. In an access-based attacks, the attacker can learn both \textsf{a} and \textsf{b} are executed. In a trace-based attacks, the attacker can know the execution sequence of two functions (e.g., $aabbb$). Controlled-channel attacks~\cite{moghimi2020copycat, xu2015controlled} belong to the category, where a malicious operating system can interrupt the victim applications and probe the program at any time.
 
 \subsection{Target Applications}
 There is a vast number of studies\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last} on side-channel attacks. Most early work targets on the encryption key on cryptography libraries. In recent years, researchers start to focus on more general target applications. In summary, current side-channel target applications can be classified into the below three categories.
@@ -197,8 +198,7 @@ It symbolically reasons about cache
 behavior and estimates the amount of leaked information based on cache miss/hit.
 Their approach only scale to small programs, which limits its usage in
 real-world applications. On the contrary, \tool{} assesses the sensitive level
-of side-channels with different granularities. It can also analyze side-channels
-in real-world cryptographic libraries.
+of side-channels with different granularities. It can also analyze side-channels in real-world cryptographic libraries.
 
 Model counting refers to the problem of computing the number of satisfying
 solutions for a propositional formula (\#SAT). There are two approaches to
