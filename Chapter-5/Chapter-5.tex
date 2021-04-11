@@ -126,9 +126,10 @@ In reality, noiseless loss channel is more common. We define the channel is nois
 
 Figure~\ref{fig:channel}(b) shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determine. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
 
-\subsection{Chi-squared Test}
-
-
+\subsection{Chi-Squared Test}
+A chi-squared test can determine if there is a relationship between two categorical variables. Suppose we can summarize the data in a $rxc$  two-way contingency table. The chi-square test statistic is calculated with the below formula:
+\[\tilde{\chi}^2=\sum_{k=1}^{rc} \frac{(O_k - E_k)^2}{E_k}\]
+$O$ is the observe value and $E$ is the expected value. A low value means that there is a high correlation between the two variables. 
 \subsection{Threat Model and Math Notation}
 
 
@@ -342,7 +343,7 @@ void function2(uint8_t* secret)
   k2 = secret[2];
   if (k1 + k2 > 128)
     c();
-  if (k1 > 64)
+  if (k1 > 32)
     d();
   ...
 }
@@ -351,7 +352,7 @@ void function2(uint8_t* secret)
 \caption{Multiple Leakages}\label{chapter5:fig:multiple}
 \end{figure}
 
-Considering the examples in Figure~\ref{chapter5:fig:multiple}, Figure~\ref{chapter5:fig:multiple}(a) show a code snippet with two leakage sites at line 6 and line 8 respectively. For example, if an adversary observes that function \textsf{a} executes, then the attacker can infer the first byte in buffer \textsf{secret} is larger than the second byte.  Similarly, if an adversary observes that function \textsf{b} executes, then the attacker can infer that the sum of first two bytes in buffer \textsf{secret} is smaller than $256$.
+Considering the examples in Figure~\ref{chapter5:fig:multiple}, Figure~\ref{chapter5:fig:multiple}(a) show a code snippet with two leakage sites at line 6 and line 8 respectively. For example, if an adversary observes that function \textsf{a} executes, then the attacker can infer the first byte in buffer \textsf{secret} is larger than the second byte.  Similarly, if an adversary observes that function \textsf{b} executes, then the attacker can infer that the sum of the first two bytes in buffer \textsf{secret} is smaller than $256$. The interesting part here is that if the attacker observes that function \textsf{a} executes, then he still has zero knowledge about the function \textsf{b}. The two leakage sites in Figure~\ref{chapter5:fig:multiple}(b) are different. If an attacker observes function \textsf{c} executes, then it is likely the attacker can observe that function \textsf{d} also executes. 
 
 Suppose one program has two side-channel vulnerabilities A and B, which can leak $L_A$ and $L_B$ bits respectively according to the definition~\ref{chapter5:def}. 
 Depending on the relation between A and B, the total leaked information $L_{\mathit{total}}$ will be:
@@ -364,6 +365,34 @@ $$L_{\mathit{total}} = L_A + L_B $$
 If A and B are dependent leakages, the total information leakage will be:
 $$\max{\{L_A, L_B\}}  \leq L_{\mathit{total}} < L_A + L_B$$
 
+We use the chi-square test to check if two leakage sites are independent. Here we run the example in Figure~\ref{chapter5:fig:multiple} many times. We record the times of the observation of the execution. Because each time, the execution is independent of the previous execution. The times of the observation for each event should satisfy the normal distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
+
+\begin{figure}[h]
+  \begin{minipage}{0.4\linewidth}
+      \begin{tabular}{rrrr}
+        \toprule
+        & $c$ & $c$  & total\\
+        \midrule
+        $d$   & 255 & 253 &     \\
+        $d$   & 260  & 256 &       \\
+        total &   &        \\
+        \bottomrule
+      \end{tabular}%
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.4\linewidth}
+      \begin{tabular}{rrrr}
+        \toprule
+        & $c$ & $c$  & total\\
+        \midrule
+        $d$   & 809 & 82 &     \\
+        $d$   & 70  & 63&       \\
+        total &   &        \\
+        \bottomrule
+      \end{tabular}%
+  \end{minipage}
+  \caption{}\label{chapter5:fig:con_table}
+\end{figure}
 
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
@@ -434,7 +463,7 @@ To solve the problem, we use the debug information to split the bitmap into seve
 
 \begin{table}[h]
   \centering
-  \resizebox{0.45\textwidth}{!}{%
+  \resizebox{0.8\textwidth}{!}{%
 
     \begin{tabular}{llll}
       \toprule
