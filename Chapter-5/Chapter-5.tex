@@ -348,8 +348,10 @@ void function2(uint8_t* secret)
 }
 \end{lstlisting} \caption*{(b) Dependent Leakages}
 \end{minipage}
-\caption{Multiple Leakages}\label{chapter5:fig:mutiple}
+\caption{Multiple Leakages}\label{chapter5:fig:multiple}
 \end{figure}
+
+Considering the examples in Figure~\ref{chapter5:fig:multiple}, Figure~\ref{chapter5:fig:multiple}(a) show a code snippet with two leakage sites at line 6 and line 8 respectively. For example, if an adversary observes that function \textsf{a} executes, then the attacker can infer the first byte in buffer \textsf{secret} is larger than the second byte.  Similarly, if an adversary observes that function \textsf{b} executes, then the attacker can infer that the sum of first two bytes in buffer \textsf{secret} is smaller than $256$.
 
 Suppose one program has two side-channel vulnerabilities A and B, which can leak $L_A$ and $L_B$ bits respectively according to the definition~\ref{chapter5:def}. 
 Depending on the relation between A and B, the total leaked information $L_{\mathit{total}}$ will be:
