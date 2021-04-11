@@ -371,7 +371,7 @@ The null hypothesis is that the two leakages are independent.
 We generate random inputs as the secret and record the memory access for each execution. For each time, the execution is independent of the previous execution. The times of the same observation for each event should satisfy the normal distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
 
 \begin{figure}[h]
-  \begin{minipage}{0.45\linewidth}
+  \begin{minipage}{0.40\linewidth}
       \begin{tabular}{rrrr}
         \toprule
         & $a$ & $\lnot a$  & total\\
@@ -380,10 +380,12 @@ We generate random inputs as the secret and record the memory access for each ex
         $\lnot b$   & 260 (259.5)  & 256 (256.5) &    516   \\
         total &   515 &  509   & 1,024   \\
         \bottomrule
-      \end{tabular}%
+      \end{tabular}\caption*{(a)}
   \end{minipage}
-  \hfill
-  \begin{minipage}{0.45\linewidth}
+\hspace{-15pt}
+\hfill
+\hspace{-15pt}
+  \begin{minipage}{0.40\linewidth}
       \begin{tabular}{rrrr}
         \toprule
         & $c$ & $\lnot c$  & total\\
@@ -392,11 +394,13 @@ We generate random inputs as the secret and record the memory access for each ex
         $\lnot d$   & 70 (114.2)  & 63 (18.8)&  133     \\
         total &  879 &  145  & 1,024    \\
         \bottomrule
-      \end{tabular}%
+      \end{tabular}\caption*{(b)}
   \end{minipage}
-  \caption{The Contingency Table for the experiments. The numbers in the bracket are expected values. }\label{chapter5:fig:con_table}
+  \caption{The contingency table for the experiments. The numbers in the bracket are expected values. }\label{chapter5:fig:con_table}
 \end{figure}
 
+
+Assume we generate $1024$ random inputs and record the memory access each time. For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote the function \textsf{a} executes and $\lnot a$ to denote the function \textsf{a} does not execute during the execution. After we calculate the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}.
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
 we first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
