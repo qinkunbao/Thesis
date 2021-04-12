@@ -404,8 +404,9 @@ Assume we generate $1024$ random inputs and record the memory access each time. 
 \[ E_{ab} = \frac{(255+256)*(255+253)}{1024} = 255.5\]
 Similarly, we calculate the rest expected values with the hypothesis that the leakages are independent and fill in them in Figure~\ref{chapter5:fig:con_table}. The degree of freedom $v$ is $(2-1)*(2-1) = 1$.
 
+Based on the equation, we calculate the chi-square test statistic for two leakage sites in Figure~\ref{chapter5:fig:multiple} (a) and (b).
 
-
+\[\tilde{\chi}^2_{a}= \frac{(255.5-255)^2}{255.5}\] 
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
 we first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
