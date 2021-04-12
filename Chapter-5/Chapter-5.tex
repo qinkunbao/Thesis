@@ -409,7 +409,7 @@ Based on the equation, we calculate the chi-square test statistic for two leakag
 \[\tilde{\chi}^2_{a}= \frac{(255.5-255)^2}{255.5} + \frac{(252.5-253)^2}{252.5} + \frac{(259.5-260)^2}{259.5} + \frac{(256.5-256)^2}{256.5} = 0.004\] 
 \[\tilde{\chi}^2_{b}= \frac{(764.8-809)^2}{764.8} + \frac{(126.2-82)^2}{126.2} + \frac{(114.2-70)^2}{114.2} + \frac{(18.8-63)^2}{18.8} = 139.1\] 
 
-According to Chi Square Distribution Table, we have the probability $p\approx0.95$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (a). We have the probability $p\approx0.00$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (b).
+According to Chi Square Distribution Table, we have the probability $p\approx0.95$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (a). We have the probability $p\approx0.00$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (b). Therefore, we infer that the two leakages in Figure~\ref{chapter5:fig:multiple} (a) are independent. And the two leakages Figure~\ref{chapter5:fig:multiple} (b) are dependent. For each leakage points, we use the above method to test if any two leakage sites are independent. We combine them into a leakage are calculate the total amount of the leakage.
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
 we first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
