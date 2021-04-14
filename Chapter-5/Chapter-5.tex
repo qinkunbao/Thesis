@@ -583,7 +583,7 @@ We collect benchmarks from real-world applications and libraries. Our test progr
 
 \textit{Graphic Libraries:} We evaluate the tool on GTK, a popular graphic library. Previous research has demonstrated attacks to infer the keystroke.
 
-\begin{sidewaystable}
+\begin{table}
 \footnotesize
 \caption{Evaluation results overview: Name of the benchmark, The Size of the Input Data, The number of leaked functions, The Maximum Leakage, The size of the benchmark, and The Performance.}\label{chapter5:table:over_result}
 \centering
@@ -599,7 +599,7 @@ Four-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min 
 AES T-Table mbedTLS 2.15 & 65536 & 16.0&2&2&0 &&&&& 1.1 MB &  \\
 AES NI mbedTLS 2.15 & 65536 & 16.0&0&0&0 &&&&& 1.1 MB &  \\
 AES bitsliced OpenSSL 1.1.0  & 65536 & 16.0 & 2& &0&&&    \\
-AES OpenSSL 1.1.1& 65536 & 16.0 \\
+AES bitsliced OpenSSL 1.1.1& 65536 & 16.0 \\
 AES wolfSSL 4.5.0& 65536 & 16.0\\
 AES Libgcrypt 1.8.7& 65536 & 16.0\\
 RC4 mbedTLS 2.15& 65536 & 16.0\\
@@ -617,7 +617,7 @@ GDK 3.24.23 & 65535 & 16.0 &\\
 \end{tabular}
 
 
-\end{sidewaystable}
+\end{table}
 
 \subsection{Result Overview}
 Table~\ref{chapter5:table:over_result} presents the overview result.
