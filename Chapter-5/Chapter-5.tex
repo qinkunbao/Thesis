@@ -570,7 +570,7 @@ In this section, we evaluate \ctool{} on several small benchmarks and real-world
 \item \textbf{Usage:} What is the real usage of \ctool{}? Can \ctool{} handle both Cryptography and Non-cryptography libraries? Can \ctool{} help developers find and fix side-channel leakages?
 \end{itemize}
 
-\textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default compilation settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. 
+\textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default release settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. 
 
 \begin{sidewaystable}
 \footnotesize
@@ -579,10 +579,10 @@ In this section, we evaluate \ctool{} on several small benchmarks and real-world
 \begin{tabular}{lrrrrrrrrrrrrr}\toprule
 
 \textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{\# Leakage Functions}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
-\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-11}\cmidrule(lr){12-14}& \# & bits & Byte & Cache Line& Page & Byte & Cache Line& Page & LoC & Size & Fuzzing & Comparison & Chi-squared
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-11}\cmidrule(lr){12-14}& \# & bits &  1 Byte & 64 Bytes & 4 KBs & 1 Byte & 64 Bytes & 4 KBs & LoC & Size & Fuzzing & Comparison & Chi-squared
 \\\midrule
-Safe Password Checker& 65536& 16.0\\
-Unsafe Password Checker & 65536 & 16.0\\
+Unsafe Password Checker& 65536& 16.0& 1&0&0& & & & 18 & 104 KB & 21 min & 0.4 min & 0 min\\
+Safe Password Checker & 65536 & 16.0& 0&0&0&0 &0 &0 & 20 & 106 KB & 20 min & 0.4 min & 0 min\\
 One-byte Lookup Table & 65536 & 16.0\\
 Four-byte Lookup Table & 65536 & 16.0\\
 AES mbedTLS 2.15 & 65536 & 16.0   \\
@@ -612,12 +612,69 @@ GDK 3.24.23 & 65535 & 16.0 &\\
 
 \subsection{Benchmarks}
 \subsubsection{Password Checker}
+\begin{figure}
+  \begin{minipage}{0.45\linewidth}
+    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+bool pwcheck(uint8_t *key, uint8_t *pub) {
+  for (int i = 0; i < 2; ++i) {
+    if (key[i] != pub[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+\end{lstlisting}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.45\linewidth}
+    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none]
+bool pwcheck(uint8_t *key, uint8_t *pub) {
+  bool matched = true;
+  for (int i = 0; i < 2; ++i) {
+    if (pub[i] != key[i]) 
+      matched = false;
+  }
+  return matched;
+}
+\end{lstlisting}
+  \end{minipage}
+  \caption{A password checker. The right version is vulnerable to side-channel attacks. The left version is the fixed version.}\label{fig:chapter5:pwcheck}
+\end{figure}
+
 
 
 \subsubsection{Lookup Table}
+\begin{figure}
+\centering
+    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+static const uint8_t T[16] = {
+      0x63U, 0x7cU, 0x77U, 0x7bU, 0xf2U, 0x6bU, 0x6fU, 0xc5U,
+      0x30U, 0x01U, 0x67U, 0x2bU, 0xfeU, 0xd7U, 0xabU, 0x76U};
+...
+output = (T[(key[i]>>24)] << 24) ^
+         (T[(key[i+1]>>16) & 0xff] << 16) ^
+         (T[(key[i+2]>>8) & 0xff] << 8) ^
+         (T[(key[i+3]) & 0xff]);
+\end{lstlisting}
+  \caption{Lookup Tables with Small Entries.}\label{fig:chapter5:small_lookup}
+\end{figure}
 
-
-
+\begin{figure}
+\centering
+    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+static const uint32_t T[16] = {
+    0xc66363a5U, 0xf87c7c84U, 0xee777799U, 0xf67b7b8dU,
+    0xfff2f20dU, 0xd66b6bbdU, 0xde6f6fb1U, 0x91c5c554U,
+    0x60303050U, 0x02010103U, 0xce6767a9U, 0x562b2b7dU,
+    0xe7fefe19U, 0xb5d7d762U, 0x4dababe6U, 0xec76769aU};
+...
+output = (T[(key[i+0]>>24)] << 24) ^
+         (T[(key[i+1]>>16) & 0xff] << 16) ^
+         (T[(key[i+2]>>8) & 0xff] << 8) ^
+         (T[(key[i+3]) & 0xff]);
+\end{lstlisting}
+  \caption{Lookup Tables with Big Entries.}\label{fig:chapter5:big_lookup}
+\end{figure}
 \subsection{Cryptography Library}
 
 
