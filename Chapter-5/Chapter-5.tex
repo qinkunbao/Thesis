@@ -587,35 +587,36 @@ We collect benchmarks from real-world applications and libraries. Our test progr
 \footnotesize
 \caption{Evaluation results overview: Name of the benchmark, The Size of the Input Data, The number of leaked functions, The Maximum Leakage, The size of the benchmark, and The Performance.}\label{chapter5:table:over_result}
 \centering
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{lrrrrrrrrrrr}\toprule
 
-\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{2}{c}{\textbf{\# Functions}} & \multicolumn{2}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
+\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{2}{c}{\textbf{\# Functions}} & \multicolumn{2}{c}{\textbf{Max. Leak (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-12}& \# & bits &  1 Byte &  4 KBs & 1 Byte  & 4 KBs & LoC & Size & Fuzzing & Comparison & Chi-squared
 \\\midrule
-Unsafe Password Checker& 65536& 16.0& 1&0&0&  & 18 & 104 KB & 21 min & 0.4 min & 0 min\\
+Unsafe Password Checker& 65536& 16.0& 1&0&0&  0& 18 & 104 KB & 21 min & 0.4 min & 0 min\\
 Safe Password Checker & 65536 & 16.0& 0&0 &0 &0 & 20 & 106 KB & 20 min & 0.4 min & 0 min\\
 One-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
 Four-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
-AES T-Table mbedTLS 2.15 & 65536 & 16.0&2&2&0 &&&&& 1.1 MB &  \\
-AES NI mbedTLS 2.15 & 65536 & 16.0&0&0&0 &&&&& 1.1 MB &  \\
-AES bitsliced OpenSSL 1.1.0  & 65536 & 16.0 & 2& &0&&&    \\
-AES bitsliced OpenSSL 1.1.1& 65536 & 16.0 \\
-AES wolfSSL 4.5.0& 65536 & 16.0\\
-AES Libgcrypt 1.8.7& 65536 & 16.0\\
-RC4 mbedTLS 2.15& 65536 & 16.0\\
-RC4 OpenSSL 1.1.0& 65536 & 16.0\\
-RC4 OpenSSL 1.1.1& 65536 & 16.0\\
-RC4 wolfSSL 4.5.0& 65536 & 16.0\\
-RSA mbedTLS 2.15& 4096 & 12.0\\
-RSA OpenSSL 1.1.0& 4096 & 12.0\\
-RSA OpenSSL 1.1.1& 4096 & 12.0\\
-RSA wolfSSL 4.5.0& 4096 & 12.0\\
-RSA Libgcrypt 1.8.7& 4096 & 12.0 \\
-Tiny DNN & 12000 & 13.6 &\\
-GDK 3.24.23 & 65535 & 16.0 &\\
+AES T-Table mbedTLS 2.15 & 65536 & 16.0&2&2&0 &&& 1.1 MB &  \\
+AES NI mbedTLS 2.15 & 65536 & 16.0&0&0&0 &&& 1.1 MB &  \\
+AES OpenSSL 1.1.0  & 65536 & 16.0 & 2&0 &0&&& 1.0 MB   \\
+AES  OpenSSL 1.1.1& 65536 & 16.0 & 2&0 &0&&& 909 KB\\
+AES  wolfSSL 4.5.0& 65536 & 16.0 &2&0&0&  &&1.1 MB \\
+AES Libgcrypt 1.8.7& 65536 & 16.0 &0 &0 &0& &&4.4 MB\\
+RC4 mbedTLS 2.15& 65536 & 16.0 &2 &2 & & & & 1.1 MB\\
+RC4 OpenSSL 1.1.0& 65536 & 16.0&2 &2 & & & & 1.0 MB\\
+RC4 OpenSSL 1.1.1& 65536 & 16.0&2 &2 & & & & 896 KB\\
+RC4 wolfSSL 4.5.0& 65536 & 16.0&2 &2 & & & &886 KB\\
+RSA mbedTLS 2.15& 4096 & 12.0 &&&& &&1.8 MB\\
+RSA OpenSSL 1.1.0& 4096 & 12.0 &&&& && 11 MB\\
+RSA OpenSSL 1.1.1& 4096 & 12.0 &&&& &&13 MB\\
+RSA wolfSSL 4.5.0& 4096 & 12.0 &&&& &&4.2 MB\\
+RSA Libgcrypt 1.8.7& 4096 & 12.0 &&&& &&4.4 MB\\
+Tiny DNN & 12000 & 13.6 & &&&&& 4.4 MB \\
+GDK 3.24.23 & 65535 & 16.0 & &&&&& 48 MB\\
 \bottomrule
 \end{tabular}
-
+}
 
 \end{table}
 
