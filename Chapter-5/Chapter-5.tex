@@ -504,7 +504,7 @@ Shown in Figure~\ref{fig:design:example2}, we have the following observation fro
 \end{displaymath}
 
 \begin{figure}[h]
-  \begin{minipage}{0.4\linewidth}
+  \begin{minipage}{0.3\linewidth}
     \resizebox{\linewidth}{!}{
       \begin{tikzpicture}
         [level distance=1cm,
@@ -523,7 +523,7 @@ Shown in Figure~\ref{fig:design:example2}, we have the following observation fro
 
     }\end{minipage}
   \hfill
-  \begin{minipage}{0.18\linewidth}
+  \begin{minipage}{0.2\linewidth}
     {
       \begin{lstlisting}[frame=none, numbers=none]
 k1  00
@@ -538,7 +538,7 @@ k8  00
     }
   \end{minipage}
   \hfill
-  \begin{minipage}{0.30\linewidth}
+  \begin{minipage}{0.25\linewidth}
     \resizebox{\linewidth}{!}{
 
       \begin{tabular}{ll}
@@ -559,7 +559,7 @@ k8  00
 
 
 \section{Implementation}
-We have implemented a prototype of \ctool{}. It takes an input of ELF binary as well as the source code of the corresponding problem. The front-end of \ctool{} is implemented in Python. It can generate random inputs and test the program with those inputs many times.  The address record part is implemented as an Intel Pin tool plugin in C++ to record the bitmap for each input. The main component uses libelfin, an open source library to parse ELF binaries and read DWARF debug information. The current implementation can support both 64-bits and 32-bits ELF binary in Linux. \ctool{} will be open-sourced.
+We have implemented a prototype of \ctool{}. It takes an input of ELF binary as well as the source code of the corresponding problem. The front-end of \ctool{} is implemented in Python. It can generate random inputs and test the program with those inputs many times.  The address record part is implemented as an Intel Pin tool plugin in C++ to record the bitmap for each input. The main component uses \textsf{libelfin}, an open source library to parse ELF binaries and read DWARF debug information. The current implementation can support both 64-bits and 32-bits ELF binary in Linux. \ctool{} will be open-sourced.
 
 \section{Evaluation}
 In this section, we evaluate \ctool{} on several small benchmarks and real-world software trying to answer the following questions:
@@ -591,9 +591,9 @@ We collect benchmarks from real-world applications and libraries. Our test progr
 \begin{tabular}{lrrrrrrrrrrr}\toprule
 
 \textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{2}{c}{\textbf{\# Functions}} & \multicolumn{2}{c}{\textbf{Max. Leak (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-12}& \# & bits &  1 Byte &  4 KBs & 1 Byte  & 4 KBs & LoC & Size & Fuzzing & Comparison & Chi-squared
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-12}& \# & bits &  1 Byte &  64 Bytes & 1 Byte  & 64 Bytes & LoC & Size & Fuzzing & Comparison & Chi-squared
 \\\midrule
-Unsafe Password Checker& 65536& 16.0& 1&0&0&  0& 18 & 104 KB & 21 min & 0.4 min & 0 min\\
+Unsafe Password Checker& 65536& 16.0& 1&0&0.04&  0& 18 & 104 KB & 21 min & 0.4 min & 0 min\\
 Safe Password Checker & 65536 & 16.0& 0&0 &0 &0 & 20 & 106 KB & 20 min & 0.4 min & 0 min\\
 One-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
 Four-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
