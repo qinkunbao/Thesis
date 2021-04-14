@@ -570,28 +570,37 @@ In this section, we evaluate \ctool{} on several small benchmarks and real-world
 \item \textbf{Usage:} What is the real usage of \ctool{}? Can \ctool{} handle both Cryptography and Non-cryptography libraries? Can \ctool{} help developers find and fix side-channel leakages?
 \end{itemize}
 
-\textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default compilation settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. The server has many cores, but we do not use all cores during the evaluation. We sometimes run several experiments concurrently. The evaluation time presented in the following section is based on a single-core.
+\textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default compilation settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. 
 
 \begin{sidewaystable}
 \footnotesize
-\caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks), Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DA),The number of instructions\,(Program Size), Symbolic Execution\,(SE), and Monte Carlo\,(MC).}\label{chapter5:table:over_result}
+\caption{Evaluation results overview: Name of the benchmark, The Size of the Input Data, The number of leaked functions, The Maximum Leakage, The size of the benchmark, and The Performance.}\label{chapter5:table:over_result}
 \centering
-\begin{tabular}{lrrrrrrrrrrrr}\toprule
+\begin{tabular}{lrrrrrrrrrrrrr}\toprule
 
-\textbf{Name}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{Output Leakage (bits)}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{2}{c}{\textbf{Performance}}    \\ 
-\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-11}\cmidrule(lr){12-13}& \# & bits & Byte & Cache Line& Page & Byte & Cache Line& Page & LoC & Size & Fuzzing & Comparison
+\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{\# Leakage Functions}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-11}\cmidrule(lr){12-14}& \# & bits & Byte & Cache Line& Page & Byte & Cache Line& Page & LoC & Size & Fuzzing & Comparison & Chi-squared
 \\\midrule
-AES       \\
-AES       \\
-AES \\
-RC4 \\
-RC4 \\
-RC4 \\
-RSA \\
-RSA \\
-Tiny DNN \\
-GDK \\
-Total             \\
+Safe Password Checker& 65536& 16.0\\
+Unsafe Password Checker & 65536 & 16.0\\
+One-byte Lookup Table & 65536 & 16.0\\
+Four-byte Lookup Table & 65536 & 16.0\\
+AES mbedTLS 2.15 & 65536 & 16.0   \\
+AES OpenSSL 1.1.0  & 65536 & 16.0    \\
+AES OpenSSL 1.1.1& 65536 & 16.0 \\
+AES wolfSSL 4.5.0& 65536 & 16.0\\
+AES Libgcrypt 1.8.7& 65536 & 16.0\\
+RC4 mbedTLS 2.15& 65536 & 16.0\\
+RC4 OpenSSL 1.1.0& 65536 & 16.0\\
+RC4 OpenSSL 1.1.1& 65536 & 16.0\\
+RC4 wolfSSL 4.5.0& 65536 & 16.0\\
+RSA mbedTLS 2.15& 4096 & 12.0\\
+RSA OpenSSL 1.1.0& 4096 & 12.0\\
+RSA OpenSSL 1.1.1& 4096 & 12.0\\
+RSA wolfSSL 4.5.0& 4096 & 12.0\\
+RSA Libgcrypt 1.8.7& 4096 & 12.0 \\
+Tiny DNN & 12000 & 13.6 &\\
+GDK 3.24.23 & 65535 & 16.0 &\\
 \bottomrule
 \end{tabular}
 
@@ -604,7 +613,6 @@ Total             \\
 \subsection{Benchmarks}
 \subsubsection{Password Checker}
 
-\subsubsection{Electronic Purse}
 
 \subsubsection{Lookup Table}
 
@@ -634,7 +642,7 @@ Another limitation is that \ctool{} can only find the position in the code that 
 
 \begin{figure}
   \centering
-  \begin{lstlisting}[xleftmargin=.02\textwidth,xrightmargin=.01\textwidth]
+  \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
 int foo(uint8_t secret){
   uint8_t index = 0, t;
   index = (index+secret)%128; // The index contains secrets
