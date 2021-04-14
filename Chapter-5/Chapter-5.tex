@@ -590,16 +590,16 @@ We collect benchmarks from real-world applications and libraries. Our test progr
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{lrrrrrrrrrrr}\toprule
 
-\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{2}{c}{\textbf{\# Functions}} & \multicolumn{2}{c}{\textbf{Max. Leak (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
+\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{2}{c}{\textbf{\# Leaked Functions}} & \multicolumn{2}{c}{\textbf{Max. Leak (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-12}& \# & bits &  1 Byte &  64 Bytes & 1 Byte  & 64 Bytes & LoC & Size & Fuzzing & Comparison & Chi-squared
 \\\midrule
 Unsafe Password Checker& 65536& 16.0& 1&0&0.04&  0& 18 & 104 KB & 21 min & 0.4 min & 0 min\\
 Safe Password Checker & 65536 & 16.0& 0&0 &0 &0 & 20 & 106 KB & 20 min & 0.4 min & 0 min\\
-One-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
-Four-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
-AES T-Table mbedTLS 2.15 & 65536 & 16.0&2&2&0 &&& 1.1 MB &  \\
-AES NI mbedTLS 2.15 & 65536 & 16.0&0&0&0 &&& 1.1 MB &  \\
-AES OpenSSL 1.1.0  & 65536 & 16.0 & 2&0 &0&&& 1.0 MB   \\
+One-byte Lookup Table & 65536 & 16.0& 1&1&9.8& 3.6 & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
+Four-byte Lookup Table & 65536 & 16.0& 1&1&9.6& 8.5 & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
+AES T-Table mbedTLS 2.15 & 65536 & 16.0&2&2&11.6 &6.7& -& 1.1 MB &65 min & 0.8 min & 0.1 min  \\
+AES NI mbedTLS 2.15 & 65536 & 16.0&0&0&0 &0&-& 1.1 MB & 45 min & 0 min & 0 min  \\
+AES OpenSSL 1.1.0  & 65536 & 16.0 & 2&0 &0.11 & 0&-& 1.0 MB  & 49 min & 0.2 min & 0 min \\
 AES  OpenSSL 1.1.1& 65536 & 16.0 & 2&0 &0&&& 909 KB\\
 AES  wolfSSL 4.5.0& 65536 & 16.0 &2&0&0&  &&1.1 MB \\
 AES Libgcrypt 1.8.7& 65536 & 16.0 &0 &0 &0& &&4.4 MB\\
@@ -660,9 +660,9 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
 \begin{figure}
 \centering
     \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-static const uint8_t T[16] = {
+static const uint8_t T[1024] = {
       0x63U, 0x7cU, 0x77U, 0x7bU, 0xf2U, 0x6bU, 0x6fU, 0xc5U,
-      0x30U, 0x01U, 0x67U, 0x2bU, 0xfeU, 0xd7U, 0xabU, 0x76U};
+      0x30U, 0x01U, 0x67U, 0x2bU, 0xfeU, 0xd7U, 0xabU, 0x76U,
 ...
 output = (T[(key[i]>>24)] << 24) ^
          (T[(key[i+1]>>16) & 0xff] << 16) ^
@@ -675,7 +675,7 @@ output = (T[(key[i]>>24)] << 24) ^
 \begin{figure}
 \centering
     \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
-static const uint32_t T[16] = {
+static const uint32_t T[256] = {
     0xc66363a5U, 0xf87c7c84U, 0xee777799U, 0xf67b7b8dU,
     0xfff2f20dU, 0xd66b6bbdU, 0xde6f6fb1U, 0x91c5c554U,
     0x60303050U, 0x02010103U, 0xce6767a9U, 0x562b2b7dU,
