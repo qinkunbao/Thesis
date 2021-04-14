@@ -567,26 +567,38 @@ In this section, we evaluate \ctool{} on several small benchmarks and real-world
 \begin{itemize}
 \item \textbf{Effectiveness:} Can \ctool{} quantify the information leakage with an conservative estimation? If so, what is the loss compared it with the real leakage?
 \item \textbf{Performance:} What are overhead costs of \ctool{}?
-\item \textbf{Usage:} What is the real usage of \ctool{}? Can \ctool{} handle both Cryptography and Non-cryptography libraries? Can \ctool{} help developers find and fix side-channel leakages?
+\item \textbf{Usage:}  Can \ctool{} help developers find and fix side-channel leakages?
 \end{itemize}
 
 \textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default release settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. 
+
+\textbf{Benchmarks.} 
+We collect benchmarks from real-world applications and libraries. Our test programs cover applications from diverse functionalities, including small programs, cryptography, machine learning applications, and graphic libraries. 
+
+\textit{Small Programs:} We use two benchmarks that are well studied in the previous work. The amount of actual leakage of those samples are known. We use them to evaluate the precision of the tool.
+
+\textit{Cryptography Applications:} Our benchmarks include the most popular cryptography libraries, such as mebdTLS, OpenSSL, Libgcropt, and wolfSSL. We divide ciphers into three categories: stream ciphers, symmetric ciphers, and asymmetric ciphers. For stream ciphers, we use RC4. For symmetric ciphers, we choose AES. We also evaluate the tool on RSA, a widely used algorithm in the public-key cryptosystem.
+
+\textit{Machine Learning Applications:} We evaluate the tool on TinyDNN, a dependency-free deep learning framework in C++.
+
+\textit{Graphic Libraries:} We evaluate the tool on GTK, a popular graphic library. Previous research has demonstrated attacks to infer the keystroke.
 
 \begin{sidewaystable}
 \footnotesize
 \caption{Evaluation results overview: Name of the benchmark, The Size of the Input Data, The number of leaked functions, The Maximum Leakage, The size of the benchmark, and The Performance.}\label{chapter5:table:over_result}
 \centering
-\begin{tabular}{lrrrrrrrrrrrrr}\toprule
+\begin{tabular}{lrrrrrrrrrrr}\toprule
 
-\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{3}{c}{\textbf{\# Leakage Functions}} & \multicolumn{3}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
-\cmidrule(lr){2-3}\cmidrule(lr){4-6}\cmidrule(lr){7-9}\cmidrule(lr){10-11}\cmidrule(lr){12-14}& \# & bits &  1 Byte & 64 Bytes & 4 KBs & 1 Byte & 64 Bytes & 4 KBs & LoC & Size & Fuzzing & Comparison & Chi-squared
+\textbf{Benchmark}   & \multicolumn{2}{c}{\textbf{Input Data}} &  \multicolumn{2}{c}{\textbf{\# Functions}} & \multicolumn{2}{c}{\textbf{Maximum Leakage (bits)}}   & \multicolumn{2}{c}{\textbf{Program Size}}    & \multicolumn{3}{c}{\textbf{Performance}}    \\ 
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-12}& \# & bits &  1 Byte &  4 KBs & 1 Byte  & 4 KBs & LoC & Size & Fuzzing & Comparison & Chi-squared
 \\\midrule
-Unsafe Password Checker& 65536& 16.0& 1&0&0& & & & 18 & 104 KB & 21 min & 0.4 min & 0 min\\
-Safe Password Checker & 65536 & 16.0& 0&0&0&0 &0 &0 & 20 & 106 KB & 20 min & 0.4 min & 0 min\\
-One-byte Lookup Table & 65536 & 16.0\\
-Four-byte Lookup Table & 65536 & 16.0\\
-AES mbedTLS 2.15 & 65536 & 16.0   \\
-AES OpenSSL 1.1.0  & 65536 & 16.0    \\
+Unsafe Password Checker& 65536& 16.0& 1&0&0&  & 18 & 104 KB & 21 min & 0.4 min & 0 min\\
+Safe Password Checker & 65536 & 16.0& 0&0 &0 &0 & 20 & 106 KB & 20 min & 0.4 min & 0 min\\
+One-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
+Four-byte Lookup Table & 65536 & 16.0& 1&1&0&  & 18 & 104 KB & 11 min & 0.1 min & 0 min\\
+AES T-Table mbedTLS 2.15 & 65536 & 16.0&2&2&0 &&&&& 1.1 MB &  \\
+AES NI mbedTLS 2.15 & 65536 & 16.0&0&0&0 &&&&& 1.1 MB &  \\
+AES bitsliced OpenSSL 1.1.0  & 65536 & 16.0 & 2& &0&&&    \\
 AES OpenSSL 1.1.1& 65536 & 16.0 \\
 AES wolfSSL 4.5.0& 65536 & 16.0\\
 AES Libgcrypt 1.8.7& 65536 & 16.0\\
@@ -608,7 +620,7 @@ GDK 3.24.23 & 65535 & 16.0 &\\
 \end{sidewaystable}
 
 \subsection{Result Overview}
-
+Table~\ref{chapter5:table:over_result} presents the overview result.
 
 \subsection{Benchmarks}
 \subsubsection{Password Checker}
@@ -675,7 +687,6 @@ output = (T[(key[i+0]>>24)] << 24) ^
 \end{lstlisting}
   \caption{Lookup Tables with Big Entries.}\label{fig:chapter5:big_lookup}
 \end{figure}
-\subsection{Cryptography Library}
 
 
 \subsection{Case Study: Attacks on Multi-class Classification Inference Engine}
