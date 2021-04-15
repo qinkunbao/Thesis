@@ -688,14 +688,16 @@ output = (T[(key[0]>>24)] << 24) ^
 We analyze the table lookup with \ctool{}. It is a common operation used by symmetric ciphers like AES. Figure~\ref{fig:chapter5:big_lookup} is from the original AES reference implementation. It uses a lookup table and each entry is 4 bytes, which is vulnerable to side-channel attacks. Most cryptography libraries adopted the mitigated version, shown in Figure~\ref{fig:chapter5:small_lookup}. The evaluation result shows the version with smaller lookup tables leaks less information, which confirm the effectiveness of the mitigation technique.
 
 \subsection{Cryptography Libraries}
-For symmetric ciphers, we evaluate \ctool{} on three types of AES implementations. For mebedTLS, we evaluate AES-NI and the reference implementation. We do not find any leakage sites in the AES-NI version. On the other hand, the reference implementation has several leakage sites. The bitsliced version from OpenSSL and wolfSSL should be resistant to side-channel attacks. However, we find they only adopt the protection in the encryption function but leave the key expansion function unprotected. The T-Table implementation has side-channel leakage sites in both the key expanding function and the actually encryption function. The result is similarly to the previous work.
+AES encryption can be divided into three steps. In the first step, the round keys are derived from the encryption keys called the AES key schedule, and the state array is initialized with the plain-text and the initial round step. In the second step, the AES performs eleven rounds of state manipulation. In the final stage, the state array is copied out as the encrypted data.
+The reference implementation uses lookup tables in the first two steps. Intuitively, the implementation is vulnerable to side-channel attacks. There are some mitigated versions of AES. We evaluate \ctool{} on three variants of AES implementations: the reference implementation, the bit-sliced version, and the AES-NI implementation.
+For mebedTLS, we evaluate AES-NI and the reference implementation. We do not find any leakage sites in the AES-NI version. On the other hand, the reference implementation has several leakage sites. The bit-sliced version from OpenSSL and wolfSSL should be resistant to side-channel attacks. However, we find they only adopt the protection in the encryption function but leave the key expansion function unprotected. The T-Table implementation has side-channel leakage sites in both the key expanding function and the actually encryption function. 
 
-We use a fixed RSA blinding value during the evaluation to avoid non-deterministic behaviors. We compare the result with previous work and find \ctool{} can identify all the leaked functions reported in the previous work.
+We use a fixed RSA blinding value during the evaluation to avoid non-deterministic behaviors during the execution. After that, we compare the result with the previous work~\cite{bao2021abacus,203878}. The result shows that \ctool{} can identify all the leakage sites reported in the previous work. In addition, \ctool{} identify new leakages in the private key decoded functions (\textsf{EVP\_DecodeUpdate}, \textsf{EVP\_DecodeBlock}) in OpenSSL 1.1.0f and OpenSSL 1.1.1.  
 
 
 \begin{table}[!ht]
 \centering\tiny\scriptsize
-\caption{Leakages in RSA implemented by OpenSSL 1.1.0f}\label{tab:RSAOpenSSL1.1.0f}
+\caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0f}\label{chapter5:tab:RSAOpenSSL1.1.0f}
 %\resizebox{\columnwidth}{!}{
 \begin{tabular}{llrr}
 \hline
@@ -751,8 +753,6 @@ Our tool can give the conservative estimation of the side-channel leakage based 
 
 \ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} may have the coverage problem and can miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control-flow with various inputs. For other libraries like graphic rendering, machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find side-channel vulnerabilities. The goal of \ctool{} is to pick up those really serious side-channel vulnerabilities from the numerous vulnerabilities. So we do not think it is a main limitation of \ctool{}. However, users of \ctool{} should be aware the code coverage problem.
 
-Another limitation is that \ctool{} can only find the position in the code that leaks the sensitive information, but it is not the root cause of the leaks. Consider the example in Figure~\ref{fig:limitation}, it takes the secret as the input. At line 3, it calculate an index based on the value of the secret. Depending on the value of index, it may or may not run the code at line 6. So line 5 is the reason that causes the vulnerability. But \ctool{} can only tell the line 6 can leak the information, despite it is not the root cause of the vulnerability.
-
 \begin{figure}
   \centering
   \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
@@ -769,4 +769,8 @@ int foo(uint8_t secret){
   \caption{A code fragment}
   \label{fig:limitation}
 \end{figure}
+
+
+Another limitation is that \ctool{} can only find the position in the code that leaks the sensitive information, but it is not the root cause of the leaks. Consider the example in Figure~\ref{fig:limitation}, it takes the secret as the input. At line 3, it calculate an index based on the value of the secret. Depending on the value of index, it may or may not run the code at line 6. So line 5 is the reason that causes the vulnerability. But \ctool{} can only tell the line 6 can leak the information, despite it is not the root cause of the vulnerability.
+
 
