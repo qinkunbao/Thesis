@@ -570,7 +570,7 @@ In this section, we evaluate \ctool{} on several small benchmarks and real-world
 \item \textbf{Usage:}  Can \ctool{} help developers find and fix side-channel leakages?
 \end{itemize}
 
-\textbf{Evaluation setup.} We run all the following experiment in a server machine with Ubuntu 18.04 LTS. The server machine equips with 2.90GHz Intel Xeon(R) E5-2690 CPU with 128GB RAM memory. We use the default release settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. 
+\textbf{Evaluation setup.} We run all the following experiment in a machine with Ubuntu 18.04 LTS. The server machine equips with 2.30GHz Intel Core i9-9880 CPU with 16GB RAM memory. We use the default release settings to build the source code of the software into ELF 64-bit executables with GCC 7.5. 
 
 \textbf{Benchmarks.} 
 We collect benchmarks from real-world applications and libraries. Our test programs cover applications from diverse functionalities, including small programs, cryptography, machine learning applications, and graphic libraries. 
@@ -692,6 +692,50 @@ For symmetric ciphers, we evaluate \ctool{} on three types of AES implementation
 
 We use a fixed RSA blinding value during the evaluation to avoid non-deterministic behaviors. We compare the result with previous work and find \ctool{} can identify all the leaked functions reported in the previous work.
 
+
+\begin{table}[!ht]
+\centering\tiny\scriptsize
+\caption{Leakages in RSA implemented by OpenSSL 1.1.0f}\label{tab:RSAOpenSSL1.1.0f}
+%\resizebox{\columnwidth}{!}{
+\begin{tabular}{lrlrr}
+\hline
+\textbf{File} & \textbf{Line No.} & \textbf{Function} & \textbf{\# Leaked Bits} & \textbf{Fixed in OpenSSL 1.1.1} \\\hline
+bn\_lib.c& 143&BN\_num\_bits\_word&*&CF\\
+bn\_lib.c& 144&BN\_num\_bits\_word&*&CF\\
+bn\_lib.c& 145&BN\_num\_bits\_word&17.2 &DA\\
+bn\_lib.c& 1029&bn\_correct\_top&*&CF\\
+bn\_lib.c& 639&BN\_ucmp&*&CF\\
+ct\_b64.c& 164&\_\_udivdi3&5.9 &CF\\
+bn\_div.c& 330&BN\_div&*&CF\\
+bn\_gcd.c& 192&int\_bn\_mod\_inverse&1.0 &CF\\
+bn\_gcd.c& 215&int\_bn\_mod\_inverse&7.9 &CF\\
+bn\_gcd.c& 237&int\_bn\_mod\_inverse&8.2 &CF\\
+bn\_gcd.c& 218&int\_bn\_mod\_inverse&14.9 &CF\\
+bn\_gcd.c& 240&int\_bn\_mod\_inverse&9.2 &CF\\
+bn\_lib.c& 147&BN\_num\_bits\_word&*&DA\\
+bn\_lib.c& 152&BN\_num\_bits\_word&12.6 &CF\\
+bn\_lib.c& 153&BN\_num\_bits\_word&*&DA\\
+bn\_lib.c& 156&BN\_num\_bits\_word&*&DA\\
+bn\_div.c& 384&BN\_div&17.2 &CF\\
+bn\_div.c& 330&BN\_div&11.9 &CF\\
+bn\_div.c& 334&BN\_div&3.8 &CF\\
+bn\_exp.c& 622&BN\_mod\_exp\_mont\_consttime&1.0 &CF\\
+bn\_exp.c& 741&BN\_mod\_exp\_mont\_consttime&1.0 &CF\\
+bn\_mont.c& 138&BN\_from\_montgomery\_word&*&DA\\
+bn\_mont.c& 139&BN\_from\_montgomery\_word&*&DA\\
+bn\_mont.c& 140&BN\_from\_montgomery\_word&*&DA\\
+bn\_mont.c& 142&BN\_from\_montgomery\_word&*&DA\\
+bn\_mont.c& 152&BN\_from\_montgomery\_word&*&DA\\
+bn\_asm.c& 733&bn\_sqr\_comba8&*&CF\\
+bn\_asm.c& 592&bn\_mul\_comba8&*&CF\\
+bn\_mont.c& 98&BN\_from\_montgomery\_word&0.0 &CF\\
+bn\_div.c& 330&BN\_div&0.3 &CF\\
+bn\_div.c& 330&BN\_div&0.3 &CF\\
+\hline
+\end{tabular}
+%}
+\renewcommand{\baselinestretch}{1.0}\selectfont
+\end{table}
 \subsection{Machine Learning Applications}
 In the section, we demonstrate an attack that can recover the deep learning model inference output by the controlled-channel attack. Running the machine learning inference engine inside the enclave is a typical scenario for machine learning as service. The machine learning service provider upload the the trained model into an enclave running on the cloud platform and provide machine learning service to a third party user. With the help of the enclave, both the model and the user's inferred result is protected from the outside. However, we will show that the above information can be easily retrieved from the untrusted world through the side-channel attack.
 
