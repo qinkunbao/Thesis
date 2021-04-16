@@ -22,14 +22,14 @@ Figure~\ref{fig:memory_hierarchy} shows the overview of the hierarchy memory. Fo
 \begin{figure}
   \centering
   \includegraphics[width=.5\columnwidth]{./figures/chapter3/architecture.pdf}
-  \caption{Computer Memory Hierarchy}\label{fig:memory_hierarchy}
+  \caption{Computer memory hierarchy. The hierarchy is designed to minimise the access time with the relatively low cost. It is the root cause of many side-channel attacks.}\label{fig:memory_hierarchy}
 \end{figure}
 
 The current computer memory hierarchy opens the way for side-channel attacks from two aspects. First, the architecture relies on the system software for managing the memory, which becomes a problem in a threat model where the operating system is not untrusted (e.g., Intel SGX). Second, the size of the cache is smaller than the main memory. It is possible that different units in the main memory share the same address in the cache.
 \begin{figure}
   \centering
   \includegraphics[width=.65\columnwidth]{./figures/chapter3/address.pdf}
-  \caption{Memory Addressing}\label{fig:memory_address}
+  \caption{Memory addressing}\label{fig:memory_address}
 \end{figure}
 
 In modern CPUs, L1 and L2 caches are traditional N-way set associate caches. That is, the cache is divided into several cache sets, and each set is associated with several cache lines. The cache line is the atomic unit. As shown in Figure~\ref{fig:memory_address}, we can determine whether the data is in the cache with the following steps.  Given an address, the CPU uses the \textsf{Set Index} field of the address to locate the cache set that the address should reside in. After that, it tries to use the \textsf{Tag} field to match every cache line inside the set line. If the CPU can locate a cache line with the same tag and the valid bit is set, then a cache hit occurs. The CPUs use a similar process to manage the main memory. The main memory is divided into many units called pages. As shown in Figure~\ref{fig:memory_address},
