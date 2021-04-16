@@ -496,7 +496,7 @@ To solve the problem, we use the debug information to split the bitmap into seve
 After that, we traverse the bitmap for each $k$ and count it to get the distribution of the bitmap. The counting process is like traversing a binary tree.
 
 \begin{myexample}
-Shown in Figure~\ref{fig:design:example2}, we have the following observation from $k_1$ to $k_8$, then we count the distribution of  the observation. The process is like traversing a binary tree and increase the counter of the child node. According to Definition~\ref{chapter5:def}, the amount of the leakage is
+Shown in Figure~\ref{fig:design:example2}, we have the following observation from $k_1$ to $k_8$, then we count the distribution of  the observation. The process is like traversing a binary tree and increase the counter of the child node. According to Definition~\ref{chapter5:def}, the amount of the leakage is $1.4$ $\mathit{bits}$.
 
 \begin{displaymath}
   H(O') = - \frac{3}{8}*\log_2{\frac{3}{8}}- \frac{1}{2}*\log_2{\frac{1}{2}}
@@ -655,7 +655,7 @@ encode.c & conv\_bin2ascii & Not Found & 1.2 & \xmark\\
 
 \end{table}
 
-Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amount of leakage reported by \tool{} and \ctool{}. First, as the result indicates, the leakage sites that leak more information (> 5.0 bits) are all fixed in OpenSSL 1.1.1. The result indicates that \ctool{} can help developers identify side-channel leakages and pick the severe from them automatically. As expected, we find most of the leakages are from the big number calculations. OpenSSL has a side-channel mitigated big number implementation. As long as big numbers are derived from secret data, the big number should be enabled with the flag \textsf{BN\_FLG\_CONSTTIME}. However, the flag is off by default. We find developers forget to propagate the flag in the caller, which results in the vulnerabilities in \textsf{BN\_div} and \textsf{int\_bn\_mod\_inverse}. Second, for those leakage sites that are not fixed by the developers, both \tool{} and \ctool{} report that they leak less amount of information. For example, function \textsf{BN\_mod\_exp\_mont\_consttime} check if the modulus is odd. However, it is not a side-channel leakage vulnerability. Both tools report the leakage site can leak one bit of information. Third, even \tool{} reports some leakage sites leak little information, \ctool{} can report the vulnerability is severe. \tool{} quantifies the amount of leaked information for one execution. So it is possible that some leakage sites leak little information for one input but leak more information for a different input. We run the chi-squared test to determine if any two leaked functions have independent leakages. 
+Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amount of leakage reported by \tool{} and \ctool{}. First, as the result indicates, the leakage sites that leak more information (> 5.0 bits) are all fixed in OpenSSL 1.1.1. The result indicates that \ctool{} can help developers identify side-channel leakages and pick the severe from them automatically. As expected, we find most of the leakages are from the big number calculations. OpenSSL has a side-channel mitigated big number implementation. As long as big numbers are derived from secret data, the big number should be enabled with the flag \textsf{BN\_FLG\_CONSTTIME}. However, the flag is off by default. We find developers forget to propagate the flag in the caller, which results in the vulnerabilities in \textsf{BN\_div} and \textsf{int\_bn\_mod\_inverse}. Second, for those leakage sites that are not fixed by the developers, both \tool{} and \ctool{} report that they leak less amount of information. For example, function \textsf{BN\_mod\_exp\_mont\_consttime} check if the modulus is odd. However, it is not a side-channel leakage vulnerability. Both tools report the leakage site can leak one bit of information. Third, even \tool{} reports some leakage sites leak little information, \ctool{} can report the vulnerability is severe. \tool{} quantifies the amount of leaked information for one execution. So it is possible that some leakage sites leak little information for one input but leak more information for a different input. We run the chi-squared test to determine if any two leaked functions have independent leakages. However, we can not conclude any two leakages are independent under the chi-squared test. We think it is due to the avalanche effect in cryptography.
 
 \subsection{Non-cryptography Applications}
 
@@ -687,7 +687,7 @@ int foo(uint8_t secret){
   ...
 }
 \end{lstlisting}
-  \caption{A code fragment}
+  \caption{The reported leaked functions are not the root cause of the vulernability}
   \label{fig:limitation}
 \end{figure}
 
