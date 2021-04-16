@@ -606,7 +606,7 @@ RSA OpenSSL 1.1.0f& 4096 & 12.0 &12&6&9.7& 8.1 &-& 11 MB & 981.1 min & 75.4 min 
 RSA OpenSSL 1.1.1& 4096 & 12.0 &6&4&6.3& 2.1&-&13 MB & 1021.1 min & 45.1 min & 5.5 min\\
 RSA wolfSSL 4.5.0& 4096 & 12.0 &5&2&3.4& 2.5&-&4.2 MB & 1613.6 min & 51.6 min & 7.9 min\\
 RSA Libgcrypt 1.8.7& 4096 & 12.0 &8&6&8.6& 6.6&-&4.4 MB & 1412.6 min & 23.9 min & 4.3 min\\
-Tiny DNN & 12000 & - & 17&14&17.1&16.1&-& 4.4 MB & 183.5 min & 24.6 min & 5.2 min\\
+Tiny DNN & 10000 & - & 17&14&17.1&16.1&-& 4.4 MB & 183.5 min & 24.6 min & 5.2 min\\
 GDK 3.24.23 & 4096 & 16.0 & 33&31& 12.1& 6.0&-& 48.5 MB & 1060.8 min & 24.1 min & 1.5 min\\
 \bottomrule
 \end{tabular}
@@ -661,9 +661,8 @@ Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amoun
 
 
 %% TODO Analyze the result of the GTK
-In the section, we demonstrate an attack that can recover the deep learning model inference output by the controlled-channel attack. Running the machine learning inference engine inside the enclave is a typical scenario for machine learning as a service. The machine learning service provider uploads the trained model into an enclave running on the cloud platform and provides a machine learning service to a third-party user. With the help of the enclave, both the model and the user's inferred result is protected from the outside. However, we will show that the above information can be easily retrieved from the untrusted world through the side-channel attack.
 
-We use MNIST as the dataset and LeNet-5 for MNIST digits recognition task. LeNet-5 is known to work well on handwritten digit recognition. We first train the network. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%. Then we use the model to infer the images. During the inference, we also record the page access information. 
+We evaluate \ctool{} on TinyDNN, a deep learning framework in C++. We construct a LeNet-5 like model~\cite{lecun1998gradient} and trained it with the MINIST dataset. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%. Then we use the model to infer the images. The inference dataset consists of $10000$ images.  During the inference, we also record the page access information. The evaluation shows that  leakage primarily comes from the activation function and the image convert function.
 
 
 \section{Discussion}
