@@ -1,15 +1,15 @@
 % !TEX root = ../YourName-Dissertation.tex
 
 \chapter{Related Work}\label{chapter2}
-This chapter introduces the related work in this dissertation. We present the related work from the following aspects: side-channel attacks, detections, mitigation, and information quantification.
+This dissertation studies the address-based side-channel attacks. We review the related work in this chapter. The related work covers the following aspects: side-channel attacks, detections, mitigation, and information quantification.
 
 \section{Side-channel Attacks}
 While there are many kinds of side-channel attacks, we focus on address-based side-channel attacks in this dissertation.
-Address-based side-channel attacks happen when a program accesses different memory locations when it processes various secrets. In modern computers, an attacker may shares some hardware resources (e.g., Cache, TLB, and DRAM) with the victim in today's computer system ~\cite{ge2018survey,szefer2019survey}. As a result, the attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are various approaches and an attacker can exploit the vulnerability to retrieve the information at different granularities.
+Address-based side-channel attacks happen when a program accesses different memory locations when it processes different secrets. In modern computer ssytems, an attacker may shares some hardware resources (e.g., Cache, TLB, and DRAM) with the victim~\cite{ge2018survey,szefer2019survey}. As a result, the attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are various approaches and an attacker can exploit the vulnerability to retrieve the information at different granularities.
 
 \begin{table}
     \centering
-    \caption{Due to the page limit, we only shows some representations of the vast side-channel attacks: Attacks, the shared hardware resources with attackers, the granularity of the attacker can observe, is there any published attacks on non-cryptography library and if the type of attack can exploit multiple leakage sites.}
+    \caption{Due to the page limit, we only shows some representations of the vast side-channel attacks: Attacks, the shared resources with attackers, the granularity of the attacker can observe, is there any published attacks on non-cryptography library and if the type of attack have been used to exploit multiple leakage sites.}
     \label{table:side_channel_attack}
     \resizebox{\columnwidth}{!}{%
 
@@ -34,24 +34,23 @@ Address-based side-channel attacks happen when a program accesses different memo
 Table~\ref{table:side_channel_attack} shows some representations of the recent side-channel attacks. For a detailed overview of recent side-channel attacks, we refer to the following survey paper~\cite{ge2018survey}. We classified those side-channel attacks into two categories: cache-level channels and page-level channels.
 
 \subsection{Cache-level Channel}
-A CPU cache is an essential part of modern computer systems. It is a smaller and faster memory that is designed to reduce the average data access costs to the main memory by storing copies of data from the main memory. When a CPU reads data from a memory location, it first checks the cache. If it finds that the cache stores a copy of the memory location, a cache hit occurs. Otherwise, the CPU needs to read the main memory data, and a cache miss happens.
+A CPU cache is an essential part of modern computer systems. It is a smaller and faster memory that is designed to reduce the average data access costs to the main memory by storing copies of data from the main memory. When a CPU reads data from a memory location, it first checks the cache. If it finds that the cache has a copy of data from the main memory, a cache hit occurs. Otherwise, the CPU needs to read from the main memory, and a cache miss happens.
 
-Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415} rely on the time difference between cache misses and cache hits. The core-private caches are traditionally set-associate cache. The cache is divided into different cache sets, and each cache set is made up of several cache lines. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. We introduce two common attack strategies, namely Prime+Probe and Flush+Reload.
+Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184415} rely on the time difference between cache misses and cache hits. The core-private caches (e.g., L1 and L2) are traditionally set-associate cache. The cache is divided into different cache sets, and each cache set is made up of several cache lines. Cache channel attacks can observe cache accesses at the level of cache sets, cache lines or other granularities. We introduce two common attack strategies, namely Prime+Probe and Flush+Reload.
 
 \textbf{Prime+Probe.} Prime+Probe targets a single cache set.
 An attacker primes the cache set with its own data and waits until the victim executes the program. After that, the attacker probes the cache by reading previously-loaded data. If the victim accesses the cache set and evicts some lines of the data, the attacker will experience a slow measurement. Under the circumstance, the attacker can know the victim must have touched some data that mapping to the same cache set.
 
 \textbf{Flush+Reload.} Flush+Reload allows an attacker to observe the memory at the granularity of cache line instead of a cache set. While Flush+Reload targets a single cache line, it requires the attacker and victim share some memory. During the ``flush'' stage, the attacker flushes the ``monitored
 memory'' from the cache and waits for the victim to access the memory, who may load the sensitive information to the cache line.  In the next phase,
-the attacker reloads the ``monitored memory''. By measuring the time differences
-brought by cache hits and misses, the attacker can further infer the sensitive information. On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
+the attacker reloads the ``monitored memory''. By measuring the time differences brought by cache hits and misses, the attacker can infer the sensitive information. On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
 
-Based on the above attacks, some work~\cite{brickell2011technologies} suggests not having secret-dependent memory accesses at coarser than cache line granularity should be secure enough. However, recent studies shows that having memory accesses within a cache line is also dangerous. One example is the CacheBleed attack~\cite{yarom2017cachebleed}. It is a cache channel attack can exploits cache-bank collisions.
+Based on the above attacks, some work~\cite{brickell2011technologies} suggests having secret-dependent memory accesses at finer than the size of one cache line should be secure enough. However, recent studies shows that having different memory accesses within a cache line is also dangerous. One example is the CacheBleed attack~\cite{yarom2017cachebleed}. It is a cache channel attack can exploits cache-bank collisions. 
 \subsection{Page-level Channel}
-Page channel attacks allow an attacker can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}. It is a primary threats for the trusted execution environments (TEEs).  A privileged adversary (e.g., Kernel) can infer the sensitive information by manipulating the enclave page access. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the OS can observe the page faults and  know which page is accessed. While the granularity of the controlled-channel attacks is coarse-grained,  controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack, DDRAM attacks share the same page-level granularity.
+Page channel attacks allow an attacker can observe the memory access at the granularity of memory pages. One example is the controlled-channel attack~\cite{xu2015controlled}. It is a primary threat for the trusted execution environments (TEEs).  A privileged adversary (e.g., Kernel) can infer the sensitive information by manipulating the enclave page access. A malicious OS can proactively revoke a virtual enclave memory page from the memory. If the victim enclave program accesses the memory table, then the OS can observe the page faults and  know which page is accessed. While the granularity of the controlled-channel attacks is more coarse-grained compared with cache channel attacks, controlled-channel attacks allow the attacker to have a noise-free observation. Other examples like the TLB side-channel attack and DDRAM attacks share the same page-level granularity.
 
 
-Based on the above discussion, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs) in the dissertation. To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in the literature.
+Based on the above discussion, we consider three types of granularities in the dissertation: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in the literature.
 
 \subsection{Attack Models}
 Previous work~\cite{182946} classifies the address-based side-channel attacks into three type based on the type of information that an attacker can learn during the attack.
