@@ -3,39 +3,13 @@
 \chapter{Precise Analysis on Single-trace Attacks}\label{chapter4}
 
 \section{Problem}
-Side channels are ubiquitous in modern computer systems as sensitive
-information can leak through many mechanisms such as power,
-electromagnetic radiation, and even
-sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.
-Among them, software side-channel attacks, such as cache attacks, memory page
-attacks, and controlled-channel attacks, are especially problematic as they do not require physical proximity~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These
-attacks arises from shared micro-architectural components in a computer processor.
-By observing inadvertent interactions between two programs, attackers can infer program
-execution flows that manipulate secrets and guess secrets such as encryption
-keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
+In Chapter~\ref{chapter3}, we present a method to identify address-based side-channel leakage sites in cryptography libraries ~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}. However, many reported leakage sites are not patched by developers. Recent work on side-channel vulnerabilities identification~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946} also faces the same situation. For example, DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA implementation in OpenSSL 1.1.0f\@. Further analysis shows 1,510 leaks can be dismissed. But that leaves 460 data-access leaks and 278 control-flow leaks. Many of these vulnerabilities have not been fixed by developers for a variety of reasons.
 
-
-Recent work~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741,Brotzman19Casym,236338,182946}
-can detect many side-channel vulnerabilities. For example,
-DATA~\cite{217537} reports 2,248 potential leakage sites for the RSA
-implementation in OpenSSL 1.1.0f\@.
-Further analysis shows 1,510 leaks can be dismissed. But that
-leaves 460 data-access leaks and 278 control-flow leaks.
-Many of these vulnerabilities have not been fixed by developers for a variety of reasons.
 First, some vulnerable implementations perform better. For example,
-RSA implementations usually adopt the CRT optimization,
-which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}.
-Second, fixing vulnerabilities can introduce new
-weaknesses.
-Third, most vulnerabilities pose a negligible risk.
-Although some vulnerabilities result in the key being
-entirely compromised~\cite{184415, aumuller2002fault},
-many others are less
-severe in reality. Therefore, we need a proper quantification metric to
-assess the sensitivity of side-channel vulnerabilities,
-so a developer can efficiently triage them.
+RSA implementations usually adopt the CRT optimization, which is faster but vulnerable to fault attacks~\cite{aumuller2002fault}. Second, fixing vulnerabilities can introduce new
+weaknesses. Third, most vulnerabilities pose a negligible risk. Although some vulnerabilities result in the key being entirely compromised~\cite{184415, aumuller2002fault}, many others are less severe in reality. Therefore, we need a proper quantification metric to assess the sensitivity of side-channel vulnerabilities, so a developer can efficiently triage them.
 
-Previous work~\cite{182946,5207642} can identify numerous leakages or even provide an upper bound on the amount of leakage, which is useful to verify that an implementation is secure if it incurs zero leakage.
+Previous work on side-channel quantification~\cite{182946,5207642} can identify numerous leakages or even provide an upper bound on the amount of leakage, which is useful to verify that an implementation is secure if it incurs zero leakage.
 However, these techniques cannot quantify the severity of a leak because they over approximate the leakage. For example, CacheAudit~\cite{182946}
 reports that the upper-bound leakage of AES-128 exceeds the original key size. Besides, existing side-channel quantification work~\cite{182946,5207642} assumes an attacker runs the target program multiple times with different
 input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, those results are less useful to assess the severity level of each leakage site.
