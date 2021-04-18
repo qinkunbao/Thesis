@@ -40,29 +40,27 @@ the translation process keeps the bottom bits same while using the top bits to m
 \subsection{Threat Model}
 We assume that an attacker shares the same hardware platform with the target.
 The attacker attempts to retrieve sensitive information through address-based
-side-channel attacks. The attacker has no direct access to the target's memory or cache,
-but it can probe its memory or cache at each program point. Here are a few examples.
+side-channel attacks. The attacker has no direct access to the target's memory or cache, but he can probe the memory or cache at each program point. Here are a few examples.
 \begin{enumerate}
   \item A host machine has several Virtual Machines (VMs). The victim runs the application inside one VM. An attacker can control the VM and probe the process running on the other VM.
-  \item  In a shielding system, a malicious operating system can extract sensitive information from the protected application.
-  \item An user level application can probe some sensitive information inside the kernel.
+  \item  In a shielding system, a malicious operating system can extract sensitive information from protected user-level applications.
+  \item A ring-3 application can probe some sensitive information inside the kernel.
 \end{enumerate}
 
-In reality, the
-attacker will face many possible obstacles such as the noisy observations of the memory or cache. However, for this project, we assume
-the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}.
-The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
+In reality, attackers will face many possible obstacles, such as the noisy observations of the memory or cache. However, for this project, we assume
+the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
 
 \section{Limitations of Current Side-channel Leakage Detection Tools}
-In this section, we introduces two limitations of current side-channel leakage detection method. The first limitation is that some tools may have some false positives or false negatives. The second limitation is the current tools are not fast enough to analyze real world side-channel leakages.
+In this section, we introduces two limitations of current side-channel leakage detection tools. The first limitation is that some tools have some false positives or false negatives. The second limitation is current tools are not fast enough to analyze real world side-channel leakages.
 
 
 \subsection{Imprecision}
-In this dissertation, we study two types of side-channel leakage code patterns. The key intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as secret-dependent control flow transfers and secret-dependent data accesses. Unlike previous work, our tool works on the machine code, which can provide us more prevision than the previous tools.
+In this dissertation, we study two types of side-channel leakage code patterns. The intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as secret-dependent control flow transfers and secret-dependent data accesses. Unlike previous work, our tool works on the machine code, which is more precise
+than previous tools.
 \subsubsection{Control Flow}
 \begin{figure}[h]
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
 int example1(uint8_t k, uint32_t m) { // m = 0
   uint32_t b = (k & m) >> 7;
   if (b) {
@@ -76,7 +74,7 @@ int example1(uint8_t k, uint32_t m) { // m = 0
   \end{minipage}
   \hfill
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 push  ebp
 mov   ebp, esp
 movzx eax, [addr_k]    
@@ -89,7 +87,7 @@ jne   branch 2
   \end{minipage}\caption*{(a) A False Negative}
 
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
 int example2(uint16_t k) {
   int res;
   if (k > 8) {
@@ -103,7 +101,7 @@ int example2(uint16_t k) {
   \end{minipage}
   \hfill
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 xor   eax, eax
 cmp   [addr_k], 8
 setbe  al
@@ -120,7 +118,7 @@ Figure~\ref{fig:chapter3:cf}(b) shows a different situation. While the sensitive
 \subsubsection{Data Flow}
 \begin{figure}[h]
   \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t T[128];
 ...
 int example3(uint8_t k, uint32_t m){
@@ -133,7 +131,7 @@ int example3(uint8_t k, uint32_t m){
   \end{minipage}
   \hfill
   \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 ...
 lea    edx, [addr_T]
 mov    eax, [addr_k]
@@ -145,7 +143,7 @@ movzx  eax, [addr_T + eax*1]
   \end{minipage}\caption*{(a) A True Leakage}
 
   \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t T[32];
 ...
 int example4(uint8_t k, uint32_t m){
@@ -158,7 +156,7 @@ int example4(uint8_t k, uint32_t m){
   \end{minipage}
   \hfill
   \begin{minipage}{0.4\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 ...
 lea    edx, [addr_T]
 mov    eax, [addr_k]
