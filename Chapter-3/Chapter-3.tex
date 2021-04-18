@@ -21,14 +21,14 @@ Many side-channel attacks are architecture-dependent. To facilitate the illustra
 During the evolution of the modern computer architecture, researchers find that CPUs process data in a much faster speed than the main memory (DRAM) can supply. As a result, modern CPUs adopt a hierarchy memory architecture to bridge the performance gap between the CPUs and the main memory. By storing extra copies of recently accessed data and code in a smaller but faster memory, the software can get its most recently accessed code and data in a shorter time.
 
 Figure~\ref{fig:memory_hierarchy} shows the overview of one example of the hierarchy memory architecture. For a CPU with multiple cores, each core has two private level-1 (L1) cache, an instruction cache (iCache), and a data cache (dCache). Because instructions and data have different access patterns, separating iCache and dCache makes it possible for CPUs to fetch the code and data and improve performance simultaneously. Followed by the level-1 cache, each core also has the unified private level-2 cache for both the code and the data. The level-3 cache is the last level cache (LLC). The LLC is shared among all the cores. The main memory is in the bottom-most under the memory hierarchy.
-\begin{figure}
+\begin{figure}[ht]
   \centering
   \includegraphics[width=.5\columnwidth]{./figures/chapter3/architecture.pdf}
   \caption{Computer memory hierarchy. The hierarchy is designed to minimise the access time with the relatively low cost. It is the root cause of many side-channel attacks.}\label{fig:memory_hierarchy}
 \end{figure}
 
 The current computer memory hierarchy opens the way for side-channel attacks from two aspects. First, the architecture relies on the system software for managing the memory, which becomes a problem in a threat model where the operating system is not untrusted (e.g., Intel SGX). Second, the size of the cache is smaller than the main memory. It is possible that different units in the main memory share the same address in the cache.
-\begin{figure}
+\begin{figure}[ht]
   \centering
   \includegraphics[width=.65\columnwidth]{./figures/chapter3/address.pdf}
   \caption{Memory addressing}\label{fig:memory_address}
@@ -57,7 +57,7 @@ In this section, we introduce two limitations of current side-channel leakage de
 \subsection{Imprecision}
 In this dissertation, we study two types of side-channel leakage code patterns. The intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as \textit{secret-dependent control flow transfers} and \textit{secret-dependent data accesses}. Unlike previous work, our tool works on the machine code, which is more precise than previous tools.
 \subsubsection{Control Flow}
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{minipage}{0.45\linewidth}
     \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
 int example1(uint8_t k, uint32_t m) { // m = 0
@@ -115,7 +115,7 @@ If the input-sensitive data can affect the victim program's control flow, then a
 
 Figure~\ref{fig:chapter3:cf}(b) shows a different situation. While the sensitive input \textsf{k} can affect the if-else branch, the compiler removes the branch with a conditional set instruction.  The opposite situation is the same. For example, recent work tries to use bit masking to rewrite the program with control flows. However, for some situations~\cite{Coppens:2009:PMT:1607723.1608124}, compilers (e.g., GCC) optimize the code too much (from a security view) and remove the unnecessary copy by reintroducing conditional moves.
 \subsubsection{Data Flow}
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{minipage}{0.4\linewidth}
     \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t T[128];
@@ -174,7 +174,7 @@ Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data acces
 The second limitation of the current side-channel detection tool is the performance bottleneck, especially for those tools based on the symbolic analysis. For example, CaSym can only analyze small programs. CacheD perfroms better. However, it still can not handle large programs like RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks. But it is significantly less likely for cache side channels bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the solver and find side-channel leakages in a more efficient way.
 
 \section{Method}\label{chapter3:method}
-\begin{figure}
+\begin{figure}[ht]
   \centering
   \includegraphics[width=.3\columnwidth]{./figures/chapter3/attack.pdf}
   \caption{A side-channel attack}\label{fig:side-channel-attack}
@@ -298,7 +298,7 @@ from that work in two aspects: 1) We use complete constraints. 2) We run the
 symbolic execution on one execution path each time. Our approach is approximately 30 times faster than using an IR (transferring ISA into IR and
 symbolically executing it).
 
-\begin{table}%[ht]
+\begin{table}[ht]
   \centering\small\footnotesize
   \caption{The number of x86,  % instructions and the number of 
     REIL IR, and VEX IR instructions on the traces of crypto programs.}
@@ -391,13 +391,13 @@ If a conditional jump uses the CPU status flag, we will generate the constraint 
 
 For examples, considering the below x86 code snippet,
 
-\begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
- ...
+\begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth][ht]
+...
 0x0000e781      add dword [local_14h], 1
 0x0000e785      cmp dword [local_14h], 4
 0x0000e789      jne 0xe7df
 0x0000e78b      mov dword [local_14h], 0
- ...
+...
 \end{lstlisting}
 
 At the beginning of the instruction segment, the value at the address of local\_14h can be written as $F(\vec{K})$. At the address $e785$, the value will be updated with $F(\vec{K})+1$. Then the code compares
@@ -463,7 +463,7 @@ aspects:
 \end{enumerate}
 
 \subsection{Evaluation Result Overview}
-\begin{table*}[]
+\begin{table*}[ht]
   \centering\small\footnotesize
   \caption{Evaluation results overview: Algorithm, Implementation, Side-channel Leaks\,(Leaks),
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
@@ -557,7 +557,7 @@ Table~\ref{eval:cacheD} shows that
 \detect{} is faster than CacheD. \detect{} is much faster than CacheD when analyzing the same
 number of instructions. For example, when we test~\detect{} on AES from OpenSSL
 0.9.7, \detect{} is over 100x faster than CacheD.
-\begin{table*}[]
+\begin{table*}[ht]
  \centering
   \caption{Comparison with CacheD: Time,
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF), The Number of Instructions\,(\# Instructions).}
@@ -624,7 +624,7 @@ Even for the up-to-date version of OpenSSL, \detect{} still find several
 side-channel leakages. Figure~\ref{chapter3:fig:unknown_leakage} shows an unknown leakage site in OpenSSL 1.1.1. It is a secret-dependent control flow transfers. 
 However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \begin{lstlisting}[xleftmargin=.02\textwidth,xrightmargin=.01\textwidth]
 while (!BN_is_bit_set(B, shift)) { /* note that 0 < B */

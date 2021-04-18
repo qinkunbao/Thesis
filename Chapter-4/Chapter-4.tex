@@ -617,7 +617,7 @@ $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
 
 
 \IncMargin{1em}
-\begin{algorithm}[h]\small
+\begin{algorithm}[th]\small
     \DontPrintSemicolon
     \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
     \Input{$c_t(\addr{1},\addr{2},\ldots,\addr{n}) = c_{\addr{1}} \land c_{\addr{2}} \land \ldots \land c_{\addr{m}}$}
@@ -745,7 +745,7 @@ execution to capture fine-grained semantic information for each
 secret-dependent control-flow transfer and data access. Finally, we run Monte
 Carlo (MC) simulation to estimate the amount of leaked information.
 
-\begin{figure}[t]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{./figures/chapter4/workflow.pdf}
     \caption{The workflow of \tool{}.}
@@ -772,7 +772,7 @@ estimate with the probability, which provides us with the \emph{precision guaran
 \tool{} consists of 16,729 lines of code in C++17 and Python. It has three components: an Intel Pin tool that collects the execution trace, the
 instruction-level symbolic execution engine, and the back-end that estimates the information leakage. Table~\ref{tbl:implementation} shows the breakdown of the implementation of \tool{}.
 
-\begin{table}[h!]
+\begin{table}[ht]
     \centering
     %    \resizebox{.8\columnwidth}{!}{
     \caption{\tool{}' main components and sizes}\label{tbl:implementation}
