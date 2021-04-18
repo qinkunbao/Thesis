@@ -51,12 +51,11 @@ In reality, attackers will face many possible obstacles, such as the noisy obser
 the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
 
 \section{Limitations of Current Side-channel Leakage Detection Tools}
-In this section, we introduces two limitations of current side-channel leakage detection tools. The first limitation is that some tools have some false positives or false negatives. The second limitation is current tools are not fast enough to analyze real world side-channel leakages.
+In this section, we introduce two limitations of current side-channel leakage detection tools. The first limitation is that some tools have some false positives or false negatives. The second limitation is current tools are not fast enough to analyze side-channel leakages in real-world software.
 
 
 \subsection{Imprecision}
-In this dissertation, we study two types of side-channel leakage code patterns. The intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as secret-dependent control flow transfers and secret-dependent data accesses. Unlike previous work, our tool works on the machine code, which is more precise
-than previous tools.
+In this dissertation, we study two types of side-channel leakage code patterns. The intuition is that the target application shows different control flows or data flows when it processes different sensitive input data. We refer them as \textit{secret-dependent control flow transfers} and \textit{secret-dependent data accesses}. Unlike previous work, our tool works on the machine code, which is more precise than previous tools.
 \subsubsection{Control Flow}
 \begin{figure}[h]
   \begin{minipage}{0.45\linewidth}
