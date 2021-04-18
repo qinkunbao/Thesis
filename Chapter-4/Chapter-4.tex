@@ -1110,7 +1110,7 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
 
 
 \subsection{Benchmarks}\label{sec:eval_countermeasures}
-\subsubsection{Bit-slicing}
+\subsubsection*{Bit-slicing}
 Bit-slicing is an efficient method to construct constant-time implementation for side channel to mitigation. The basic concept is to implement a function in terms of single-bit logical gate operations, such as AND, XOR, OR, and NOT\@.
 
 Since the table look-ups and conditional jumps are replaced with single-bit logical gates, with no secret-dependent memory addresses or control flow, both the data access and control flow types of side-channel leakages are mitigated.
@@ -1168,7 +1168,7 @@ confirms the result from \tool. Similarly, we can verify the result of the other
 leakage site. \tool{} reports no leakage on the bit-slicing implementation.
 
 
-\subsubsection{Lookup Table}
+\subsubsection*{Lookup Table}
 \begin{figure}
 \centering
     \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.1\textwidth, frame=none]
@@ -1211,7 +1211,7 @@ The evaluation result shows the version with smaller lookup tables leaks less in
 
 
 
-\subsubsection{Password Checker}
+\subsubsection*{Password Checker}
 \begin{figure}
   \begin{minipage}{0.45\linewidth}
     \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
