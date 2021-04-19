@@ -628,7 +628,7 @@ Note that \ctool{} can analyze the side-channel leakages at both the byte granul
 
 \begin{table}[!ht]
 \centering\tiny\scriptsize
-\caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0. According to \tool{}\cite{bao2021abacus}, the mark ``$*$'' means timeout, which indicates more severe leakages. }\label{chapter5:tab:RSAOpenSSL1.1.0}
+\caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0. According to \tool{}\cite{bao2021abacus}, the mark ``$*$'' means timeout, which indicates more severe leakages. $0.0$ means very small amount of leakage, but not exactly zero.}\label{chapter5:tab:RSAOpenSSL1.1.0}
 %\resizebox{\columnwidth}{!}{
 \begin{threeparttable}
 \begin{tabular}{llrrc}
@@ -640,7 +640,9 @@ bn\_lib.c& BN\_ucmp&*& 6.7 & \cmark\\
 ct\_b64.c& \_\_udivdi3&5.9 &4.3 & \cmark\\
 bn\_gcd.c& int\_bn\_mod\_inverse&(14.9, 9.2, 8.2, 7.9, 1.0) & 7.7 & \cmark\tnote{1} \\
 bn\_exp.c& BN\_mod\_exp\_mont\_consttime& (1.0, 1.0) & 1.0 & \xmark\\
-bn\_mont.c& BN\_from\_montgomery\_word& (*, *, *, *, *, *, 0.0)& 9.7 &\cmark\\
+bn\_mont.c& BN\_from\_montgomery\_word\tnote{2}& (*, *, *, *, *, *, 0.0)& 9.7 &\cmark\\
+bn\_mont.c& BN\_from\_montgomery\_word& 0.0& 0.1 &\xmark\\
+
 bn\_asm.c& bn\_sqr\_comba8&9.3&5.0& \cmark\\
 bn\_div.c& BN\_div&(17.2, 11.9, 3,8, 0.3, 0.3) & 7.3  & \cmark\\
 rsa\_ossl.c& rsa\_ossl\_mod\_exp& 1.0 & 4.8 & \cmark\\
@@ -650,7 +652,9 @@ encode.c & conv\_bin2ascii & Not Found & 1.2 & \xmark\\
 \end{threeparttable}
 \begin{tablenotes}
     \scriptsize
-    \item[1] The leakage site at line 144 (OpenSSL 1.1.1) are not fixed.
+    \item[1] The leakage site at line 144 (OpenSSL 1.1.1) are not fixed.\\
+    \item[2] We break the function into two parts during the analysis.
+
 \end{tablenotes}
 
 \end{table}
@@ -662,12 +666,12 @@ Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amoun
 
 %% TODO Analyze the result of the GTK
 
-We evaluate \ctool{} on TinyDNN, a deep learning framework in C++. We construct a LeNet-5 model~\cite{lecun1998gradient} and trained it with the MINIST dataset. LeNet-5 network has six layers, including three convolutional layers, one fully connected layers and two pooling layers. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%. Then we use the model to infer the images. The inference dataset consists of $10000$ images.  During the inference, we record the memory access information. The evaluation shows that  leakage primarily comes from the activation function and the image convert function.
+We evaluate \ctool{} on TinyDNN, a deep learning framework in C++. We construct a LeNet-5 model~\cite{lecun1998gradient} and trained it with the MINIST dataset. LeNet-5 network has six layers, including three convolutional layers, one fully connected layers and two pooling layers. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%. Then we use the model to infer the images. The inference dataset consists of $10000$ images.  During the inference, we record the memory access information. The evaluation shows all three types of layers have different memory accesses under different inputs. In addition, we find that the leakages primarily comes from the activation function and the image convert function.
 
 
 \section{Discussion}
 
-This paper presents an approach that tries to give the conservative estimate of the amount of leaked information by address-based side-channel attacks. Those attacks exploit the data-flow from secrets to load address and the data-flow from the data-flow from secrets to branch conditions to retrieve secrets based on the observation on the memory accesses. Despite those kinds of side-channel leakages have been discovered for decades, the up-to-date software still has some side channel leakages. For some of those vulnerabilities, developers don't fix them because they think those side-channel vulnerabilities are not important. To show the importance of those side-channel leakages, one way is to demonstrate an end-to-end attack based on the vulnerability. However, demonstrating an end-to-end attack often need a lots of manual efforts and the domain knowledge of the victim program, which is not often the case in practices. It is good to have a tool that can assess the severity level of those side channel leakages automatically. So it would be better to have a proper metric to quantify the side-channel leakage. However, we find previous side-channel quantification tools are developed to  ensure the noninterference of the program. They use over approximation heuristics method to quantify the leakage. For example, CacheAudit estimates that a 128-bit AES encryption can leaks more than 128 bits. As a result, even those tool reports severe leakage, it does not mean the program has a truly severe leakage.
+This chapter presents an approach that can give the conservative estimate of the amount of leaked information by address-based side-channel attacks. Those attacks exploit the data-flow from secrets to load address and the data-flow from the data-flow from secrets to branch conditions to retrieve secrets based on the observation on the memory accesses. Despite those kinds of side-channel leakages have been discovered for decades, the up-to-date software still has some side channel leakages. For some of those vulnerabilities, developers do not fix them because they think those side-channel vulnerabilities are not important. To show the importance of those side-channel leakages, one way is to demonstrate an end-to-end attack based on the vulnerability. However, demonstrating an end-to-end attack often need a lots of manual efforts and the domain knowledge of the victim program, which is not often the case in practices. It is good to have a tool that can assess the severity level of those side channel leakages automatically. So it would be better to have a proper metric to quantify the side-channel leakage. However, we find previous side-channel quantification tools are developed to  ensure the noninterference of the program. They use over approximation heuristics method to quantify the leakage. For example, CacheAudit estimates that a 128-bit AES encryption can leaks more than 128 bits. As a result, even those tool reports severe leakage, it does not mean the program has a truly severe leakage.
 
 Our tool can give the conservative estimation of the side-channel leakage based on Channel Capacity. The channel capacity measures  the information flow between the source and the destination. One useful characteristic of channel capacity is not affected by the distribution of the input, which is useful because in practice we can not have an assumption on the input secrets of the software. In the paper, we use the sampling result to over approximate the true value of the channel capacity. We prove the sampling method presented in the paper can only give the conservative estimation of the amount of the true leakage.
 
