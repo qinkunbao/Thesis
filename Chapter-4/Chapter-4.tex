@@ -1124,7 +1124,7 @@ uint8_t SBOX[] = {1, 0, 3, 1, 2, 2, 3, 0};
 if (password <= 0b111)      \\Leaks 5 bits of password
     ret = SBOX[password];   \\Leaks 4 bits of password
       \end{lstlisting}
-    \caption{SBOX without BitSlicing}
+    \caption{SBOX without bitslicing}
     \label{fig:SBOX_da}
 \end{figure}
 
@@ -1150,7 +1150,7 @@ r = (na & t1) | t0;
 
 ret = l << 1 + r;
 \end{lstlisting}
-\caption{SBOX with BitSlicing}
+\caption{SBOX with bitslicing}
 \label{fig:SBOX_bitslicing}
 \end{figure}
 We test \tool\ on bit-slicing. We adopt the SBOX
@@ -1181,7 +1181,7 @@ output = (T[(key[0]>>24)] << 24) ^
          (T[(key[2]>>8) & 0xff] << 8) ^
          (T[(key[3]) & 0xff]);
 \end{lstlisting}
-  \caption{Lookup Tables with Small Entries.}\label{fig:chapter4:small_lookup}
+  \caption{Lookup tables with small entries.}\label{fig:chapter4:small_lookup}
 \end{figure}
 
 \begin{figure}
@@ -1198,7 +1198,7 @@ output = (T[(key[0]>>24)] << 24) ^
          (T[(key[2]>>8) & 0xff] << 8) ^
          (T[(key[3]) & 0xff]);
 \end{lstlisting}
-  \caption{Lookup Tables with Big Entries.}\label{fig:chapter4:big_lookup}
+  \caption{Lookup tables with big entries.}\label{fig:chapter4:big_lookup}
 \end{figure}
 
 

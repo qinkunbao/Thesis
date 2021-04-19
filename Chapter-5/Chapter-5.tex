@@ -191,7 +191,7 @@ void bar(uint8_t secret)
       \end{tabular}%
     }
   \end{minipage}
-  \caption{A Serious Leakage.}\label{chapter5:fig:example1}
+  \caption{A serious leakage.}\label{chapter5:fig:example1}
 \end{figure}
 
 To assess the sensitive level of the vulnerability, we use the sampling method to estimate the leakage. Suppose we give the function input from $0, 1, \dots, 7$ and observe the array $T$, we can find each different input have one unique observation. Therefore, the secret can be uniquely determined.
@@ -230,7 +230,7 @@ void bar(uint8_t secret)
       \end{tabular}%
     }
   \end{minipage}
-  \caption{A Minor Leakage. }\label{chapter5:fig:example2}
+  \caption{A minor leakage. }\label{chapter5:fig:example2}
 \end{figure}
 On the other hand, the second example also have a side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker can not uniquely determine the secret based on the observation of table $T$. For example. both $0$ and $4$ read the first the item of the table. Therefore, we think the vulnerability is slightly minor than the previous one. Here comes with the definition of the amount of leaked information of the vulnerability.
 
@@ -346,7 +346,7 @@ void function2(uint8_t* secret)
 }
 \end{lstlisting} \caption*{(b) Dependent Leakages}
 \end{minipage}
-\caption{Multiple Leakages}\label{chapter5:fig:multiple}
+\caption{Multiple leakage sites. The two leakage sites in Figure (a) leak different information. But the leaked information in Figure (b) has some overlaps. }\label{chapter5:fig:multiple}
 \end{figure}
 
 Considering the examples in Figure~\ref{chapter5:fig:multiple}, Figure~\ref{chapter5:fig:multiple}(a) show a code snippet with two leakage sites at line 6 and line 8 respectively. For example, if an adversary observes that function \textsf{a} executes, then the attacker can infer the first byte in buffer \textsf{secret} is larger than the second byte.  Similarly, if an adversary observes that function \textsf{b} executes, then the attacker can infer that the sum of the first two bytes in buffer \textsf{secret} is smaller than $256$. The interesting part here is that if the attacker observes that function \textsf{a} executes, then he still has zero knowledge about the function \textsf{b}. The two leakage sites in Figure~\ref{chapter5:fig:multiple}(b) are different. If an attacker observes function \textsf{c} executes, then it is likely the attacker can observe that function \textsf{d} also executes. 
