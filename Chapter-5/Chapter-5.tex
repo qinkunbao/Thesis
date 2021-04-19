@@ -662,7 +662,7 @@ Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amoun
 
 %% TODO Analyze the result of the GTK
 
-We evaluate \ctool{} on TinyDNN, a deep learning framework in C++. We construct a LeNet-5 like model~\cite{lecun1998gradient} and trained it with the MINIST dataset. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%. Then we use the model to infer the images. The inference dataset consists of $10000$ images.  During the inference, we also record the page access information. The evaluation shows that  leakage primarily comes from the activation function and the image convert function.
+We evaluate \ctool{} on TinyDNN, a deep learning framework in C++. We construct a LeNet-5 model~\cite{lecun1998gradient} and trained it with the MINIST dataset. LeNet-5 network has six layers, including three convolutional layers, one fully connected layers and two pooling layers. The batch size in our experiment is 10 and the numbers of epochs is 30. After the training, the accuracy of the neural networks on test set images is 99.5\%. Then we use the model to infer the images. The inference dataset consists of $10000$ images.  During the inference, we record the memory access information. The evaluation shows that  leakage primarily comes from the activation function and the image convert function.
 
 
 \section{Discussion}
