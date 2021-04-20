@@ -127,7 +127,7 @@ The dynamic approach, usually consists of taint analysis and symbolic execution,
 can perform a very precise analysis. CacheD~\cite{203878} takes a concrete execution trace and runs symbolic execution on the trace
 to get the formula of each memory address. CacheD is
 quite precise in avoiding false positives. However, CacheD is not able to detect secret-dependent control-flows. We adopted a similar approach to model the secret-dependent data accesses in the dissertation. \tool{} differs from CacheD in that we do not use traditional taint tracking or domain knowledge to cut the trace when identifying secret-dependent data access vulnerabilities. \tool{} works on machine instructions directly instead of intermediate representations. Moreover, \tool{} finds secret-dependent control-flows at the same time and gives a precise quantification of the leakage. DATA~\cite{217537} detects address-based side-channel vulnerabilities by comparing and aligning different execution traces under various test inputs. After collecting execution traces, DATA aligns them and finds the differences. It uses statistical hypothesis testing to find true leakages. However, both imperfect trace alignment and statistical testing result that DATA can produce false positives.
-MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} uses mutual information (MI) between sensitive input and execution state to detect side-channels.
+MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} adopts a similar approach from DATA by comparing all accessed addresses. It uses mutual information (MI) between sensitive input and execution state to quantify the information. 
 
 \begin{sidewaystable}
 
@@ -219,15 +219,13 @@ ApproxFlow~\cite{biondi2018scalable} uses ApproxMC~\cite{chakraborty2016algorith
 Trace-based binary analysis can be seen as a type of dynamic analysis. It 
 analyzes one concrete program path one time rather than trying to cover
 as many paths as possible. Compared to static analysis, trace-based analysis
-is usually more precise as it can use runtime information. It usually has
+is usually more precise as it can incorporate the runtime information. It usually has
 two steps. The first step is collecting trace information. Existing
 approaches usually often rely on binary instrumentation frameworks or emulators (e.g, Intel Pin~\cite{luk2005pin},
 Valgrind~\cite{nethercote2007valgrind}, QEMU). The second step is analyzing the trace using techniques, such
 as symbolic execution, taint analysis. Depending on when the analysis is launched,
-there are two kinds of trace-based analysis, online analysis and offline analysis.
-As the name suggests, online analysis is performed at runtime. The target program's
-data can be modified directly in memory, which is useful in fuzzing because the analysis
-can force the program to go through into a specific branch. Contrary to online analysis,
+there are two kinds of trace-based analysis, online analysis and offline analysis. As the name suggests, online analysis is performed during the program execution. The target program's data can be modified directly in memory, which is useful to tasks like fuzzing because the analysis
+can force the program to execute a specific branch. Contrary to online analysis,
 offline analysis or post analysis happens when the program finish executions. 
 Trace-based binary analysis has been adopted in several tasks like algorithm
 detection, vulnerability detection and malware analysis. We only mention a few of
@@ -236,20 +234,9 @@ identify crypto algorithms in obfuscated binaries. Ming et al.~\cite{ming2017bin
 system call sliced segment equivalence checking to do binary diffing. Jia et al.~\cite{jia2017towards}
 perform an offline analysis on execution traces to identify heap overflows.
 
-There are several known binary analysis frameworks that can ease users 
-to launch analysis on binary executable. BitBlaze~\cite{brumley2011bap} is a binary analysis platform
-that provides both the static and dynamic analysis. It uses tracecap plugin to 
-collect execution trace and convert the trace into Vine IR. Binary Analysis Platform (BAP)
+There are several known binary analysis frameworks that can ease users to launch analysis on binary executable. BitBlaze~\cite{brumley2011bap} is a binary analysis platform that provides both the static and dynamic analysis. It uses the tracecap plugin to  collect execution trace and convert the trace into Vine IR. Binary Analysis Platform (BAP)
 is an another binary analysis platform. Similar to BitBlaze, it use a Pintrace tool to
 collect execution trace and convert the trace into BAP IR. Angr~\cite{shoshitaishvili2016state}, the most popular
-binary analysis platform recently, also support trace-based analysis. It first convert
-each instruction into VEX IR and interpret each IR in Python. 
+binary analysis platform recently, also support trace-based analysis. It converts each instruction into VEX IR and interprets each IR in Python. 
 
-Above existing well-known binary analysis frameworks all adopt the IR layer, which make
-it easy to implement the framework and support multiple architectures. However, it can have
-a very low efficiency and long traces. All IR must be interpreted no matter if symbolic variables
-are involved or not. Besides, as side-channels are low level problems in general, the IR
-design will also lose some information. For example, IR-level branches are not necessarily 
-a super-set or a sub-set of machine-code level branches. Some IR-level branches can be compiled into
-non-branch instructions like conditional moves. Those above limitations motivate us to
-implement a new trace-based binary analysis framework.
+Above existing well-known binary analysis frameworks all adopt the IR layer, which make it easy to implement the analysis and support multiple architectures. However, it can have a very low efficiency and long traces. All IR must be interpreted no matter if symbolic variables are involved or not. Besides, as side-channels are low level problems in general, the IR design will also lose some information. For example, IR-level branches are not necessarily  a super-set or a sub-set of machine-code level branches. Some IR-level branches can be compiled into non-branch instructions like conditional moves. Those above limitations motivate us to implement a new trace-based binary analysis framework.
