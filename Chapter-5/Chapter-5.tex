@@ -562,7 +562,7 @@ k8  00
 We have implemented a prototype of \ctool{}. It takes an input of ELF binary as well as the source code of the corresponding problem. The front-end of \ctool{} is implemented in Python. It can generate random inputs and test the program with those inputs many times.  The address record part is implemented as an Intel Pin tool plugin in C++ to record the bitmap for each input. The main component uses \textsf{libelfin}, an open source library to parse ELF binaries and read DWARF debug information. The current implementation can support  64-bits ELF binary in Linux. 
 
 \section{Evaluation}
-In this section, we evaluate \ctool{} on several small benchmarks and real-world software trying to answer the following questions:
+In this section, we evaluate \ctool{} on real-world software trying to answer the following questions:
 
 \begin{itemize}
 \item \textbf{Effectiveness:} Can \ctool{} quantify the information leakage with an conservative estimation? If so, what is the loss compared it with the real leakage?
