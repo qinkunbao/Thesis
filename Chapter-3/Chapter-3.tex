@@ -413,7 +413,7 @@ If the value is a formula, it means the original information passes through the 
 
 \section{Evaluation}
 We evaluate our method on real-world crypto libraries, which include  OpenSSL, mbedTLS, Libgcrypt and Monocypher\@. OpenSSL is the most commonly used crypto libraries in today's software. mbedTLS\@ (previous known as PolarSSL) is designed to be easy to understand and fit on embedded devices. We also evaluate Monocypher, a new cryptographic library that resists to most side-channel attacks.
-According to the developers, Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model. Libgcrypt is a cryptographic library from the GunPG. As some previous work (e.g., CacheD) choose to evaluate their tools on CacheD, we can compare the evaluation results by applying the tool on Libgcrypt.
+According to the developers, Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model. Libgcrypt is a cryptographic library from the GunPG. As some previous work (e.g., CacheD) choose to evaluate their tools on Libgcrypt, we can compare the evaluation results by applying the tool on Libgcrypt.
 
 For some crypto libraries, we evaluate multiple versions. After that, we compare the evaluation results with the version history to track those leakages' patches. In summary, we evaluate our tool on the following libraries.
 \begin{itemize}
