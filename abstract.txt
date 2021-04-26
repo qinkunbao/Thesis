@@ -5,6 +5,62 @@ Precise and Scalable Side-channel Analysis
 Abstract
 
 Side channels are ubiquitous in modern computer systems as sensitive
+information can leak through many mechanisms such as power consumption, 
+execution timing, and even electromagnetic radiation. Among them, 
+address-based side-channel attacks, such as cache-based attacks, 
+memory page attacks, and controlled-channel attacks, are especially
+problematic as they do not require physical proximity. Hardware 
+countermeasures, which usually require changes to the complex 
+underlying hardware, are hard to adopt in practice.  On the contrary, 
+software approaches are generally easy to implement. While some existing 
+tools can detect side-channel leakages, many of these approaches are 
+computationally expensive or imprecise. Besides, many such vulnerabilities 
+leak a negligible amount of sensitive information, and thus developers 
+are often reluctant to address them. Existing tools do not provide sufficient 
+information, such as the amount of information leakage through side channels, 
+to evaluate the severity of a vulnerability.
+
+In this dissertation, we present methods to detect and quantify 
+address-based side-channel vulnerabilities in real-world applications. 
+First, a new method to detect address-based side-channel vulnerabilities 
+for the binary code is proposed. We examine the bottleneck in the symbolic 
+approaches and improve the analysis precision and performance.
+Second, we propose a new program analysis method to precisely quantify
+the leaked information in a single-trace attack. We model an
+attacker’s observation of each leakage site as a constraint and run
+Monte Carlo sampling to estimate the number of leaked bits for each
+leakage site. Finally, we extend our approach to quantify side-channel 
+leakages from multiple trace attacks. We present a method to quantify
+the lower bound of side-channel leakages. Unlike the previous side-channel 
+detection tools, our approach can identify severe side-channel
+leakages without false positives. 
+
+We implement the approaches and apply them to popular cryptography libraries.  
+First, the evaluation results confirm that our side-channel detection method 
+is much faster than state-of-art tools while identifying all the known leakages 
+reported by previous tools. Second, we implement two side-channel leakage quantification 
+methods in two tools, namely Abacus and Quincunx. Abacus is a quantification tool 
+for a single-trace attack. Quincunx can quantify the lower bound of real leakages 
+in multiple-trace attacks. The evaluation results show both Abacus and Quincunx 
+can demonstrate that most reported vulnerabilities are difficult to exploit in 
+practice and should be de-prioritized by developers. The evaluation results show 
+that our method can successfully distinguish severe leakages from many negligible leakages.
+
+This dissertation research develops practical techniques for precise side-channel 
+analysis in software systems. For each proposed method, we implement the approach 
+and evaluate it on real-world software. The evaluation results show the effeteness 
+and generality of our proposed method. We also open source the tools in the dissertation 
+to facilitate future research in the area.
+
+=======================================================================================
+
+Title
+
+Precise and Scalable Side-channel Analysis
+
+Abstract
+
+Side channels are ubiquitous in modern computer systems as sensitive
 information can leak through many mechanisms such as power consumption,
 execution timing, and even electromagnetic radiation. Among them, address-based
 side-channel attacks, such as cache-based attacks, memory page
@@ -22,16 +78,14 @@ to evaluate the severity of a vulnerability.
 
 In this dissertation, we present methods to detect
 and quantify address-based side-channel vulnerabilities in real-world
-applications.
-First, a new method to detect
+applications. First, a new method to detect
 address-based side-channel vulnerabilities for the binary code is proposed. We
 examine the bottleneck in the symbolic approaches and improve the analysis precision and performance.
 Second, we propose a new program analysis method to precisely quantify
 the leaked information in a single-trace attack. We model an
 attacker’s observation of each leakage site as a constraint and run
 Monte Carlo sampling to estimate the number of leaked bits for each
-leakage site. 
-Finally, we extend our approach to quantify side-channel leakages from
+leakage site. Finally, we extend our approach to quantify side-channel leakages from
 multiple trace attacks. We present a method to quantify
 the lower bound of side-channel leakages. Unlike previous side-channel
 detection tools, our approach can identify severe side-channel
