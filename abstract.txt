@@ -36,9 +36,9 @@ detection tools, our approach can identify severe side-channel
 leakages without false positives. 
 
 We implement the approaches and apply them to popular cryptography libraries.  
-First, the evaluation results confirm that our side-channel detection method 
+The evaluation results confirm that our side-channel detection method 
 is much faster than state-of-art tools while identifying all the known leakages 
-reported by previous tools. Second, we implement two side-channel leakage quantification 
+reported by previous tools. Second, we implement side-channel leakage quantification 
 methods in two tools, namely Abacus and Quincunx. Abacus is a quantification tool 
 for a single-trace attack. Quincunx can quantify the lower bound of real leakages 
 in multiple-trace attacks. The evaluation results show both Abacus and Quincunx 
