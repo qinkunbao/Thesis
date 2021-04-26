@@ -67,9 +67,13 @@ in multiple-trace attacks.
 
 The evaluation results show both Abacus and Quincunx 
 can demonstrate that most reported vulnerabilities are difficult to exploit in 
+
 practice and should be de-prioritized by developers.
 
 The evaluation results show 
+
+practice and should be de-prioritized by developers. The results show 
+
 that our method can successfully distinguish severe leakages from many negligible leakages.
 
 
