@@ -5,7 +5,7 @@ This dissertation studies address-based side-channel attacks. We review the rela
 
 \section{Side-channel Attacks}
 While there are many kinds of side-channel attacks, we focus on address-based side-channel attacks in this dissertation.
-Address-based side-channel attacks happen when a program accesses different memory locations as it processes different secrets. In modern computer systems, an attacker may share hardware resources (e.g., Cache, TLB, and DRAM) with the victim~\cite{ge2018survey,szefer2019survey}. An attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are many approaches, and an attacker can exploit the vulnerability in different methods to retrieve the information at different granularities.
+Address-based side-channel attacks happen when a program accesses different memory locations as it processes different secrets. In modern computer systems, an attacker may share hardware resources (e.g., Cache, TLB, and DRAM) with the victim~\cite{ge2018survey,szefer2019survey}. An attacker can probe the shared hardware resource to infer the memory accesses of the victim. While the root cause of the attack is the same, there are many approaches, and an attacker can exploit side-channel leakage sites in different methods to retrieve the information at different granularities.
 
 \begin{table}
     \centering
@@ -41,9 +41,11 @@ Cache channels~\cite{yarom2017cachebleed,191010,184415,Osvik2006,liu2015last,184
 \textbf{Prime+Probe.} Prime+Probe targets a single cache set.
 An attacker primes the cache set with its own data and waits until the victim executes the program. Then the attacker probes the cache by reading previously loaded data. If the victim accesses the cache set and evicts some lines of the data, the attacker will experience a slow measurement. Under the circumstance, the attacker can know that the victim must have touched some data that map to the same cache set.
 
-\textbf{Flush+Reload.} Flush+Reload allows an attacker to observe the memory at the granularity of the cache line instead of a cache set. While Flush+Reload targets a single cache line, it requires the attacker and victim to share some memory. During the ``flush'' stage, the attacker flushes the ``monitored
+\textbf{Flush+Reload.} Flush+Reload allows an attacker to observe the memory at the granularity of a cache line instead of a cache set. While Flush+Reload targets a single cache line, it requires the attacker and victim to share some memory. During the ``flush'' stage, the attacker flushes the ``monitored
 memory'' from the cache and waits for the victim to access the memory, which may be a load of the sensitive information to the cache line.  In the next phase,
-the attacker reloads the ``monitored memory''. By measuring the time differences brought by cache hits and misses, the attacker can infer the sensitive information. On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
+the attacker reloads the ``monitored memory''. The attacker's process read all data in the `monitored
+memory''. If the time is relatively fast, it indicate that the data has been accessed by the victim program and the cache has loaded the data. 
+On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
 
 Based on the above attacks, some work~\cite{brickell2011technologies} suggests having secret-dependent memory accesses at finer than the size of one cache line should be secure enough. However, recent studies show that having different memory accesses within a cache line is also dangerous. One example is the CacheBleed attack~\cite{yarom2017cachebleed}. It is a cache channel attack that can exploit cache-bank collisions. 
 \subsection{Page-level Channel}
