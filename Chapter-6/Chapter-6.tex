@@ -1,20 +1,85 @@
-\chapter{Conclusion}\label{chapter6}
-This dissertation research studies the address-based side-channel leakages in two aspects: detection and quantification. In the side-channel vulnerability detection research, we explore and solve the two bottlenecks in today's automated side-channel vulnerability detection tool, performance and precision. In the side-channel vulnerability quantification research, we propose two different side-channel leakage quantification tools based on information theory. 
+\chapter{Discussion and Limitations}
+\section{Fast and Precise Side-channel Vulnerability Detection}
+\textbf{Coverage.} \detect{} works on native x86 execution traces. The design, which is very precise in terms of true leakages compared to other static source code method~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, also share the common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may neglect some side-channel vulnerabilities not covered by the traces analyzed. However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage for various inputs. Our evaluation also confirms the above intuition. For symmetric encryption, there is no secret-dependent control-flow transfers during our evaluation. RSA implementations have several secret-dependent control-flow transfers. Many of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
 
-\section{Summary}
+\textbf{Design Choices.} At the early stage of the project, we use SMT solvers to get the solutions of constraints. However, we find for some ciphers (RSA), \detect{} times out after several days. The profiling result shows that it is spending most its time in Z3. Later, we use a sampling method to detect side-channel leakages. The sampling method seems simple and may miss some leakages in theory. However, the evaluation result shows \detect{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.  
 
-In Chapter~\ref{chapter3}, we present a practical address-based side-channel detection tool, \detect{}, that is capable of detecting secret-dependent control-flows and data accesses at the same time. We model side-channel leakage sites as math constraints and use dynamic symbolic execution to generate constraints for possible leakages. Using statistical testing, \detect{} can identify the true leakages from those constraints. \detect{} analyzes the side-channel leakages directly from X86 execution traces. Existing binary analysis tools usually transfer the x86 instruction to intermediate languages (IR) simplify the implementation. However, such designs have expensive overheads and imprecise analysis results. To tackle these problem, we take the engineering efforts and implement the analysis from scratch  based on Intel developer's manual. We evaluate \detect{} on popular cryptographic libraries including OpenSSL, mbedTLS, Libgcrypt, and Monocyper. The evaluation results show that \detect{} is three times to one hundred times faster than the state of art tools while finding all the leakages reported by the previous tools. In addition, \detect{} identity new leakages. The new leakages were later confirmed by other researchers and software developers.  
+\textbf{Cache Model.} We use a simple cache model in this work. Recent work~\cite{Brotzman19Casym,182946} uses an LRU cache. First, there is no fundamental difficulties for us to adopt a more realistic cache models. Second, the LRU model is still a substantial simplification of a real cache. However, the choice of a logical model of cache can bring expensive overheads.
 
-In Chapter~\ref{chapter4}, we present a novel method to quantify address-based side-channel leakage. We quantify the amount of leakage information for a single trace attack. The amount of the leaked information is based on the search space reduced by side-channel attacks. We rely on \detect{} to detect side-channel leakages. After that, we use approximate model counting to quantify the leakage site. The method is implemented in a prototype tool called \tool{}. We show its effectiveness in quantifying side-channel leakage. With the new definition of information leakage that models actual side-channel attackers, quantifying the number of leaked bits helps understand the severity level of side-channel vulnerabilities. The evaluation confirms that \tool{} is useful in estimating the amount of leaked information in real-world applications.
+\textbf{Leakages.} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has several sensitive leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. After we manually analyze those leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which partially explain why developers are not interested in fix all the leakages. 
+\section{Precise Analysis on Single-trace Attacks}
+While recent work found many side-channel vulnerabilities,
+we note that many of them have not been patched by developers.
+Side-channels are ubiquitous in software and it would be difficult to fix all of them.
+We need a tool that estimates the sensitivity of each vulnerability
+so software engineers can focus on
+``severe'' leakages. For example, \tool{} reports that
+the modular exponentiation using square and multiply algorithms can
+leak more information than a key validation function.
 
-In Chapter~\ref{chapter5}, we propose a fuzzing method to automatically detect and quantify the address-based side-channel leakages automatically. The proposed method can produce a conservative estimation of the side-channel leakage of the deterministic program. As a result, any severe leakage reported by \ctool{} is the true severe leakage. We also study the total effect of two leakages. Using statistical hypothesis testing, we are able to determine if the two leakages are independent. If so, we can calculate the sum of the amount of leakage by adding two leakages. Our evaluation result on both several libraries and benchmarks show that \ctool{} is effective and accurate in detecting the side-channel leakage.
+Software developers can use \tool{} to find severe vulnerabilities
+and reason about countermeasures.
+\tool{} estimates the amount of leaked information for each side-channel leakage
+in one execution trace. \tool{} is useful for software
+engineers to test programs and fix vulnerabilities.
+The design, which is more precise in reporting true leakages as compared with other static
+methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, obviously misses
+leakages on unexplored traces. The amount of leaked information also depends on the secret key.
+However, as the tool is intended for debugging and testing,
+we think it is a software engineer's responsibility to select the input key and trigger
+the path in which they are interested. It is not a problem for crypto software
+since virtually all keys follow similar computational paths.
 
-In conclusion, this dissertation research develops practical techniques for precise side-channel analysis in software systems. For each proposed method, we implement and evaluate it on real-world software. The evaluation results show the effeteness and generality of our proposed method.  We open source the tools in the dissertation to facilitate future research in the area.
-\section{Future Directions}
-In the future, we plan to explore the following directions based on the dissertation research. 
+We use the amount of leaked information to represent the sensitivity level of
+each side-channel vulnerability. Although imperfect, \tool{} produces a reasonable
+measurement for each leak. For example, the simple modular exponentiation is
+notoriously famous for multiple side-channel attacks~\cite{kocher1996timing}.
+During the execution, a single leak point may execute multiple times
+and each time leak a different bit. In this case, \tool{} reports that the
+vulnerability can leak the whole key. However, not every leak point inside a
+loop is severe. If a site in the loop leaks the same bit from the
+original key, and these leaks are not independent. \tool{} captures most
+fine-grained information by modeling each leak during the execution as a
+formula and the conjunction of the formulas to describe its total effect.
+Some leakage sites (e.g., square and multiply)
+can leak one particular bit of the original key, but some leakage sites leak one bit
+from several bytes in the original key. \tool{} can capture the dependency among the leaks and
+reports more precise leakage information.
 
-\textbf{Kernel Space Side-channel Vulnerability Detection.} There are several side-channel vulnerability detection tools together with the dissertation tool. Most of the tools are designed to analyze the side-channel leakages in user-level applications like cryptographic libraries. It is reasonable since many side-channel attacks are used to break cryptographic applications. Recently, researchers also started to focus on side-channel attacks~\cite{cao2016off} inside the kernel space. However, it is non-trivial to apply existing side-channel detection tools in the Linux kernel. Take the method in the dissertation, for example. We may have the following challenges. First, our proposed tools in the dissertation rely on the dynamic binary instrumentation frameworks to collect the runtime information. As for kernel programs, a similar task can be achieved by some whole system emulators like BitBlaze~\cite{song2008bitblaze} and S2E~\cite{chipounov2012s2e}. S2E uses a modified Linux kernel and QEMU to trace the kernel components. S2E uses QEMU 1.0, which does not support the latest Linux kernel. The engineering efforts of extending S2E to work on the latest kernel are significant. Second, the kernel has very complicated control-flow graphs compared to cryptography libraries. Some vulnerabilities need to be triggered by specific input from the user space applications or devices. Our tool can not handle interruptions and exceptions. But they are common inside the kernel. On the positive side, we expect there are plenty of leakage sites inside the kernel. The dissertation provides the approaches to pick up ``severe'' leakages automatically.
+\tool{} reaches full precision if the number of estimated leaked bits
+equals to Definition~\ref{chapter4:def}.
+\tool{} may lose precision from the
+memory model it uses in theory. However, we did not find false positives
+caused by the imprecise memory model during our evaluation.
+Sampling introduces imprecision but with a probabilistic guarantee.
+However, during the evaluation, we find that \tool{} cannot estimate
+the amount of leakage for some leakage sites in a reasonable time,
+which means the number of $K^o$ is very small. According to Definition~\ref{chapter4:def}, it means the leakage is very severe. 
+\section{Precise Analysis on Multiple-trace Attacks}
+This chapter presents an approach that can give a conservative estimate of the amount of leaked information by address-based side-channel attacks. Those attacks exploit the data-flow from secrets to load address and the data-flow from the data-flow from secrets to branch conditions to retrieve secrets based on the observation on the memory accesses. Despite those kinds of side-channel leakages that have been discovered for decades, the up-to-date software still has some side channel leakages. For some of those vulnerabilities, developers do not fix them because they think those side-channel vulnerabilities are not important. To show the importance of those side-channel leakages, one way is to demonstrate an end-to-end attack based on the vulnerability. However, demonstrating an end-to-end attack often need a lot of manual effort and the domain knowledge of the victim program, which is not often the case in practices. It is good to have a tool that can assess the severity level of those side channel leakages automatically. So it would be better to have a proper metric to quantify the side-channel leakage. However, we find previous side-channel quantification tools are developed to ensure the noninterference of the program. They use over approximation heuristics method to quantify the leakage. For example, CacheAudit estimates that a 128-bit AES encryption can leak more than 128 bits. As a result, even those tool reports severe leakage, it does not mean the program has a truly severe leakage.
+
+Our tool can give the conservative estimation of the side-channel leakage based on Channel Capacity. The channel capacity measures the information flow between the source and the destination. One useful characteristic of channel capacity is not affected by the input of the input, which is useful because we cannot assume the input secrets of the software in practice. In the paper, we use the sampling result to over approximate the true value of the channel capacity. We prove the sampling method presented in the paper can only give the conservative estimation of the amount of the true leakage.
+
+\ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} may have the coverage problem and can miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control-flow with various inputs. For other libraries like graphic rendering, machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find side-channel vulnerabilities. The goal of \ctool{} is to pick up those really severe side-channel vulnerabilities from the numerous vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem.
+
+\begin{figure}
+  \centering
+  \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
+int foo(uint8_t secret){
+  uint8_t index = 0, t;
+  index = (index+secret)%128; // The index contains secrets
+  ...
+  if(index == 0){             // Secret-dependent flows
+    bar(r, x, n)              // The observation
+  }
+  ...
+}
+\end{lstlisting}
+  \caption{The reported leaked functions are not the root cause of the vulernability}
+  \label{fig:limitation}
+\end{figure}
 
 
-\textbf{Compiler-assisted Side-channel Vulnerability Analysis and Mitigation.}
-We propose to mitigate the side-channel leakages on a compiler backend. For example, the conditional execution can be eliminated by using the masks. Eliminating side-channel leakages from compilers is not a brand new idea. Coppens et al.~\cite{Coppens:2009:PMT:1607723.1608124} propose several methods to remove all potential leakages that are related to data flow and control flow.  GNU toolchain adds new options (\textsf{-mlfence-after-load}, \textsf{-mlfence-before-indirect-branch}) to mitigate the Load Value Injection (LVI) attack during the compilation. Coppens et al.'s approach has a slowdown with a factor from 2 to 24. The LVI harden binaries generated from GNU toolchains takes 6-10x longer to run.  For example, GNU toolchains inset LFENCE before any possible vulnerable instructions, including all load instructions, all indirect branches, and return instructions. We plan only to change those points that are likely to leak sensitive information. Finally, with the tool presented in the dissertation, we can modify only part of the ``severe'' leakage sites.
+Another limitation is that \ctool{} can only find the position in the code that leaks the sensitive information, but it is not the root cause of the leaks. Consider the example in Figure~\ref{fig:limitation}, it takes the secret as the input. At line 3, it calculates an index based on the value of the secret. Depending on the value of the index, it may or may not run the code at line 6. So line 5 is the reason that causes the vulnerability. But \ctool{} can only tell that line 6 can leak the information, despite it is not the root cause of the vulnerability.
+
+\section{Limitations}
