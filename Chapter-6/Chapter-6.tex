@@ -82,4 +82,3 @@ int foo(uint8_t secret){
 
 Another limitation is that \ctool{} can only find the position in the code that leaks the sensitive information, but it is not the root cause of the leaks. Consider the example in Figure~\ref{fig:limitation}, it takes the secret as the input. At line 3, it calculates an index based on the value of the secret. Depending on the value of the index, it may or may not run the code at line 6. So line 5 is the reason that causes the vulnerability. But \ctool{} can only tell that line 6 can leak the information, despite it is not the root cause of the vulnerability.
 
-\section{Limitations}
