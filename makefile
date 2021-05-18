@@ -1,4 +1,5 @@
 WHAT = Qinkun-Dissertation
+CHANGELOG = changelog
 
 best: 
 	pdflatex $(WHAT).tex
@@ -22,5 +23,9 @@ xbest:
 	pdflatex $(WHAT).tex
 	explorer $(WHAT).pdf ; echo OK
 
+log:
+	pdflatex $(CHANGELOG).tex
+	pdflatex $(CHANGELOG).tex
+
 clean: 
-	rm *.log *.aux *.bbl *.blg *.ent $(WHAT).toc $(WHAT).dvi $(WHAT).ps $(WHAT).pdf
+	rm *.log *.aux *.bbl *.blg *.ent $(WHAT).toc $(WHAT).dvi $(WHAT).ps $(WHAT).pdf $(CHANGELOG).toc $(CHANGELOG).dvi $(CHANGELOG).ps $(CHANGELOG).pdf
