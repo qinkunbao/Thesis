@@ -35,7 +35,7 @@ The current computer memory hierarchy opens the way for side-channel attacks fro
   \caption{Memory addressing}\label{fig:memory_address}
 \end{figure}
 
-In modern CPUs, L1 and L2 caches are traditional N-way set associate caches. That is, the cache is divided into several cache sets, and each set is associated with several cache lines. The cache line is the atomic unit. As shown in Figure~\ref{fig:memory_address}, we can determine whether the data is in the cache with the following steps.  Given an address, the CPU uses the \textsf{Set Index} field of the address to locate the cache set that the address should reside in. After that, it tries to use the \textsf{Tag} field to match every cache line inside the set line. If the CPU can locate a cache line with the same tag and the valid bit is set, then a cache hit occurs. The CPUs use a similar process to manage the main memory. The main memory is divided into many units called pages. As shown in Figure~\ref{fig:memory_address},
+In modern CPUs, L1 and L2 caches are traditional N-way set associate caches. That is, the cache is divided into several cache sets, and each set contains several cache lines. The cache line is the atomic unit. As shown in Figure~\ref{fig:memory_address}, we can determine whether the data is in the cache with the following steps.  Given an address, the CPU uses the \textsf{Index} field of the address to locate the cache set that the address should reside in. After that, it tries to use the \textsf{Tag} field to match every cache line inside the set line. If the CPU can locate a cache line with the same tag and the valid bit is set, then a cache hit occurs. The CPUs use a similar process to manage the main memory. The main memory is divided into many units called pages. As shown in Figure~\ref{fig:memory_address},
 the translation process keeps the bottom bits same while using the top bits to map the Physical Page Numbers to Virtual Page Numbers. 
 
 \subsection{Threat Model}
@@ -50,7 +50,7 @@ The attacker attempts to retrieve sensitive information through address-based si
 In reality, attackers may face many possible obstacles, such as the noisy observations of the memory or cache. However, for this project, we assume the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
 
 \section{Limitations of Current Side-channel Leakage Detection Tools}
-In this section, we introduce two limitations of current side-channel leakage detection tools. The first limitation is that some tools have some false positives or false negatives. The second limitation is current tools are not fast enough to analyze side-channel leakages in real-world software.
+In this section, we introduce two limitations of current side-channel leakage detection tools. The first is that some tools have some false positives or false negatives. The second is that current tools are not fast enough to analyze side-channel leakages in real-world software.
 
 
 \subsection{Imprecision}
@@ -167,10 +167,10 @@ movzx  eax, [addr_T + eax*1]
   \caption{Secret-dependent data accesses}\label{fig:chapter3:da}
 \end{figure}
 
-Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 Bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of one cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, those tools may miss such vulnerabilities.
+Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, those tools may miss such vulnerabilities.
 
 \subsection{Performance}
-The second limitation of current side-channel detection tools is the performance bottleneck, especially for those tools based on the symbolic analysis. For example, CaSym can only analyze small programs. CacheD performs better than CaSym. However, it still can not handle large programs like RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks.
+The second limitation of current side-channel detection tools is the performance bottleneck, especially for those tools based on symbolic analysis. For example, CaSym can only analyze small programs. CacheD performs better than CaSym. However, it still can not handle large programs like RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks.
 Nevertheless, it is significantly less likely for cache side channel bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the solver and find side-channel leakages more efficiently.
 
 \section{Method}\label{chapter3:method}
@@ -183,7 +183,7 @@ Nevertheless, it is significantly less likely for cache side channel bugs in cry
 In the section, we give necessary definitions and notations for dealing with
 programs and side-channels.
 
-Shown in Figure~\ref{fig:side-channel-attack}, a side-channel attack can be formulated into the below steps.  A program ($\beta$) has $K$ as its sensitive input (e.g., the encryption key) and $M$ as its the public input (e.g., the plaintext). In a real execution, an adversary may have
+Shown in Figure~\ref{fig:side-channel-attack}, a side-channel attack can be formulated into the following steps.  A program ($\beta$) has $K$ as its sensitive input (e.g., the encryption key) and $M$ as its the public input (e.g., the plaintext). In a real execution, an adversary may have
 some observations ($O$) of the program. Examples of those observations include the timing, CPU usages, and electromagnetic signals (EM). In this dissertation, we use secret-dependent control flows and secret-dependent data
 accesses as observations.
 
@@ -200,7 +200,7 @@ deterministic program, once $k \in K$ and $m \in M$ are fixed, the observation
 and $m$. The attacker wants to infer the value of $k$. Moreover, we assume
 an attacker can change the public input ($m \in M$) while keeping the secret input $k$. The threat model is similar to a chosen-plaintext attack.
 We now discuss how to model observations ($O$),
-which are the direct information that an adversary can get during the attack.
+which are the direct information that an adversary gets during the attack.
 
 For one execution, a program ($\beta$) has many temporary values ($t_i \in
   T$). Once $\beta$ (program), $k$ (secret), and $m$ (message, public) are
@@ -235,7 +235,7 @@ If the memory access equals to $t_b$, we can use the constraint $c_i :
   f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
 data accesses. Let's take a look the examples in Figure~\ref{fig:chapter3:da}(a).
 Suppose the base address of the array \textsf{T} is 10. We symbolize both the $k$ and $m$. The formula that represents the memory access at line 6 is $10 + m + (k \mod 128)$. Therefore, we have the formula: $(10 + m + (k_1 \mod 128)) >> 6  \neq (10 + m + (k_2 \mod 128)) >> 6$.
-Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can also be identified by previous tools like CacheD. Similarly, we can model the memory access at line 6 with the formula:  $10 + m + (k_1 \mod 32) >> 6  \neq 10 + m + (k_2 \mod 32) >> 6$. If $m = 0$, we can not find satisfiable $k_1$ and $k_2$ for the above inequation, which indicates that it will always access the same cache line at line 6. It is the conclusion from Cache. However, it is possible that for some $m \in M$, we can find such a pair of $k_1$ and $k_2$ ($m = 53, k_1 = 1, k_2 = 0$). If the actual public input is $0$, existing tools (e.g., CacheD) can miss such a vulnerability. On the other hand, our tool can identify the leakages precisely.
+Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can also be identified by previous tools like CacheD. Similarly, we can model the memory access at line 6 with the formula:  $10 + m + (k_1 \mod 32) >> 6  \neq 10 + m + (k_2 \mod 32) >> 6$. If $m = 0$, we can not find satisfiable $k_1$ and $k_2$ for the above inequation, which indicates that it will always access the same cache line at line 6. However, it is possible that for some $m \in M$, we can find such a pair of $k_1$ and $k_2$ ($m = 53, k_1 = 1, k_2 = 0$). If the actual public input is $0$, existing tools (e.g., CacheD) can miss such a vulnerability. On the other hand, our tool can identify the leakages precisely.
 
 \section{Scalability}
 \subsection{Trace-oriented Symbolic Execution}
@@ -248,7 +248,7 @@ domain knowledge~\cite{Wang:2007:NCD:1250662.1250723} to simplify the analysis.
 Those tools interpret each
 instruction and update memory cells and registers with formulas that
 captured the semantics of the execution and search different input values that
-can lead to different execution behaviors using constraint solver.
+can lead to different execution behaviors using a constraint solver.
 We implement the approach presented in \S\ref{chapter3:method} and model the side-channels as formulas. While the tools can analyze some simple cases such as AES, it cannot handle complicated examples such as RSA.
 We observe that finding side-channels using symbolic execution differs from
 traditional symbolic execution, and it can be optimized to be as efficient
