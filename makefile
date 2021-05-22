@@ -1,6 +1,14 @@
 WHAT = Qinkun-Dissertation
 CHANGELOG = changelog
 
+all:
+	pdflatex $(WHAT).tex
+	bibtex $(WHAT)
+	pdflatex $(WHAT).tex
+	pdflatex $(WHAT).tex
+	pdflatex $(CHANGELOG).tex
+	pdflatex $(CHANGELOG).tex
+
 best: 
 	pdflatex $(WHAT).tex
 	bibtex $(WHAT)
