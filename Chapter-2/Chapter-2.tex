@@ -102,7 +102,26 @@ Recent work also studies the side-channel attacks in media and graphic libraries
 Some other side-channel targets also include spelling checking tools and font libraries~\cite{xu2015controlled}. The attack on font libraries is essentially the same as the attack on the graphic library GDK. By exploiting the differences of memory accesses when the program renders different characters, an attacker can recover parts of the original sensitive information. Other side-channel attacks target the OS's kernel. One example is using the side-channel attack to break the kernel address space randomization (KASLR).
 Many exploits rely on the knowledge of the memory location of a certain kernel function. Since Linux 4.12, the kernel loads core kernel image and device drivers at random positions during the boot time. Jang et al.~\cite{jang2016breaking} rely on side-channels to reveal the mapping status of each page. After that, they detect kernel modules with unique size signatures to break KASLR. The second example relies on the side-channel vulnerabilities~\cite{cao2019principled} inside kernels to infer the TCP sequence numbers, which can be used by a third party to hijack connections between the client and the server~\cite{cao2016off}.
 
-\section{Detection and Mitigation}
+\section{Defenses and Mitigation}
+
+Both hardware~\cite{Page2005PartitionedCA,
+    Wang:2007:NCD:1250662.1250723,Zhang:2015:HDL:2775054.2694372,Li:2014:SLH:2541940.2541947,
+    236344, 236334} and software~\cite{shih2017t,Coppens:2009:PMT:1607723.1608124,
+    brickell2006software,crane2015thwarting, 197207} side-channels mitigation techniques have
+been proposed recently. Hardware countermeasures, including partitioning hardware resources~\cite{Page2005PartitionedCA}, randomizing cache
+accesses~\cite{Wang:2007:NCD:1250662.1250723, 236344}, and designing new
+architecture~\cite{tiwari2011crafting}, require changes to complex processors and are difficult to adopt. On the contrary, software approaches are
+usually easy to implement. Coppens et
+al.~\cite{Coppens:2009:PMT:1607723.1608124} uses a compiler
+to eliminate key-dependent control-flow transfers. Crane et
+al.~\cite{crane2015thwarting} mitigates side-channels by randomizing software.
+As for crypto libraries, the basic idea is to eliminate key-dependent
+control-flow transfers and data accesses. Common approaches include
+bit-slicing~\cite{konighofer2008fast,rebeiro2006bitslice} and unifying
+control-flows~\cite{Coppens:2009:PMT:1607723.1608124}.
+
+\subsection{Software Countermeasures}
+\subsubsection*{Software Vulnerability Identification}
 There are several existing works on side-channel leakage detections. According to Table~\ref{table:side_channel_detection_tool}, existing methods can be classified into two categories, tools based on the trace comparison and tools based on the abstraction.
 
 \textbf{Trace comparison.} If a program has two different execution traces under two different sensitive inputs, then attackers can distinguish the sensitive input by observing the execution trace. Therefore, we can conclude the program is vulnerable to side-channel attacks. The method is similar to the UNIX tool \textsf{diff}.  The approach does not need to model or abstract the program's semantics. In general, the approach is quite fast. On the negative side, comparing the trace can find the leakage, but it cannot find the complex relationship between the leakage site and the original secret input. For example, if two leakage sites leak the same information, these approaches cannot find out the two leakage sites are the same.
@@ -158,21 +177,12 @@ MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} adopts a similar approach f
     }
     %\end{table*}
 \end{sidewaystable}
-Both hardware~\cite{Page2005PartitionedCA,
-    Wang:2007:NCD:1250662.1250723,Zhang:2015:HDL:2775054.2694372,Li:2014:SLH:2541940.2541947,
-    236344, 236334} and software~\cite{shih2017t,Coppens:2009:PMT:1607723.1608124,
-    brickell2006software,crane2015thwarting, 197207} side-channels mitigation techniques have
-been proposed recently. Hardware countermeasures, including partitioning hardware resources~\cite{Page2005PartitionedCA}, randomizing cache
-accesses~\cite{Wang:2007:NCD:1250662.1250723, 236344}, and designing new
-architecture~\cite{tiwari2011crafting}, require changes to complex processors and are difficult to adopt. On the contrary, software approaches are
-usually easy to implement. Coppens et
-al.~\cite{Coppens:2009:PMT:1607723.1608124} uses a compiler
-to eliminate key-dependent control-flow transfers. Crane et
-al.~\cite{crane2015thwarting} mitigates side-channels by randomizing software.
-As for crypto libraries, the basic idea is to eliminate key-dependent
-control-flow transfers and data accesses. Common approaches include
-bit-slicing~\cite{konighofer2008fast,rebeiro2006bitslice} and unifying
-control-flows~\cite{Coppens:2009:PMT:1607723.1608124}.
+
+\subsubsection*{Runtime Behavior Randomization}
+
+\subsection{Hardware Countermeasures}
+\subsubsection*{Resource Partitioning}
+\subsubsection*{Randomization}
 
 \section{Quantification}
 Proposed by Denning~\cite{robling1982cryptography} and Gray~\cite{gray1992toward},
