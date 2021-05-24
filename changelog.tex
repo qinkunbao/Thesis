@@ -8,25 +8,26 @@
 \begin{document}
 
 \maketitle
-Thank you for reviewing my dissertation. I have gone through the details of each comment and revised my dissertation multiple rounds to eliminate any logic flow and fix all the typos and grammar errors. In summary, the revisions cover the following aspects.
+Thank you for reviewing my dissertation. I have gone through the details of each comment and revised my dissertation multiple rounds to eliminate any logic flows and fix all the typos and grammar errors. In summary, the revisions cover the following aspects.
 
 
 \begin{enumerate}
 \item \textbf{Fuzzing – Why did you use fuzzing?}
 
-
 There is no real reason for me to choose fuzzing over other methods. It is just my personal choice.
 
 Abacus identifies and quantifies side-channel leakages in a single trace. So it suffers from the problem of code coverage.  That is, Abacus misses side-channel leakages in the unexecuted code path. 
 
-I have a few choices. First, I can use static analysis (model checking or static program analysis). Although I am interested in the static analysis, I am not a big fan of current static analysis tools, especially for side-channel analysis. There are several papers on static side-channel analysis. But nearly all of them have high false positive rates. My personal experience with Coverity is similar. It is a commercial static program analysis tool but still generates plenty of false positives. 
+I have a few choices to address the limitations. First, I can use static analysis (model checking or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are several papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
 
-
-On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years.
+On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years. In particular, I find fuzzing is becoming a hot trend these years, especially after DARPA CGC in 2016.
 
 \item \textbf{Discuss the limitations of your research
 e.g., can only handle address based …
 you might want to include some discussion on the points (3), (4), and (5) below.}
+
+Like many other research projects, 
+
 \item \textbf{Can you extend your research (especially the quantification part) to include other side channel signals?}
 
 It is possible to extend the quantification part to include other side-channel signals. The key is to model the noises (e.g., Sound, CPU usages, EM signals) properly. In my dissertation, I assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model the noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information can be reliably transferred between the source (confidential data) and the destination (attackers). From a research project aspect, I hope to have a stronger motivation before starting the project. 
