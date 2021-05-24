@@ -14,7 +14,7 @@ Thank you for reviewing my dissertation. I have gone through the details of each
 \begin{enumerate}
 \item \textbf{Fuzzing – Why did you use fuzzing?}
 
-There is no real reason for me to choose fuzzing over other methods. It is just my personal choice.
+It is just my personal choice.
 
 Abacus identifies and quantifies side-channel leakages in a single trace. So it suffers from the problem of code coverage.  That is, Abacus misses side-channel leakages in the unexecuted code path. 
 
@@ -28,18 +28,33 @@ you might want to include some discussion on the points (3), (4), and (5) below.
 
 Like many other research projects, the research presented in the dissertation has a few limitations.
 
-a. It is true that the methods in the dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus 
+a. It is true that the methods in the dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx can not find all the leakages due to the code coverage problem. 
+
+b. The quantification result only applies to specific threat models. For example, Abacus quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much information in another execution.
+
+c. It is true that the research in the dissertation can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g, timing, EM signals). However, the root cause of many of those attacks is still the same. That is, the program accesses different addresses when it processes different input secrets.
 
 \item \textbf{Can you extend your research (especially the quantification part) to include other side channel signals?}
 
-It is possible to extend the quantification part to include other side-channel signals. The key is to model the noises (e.g., Sound, CPU usages, EM signals) properly. In my dissertation, I assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model the noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information can be reliably transferred between the source (confidential data) and the destination (attackers). From a research project aspect, I hope to have a stronger motivation before starting the project. 
+It is possible to extend the quantification part to include other side-channel signals. The key is to model the noises (e.g., Sound, CPU usages, EM signals) properly. In my dissertation, we assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model the noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information can be reliably transferred between the source (confidential data) and the destination (attackers). From a research project aspect, I hope to have a stronger motivation before starting the project. 
 \item \textbf{A bits vs. Q bits. Lower bounds?
        Improve the presentation
        Make the comparison more meaningful
        Etc.}
+       
+       
+To address the above concerns, I have made the following revisions.
+
+a. I revised the description in Chapter 5. I abandoned the term lower bound.
+
+d. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus in the current version because they have different threat models.
 \item \textbf{iid assumption – does it fit your research on side-channel?}
 
-The research in the dissertation 
+It is true that Quincunx requires the random input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
+
+The situation is a little different for a deep learning model. In the dissertation, we evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we can not get the correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning algorithms. In my dissertation, we used MINIST, a well-known handwriting dataset. We believe the dataset is i.i.d.
+
+I have revised my dissertation to include the discussion on iid.
 
 
 \item \textbf{Some feedback I gave before your defense.}
