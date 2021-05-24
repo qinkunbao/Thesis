@@ -18,7 +18,7 @@ There is no real reason for me to choose fuzzing over other methods. It is just 
 
 Abacus identifies and quantifies side-channel leakages in a single trace. So it suffers from the problem of code coverage.  That is, Abacus misses side-channel leakages in the unexecuted code path. 
 
-I have a few choices to address the limitations. First, I can use static analysis (model checking or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are several papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
+I have a few choices to address the limitation. First, I can use static analysis (model checking or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are several papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
 
 On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years. In particular, I find fuzzing is becoming a hot trend these years, especially after DARPA CGC in 2016.
 
@@ -27,6 +27,8 @@ e.g., can only handle address based …
 you might want to include some discussion on the points (3), (4), and (5) below.}
 
 Like many other research projects, the research presented in the dissertation has a few limitations.
+
+a. It is true that the methods in the dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus 
 
 \item \textbf{Can you extend your research (especially the quantification part) to include other side channel signals?}
 

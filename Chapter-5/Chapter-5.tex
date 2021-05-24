@@ -16,7 +16,7 @@ To solve the above problem, we propose a method to estimate the effect of side-c
 
 The method consists of three phases. In the first phase, we fuzz the target program with various inputs and collect the memory access information. In the second phase, we map the memory access information with the source code. With the debug information, we can precisely know the address access information of the source code. In the third phase, we exam the source code. If one function has two memory access patterns, then the function is vulnerable to side-channel attacks. Based on the distribution of memory access patterns under different inputs, we quantify each function's side-channel leakage.
 
-This paper makes the following contributions:
+This chapter makes the following contributions:
 
 \begin{itemize}
 
@@ -28,7 +28,7 @@ This paper makes the following contributions:
 \end{itemize}
 
 \section{Background and Threat Model}
-In the section, we give an overview of the background knowledge of information theory and present the threat model of the paper.
+In the section, we give an overview of the background knowledge of information theory and present the threat model of the chapter.
 
 
 \subsection{Channel Capacity}
@@ -41,7 +41,7 @@ value of $K$. The Shannon entropy $H(K)$ is defined as
 Shannon entropy can be used to quantify the initial uncertainty about the sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose each key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
 
 
-In the paper, we use the channel capacity to describe the amount of information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
+In the chapter, we use the channel capacity to describe the amount of information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
 
 \begin{equation}\label{chapter5:eq2}
   C(K;O) = \max_{p(x)} I(K;O)
@@ -130,7 +130,7 @@ Figure~\ref{fig:channel}(b) shows the example of the type of the channel. Once t
 \subsection{Threat Model and Notation}
 
 
-We consider an attacker who shares the same hardware resource with the victim. The attacker may not know the memory access the victim program accesses directly. Still, he can infer whether some memory addresses are accessed or not at various granularities after \textit{each run} of the victim program. We call the memory access information as the observation ($O$) in the rest of the paper. This is a typical scenario for most side-channel attacks.  We also assume the attacker can have access to the source code of the victim program ($\beta$). It is a valid assumption since most side-channel attacks target open-source software. Also, like recent works, we assume the attacker has a noise-free observation. For some side-channel channels like the controlled-channel attacks, it is already true. The program ($\beta$) has $K$ as the sensitive input. $K$ is a finite set that consists of every possible key ($k \in K$). The program also takes known messages $M$ as the input.
+We consider an attacker who shares the same hardware resource with the victim. The attacker may not know the memory access the victim program accesses directly. Still, he can infer whether some memory addresses are accessed or not at various granularities after \textit{each run} of the victim program. We call the memory access information as the observation ($O$) in the rest of the chapter. This is a typical scenario for most side-channel attacks.  We also assume the attacker can have access to the source code of the victim program ($\beta$). It is a valid assumption since most side-channel attacks target open-source software. Also, like recent works, we assume the attacker has a noise-free observation. For some side-channel channels like the controlled-channel attacks, it is already true. The program ($\beta$) has $K$ as the sensitive input. $K$ is a finite set that consists of every possible key ($k \in K$). The program also takes known messages $M$ as the input.
 
 \begin{figure}[ht]
   \centering
@@ -150,7 +150,7 @@ $K$, $M$, and $O$:
 Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$) shown in the figure~\ref{fig:side_channel}. As an attacker, he can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of paper, we use $\beta(K) \rightarrow O$ to denote a victim program with side-channel vulnerabilities.
 
 
-In this paper, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
+In thios chapter, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
 
 \section{Method}
 In this section, we first provide two examples that show how we rank the side-channel vulnerability. After that, we prove that our method is the conservative estimate of the amount of each leakage.
@@ -410,7 +410,7 @@ Based on the equation, we calculate the chi-square test statistic for two leakag
 \[\tilde{\chi}^2_{a}= \frac{(255.5-255)^2}{255.5} + \frac{(252.5-253)^2}{252.5} + \frac{(259.5-260)^2}{259.5} + \frac{(256.5-256)^2}{256.5} = 0.004\] 
 \[\tilde{\chi}^2_{b}= \frac{(764.8-809)^2}{764.8} + \frac{(126.2-82)^2}{126.2} + \frac{(114.2-70)^2}{114.2} + \frac{(18.8-63)^2}{18.8} = 139.1\] 
 
-According to Chi-squared distribution table, we have the probability $p\approx0.95$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (a). We have the probability $p\approx0.00$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (b). Therefore, we infer that the two leakages in Figure~\ref{chapter5:fig:multiple} (a) are independent. And the two leakages Figure~\ref{chapter5:fig:multiple} (b) are dependent. In this paper, for any two leakages, if $p < 0.03$, we think the two leakage sites are independent. We use the above method to test if any two leakage sites are independent for each leakage point. We combine them into a leakage are calculate the total amount of the leakage.
+According to Chi-squared distribution table, we have the probability $p\approx0.95$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (a). We have the probability $p\approx0.00$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (b). Therefore, we infer that the two leakages in Figure~\ref{chapter5:fig:multiple} (a) are independent. And the two leakages Figure~\ref{chapter5:fig:multiple} (b) are dependent. In thios chapter, for any two leakages, if $p < 0.03$, we think the two leakage sites are independent. We use the above method to test if any two leakage sites are independent for each leakage point. We combine them into a leakage are calculate the total amount of the leakage.
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
 We first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
@@ -451,7 +451,7 @@ In this step, we detect and quantify the side-channel leakage. For each $k \in K
 Suppose a program reads one byte at memory $\mathsf{0x7ffff7ffd001}$ when the secret is $k_1$ and reads a different byte at memory $\mathsf{0x7ffff7ffda01}$ when the secret is $k_2$, an attacker who has the page-level observation can not launch the attack but an attacker who launches the cache attack can know the input is $k_1$ or $k_2$. We update the new bitmap of the large unit by merging the bitmaps of small units that fall into the large unit. That is, $\forall addr_1, addr_2, \dots, addr_n \in addr_N, B^{addr_N}_{k_i} = B^{addr_1}_{k_i} \lor,\dots,\lor B^{addr_N}_{k_n}$.
 
 
-\subsubsection{Leakage Detection} The access of the address is secret-dependent if $ \exists\, k_{i1}, k_{i2} \in K, \, B^{addr}_{k_i1} \oplus  B^{addr}_{k_i2} =1 $. In the paper, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to the side-channel attacks.
+\subsubsection{Leakage Detection} The access of the address is secret-dependent if $ \exists\, k_{i1}, k_{i2} \in K, \, B^{addr}_{k_i1} \oplus  B^{addr}_{k_i2} =1 $. In the chapter, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to the side-channel attacks.
 
 \begin{myexample}
 Suppose we sample a program from $k1$ to $k8$ and record the memory access at the granularity of each byte from $\mathsf{7ffff7ffd000}$ to $\mathsf{7ffff7ffd03f}$ (One cache line). We perform the bit-wise or operation of each address with the address range. Because the cache line is always accessed. We think it is not a leak here.
