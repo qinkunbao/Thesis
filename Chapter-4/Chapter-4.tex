@@ -648,7 +648,7 @@ $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
 
 After we split those constraints into several small constraints, we count the number of solutions for each constraint. Even though the dimension has been
 significantly reduced by the previous step, this is still a \#P problem. For our project, we apply the approximate counting instead of exact counting for two reasons. First, we do not need to have a very precise result of the exact number of total solutions since the information is defined with a logarithmic function. We do not need to distinguish between constraints having $10^{10}$ or $10^{10} + 10$ solutions; they are very close to after taking logarithmic. Second, the
-precise model counting approaches, like Davis-Putnam-Logemann-Loveland (DPLL)
+precise model counting approaches, such as Davis-Putnam-Logemann-Loveland (DPLL)
 search, have difficulty scaling up to large problem sizes.
 
 We apply the ``counting by sampling'' method. For
@@ -1249,7 +1249,7 @@ output = (T[(key[0]>>24)] << 24) ^
 
 Considering the cache-collision timing attack~\cite{Bonneau11894063_16}, the
 probability of leakage decreases when the lookup table entry or element size gets
-smaller. We analyze the table lookup with \tool{}. It is a common operation used by symmetric ciphers like AES. Figure~\ref{fig:chapter4:big_lookup} is from the original AES reference implementation. It uses a lookup table and each entry is 4 bytes, which is vulnerable to side-channel attacks. Most cryptography libraries adopted the mitigated version, shown in Figure~\ref{fig:chapter4:small_lookup}. \tool{} reports three leakage sites for
+smaller. We analyze the table lookup with \tool{}. It is a common operation used by symmetric ciphers such as AES. Figure~\ref{fig:chapter4:big_lookup} is from the original AES reference implementation. It uses a lookup table and each entry is 4 bytes, which is vulnerable to side-channel attacks. Most cryptography libraries adopted the mitigated version, shown in Figure~\ref{fig:chapter4:small_lookup}. \tool{} reports three leakage sites for
 each lookup table, with 4.0 bits for the table with smaller entries and 2.0
 bits for the table with bigger entries, confirming the theory.
 The evaluation result shows the version with smaller lookup tables leaks less information, which confirm the effectiveness of the mitigation technique. 
