@@ -43,13 +43,14 @@ It is possible to extend the quantification part to include other side-channel s
        Etc.}
 
 It is hard to understand Entropy. There is a rumor about entropy between John von Neumann and Claude Shannon. When Shannon developed the concept of information theory, he did not have a good idea to name the measurement of uncertainty in a system. Neumann told Shannon, ``You should call it entropy, for two reasons. In the first place your uncertainty function has been used in statistical mechanics under that name, so it already has a name. \textbf{In the second place, and more important, nobody knows what entropy really is, so in a debate you will always have the advantage.}''
-       
+
+Apparently,        
        
 To address the above concerns, I have made the following revisions.
 
 a. I revised the description in Chapter 5. I abandoned the term lower bound.
 
-d. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus in the current version because they have different threat models.
+b. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus in the current version because they have different threat models.
 \item \textbf{iid assumption – does it fit your research on side-channel?}
 
 It is true that Quincunx requires the random input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
