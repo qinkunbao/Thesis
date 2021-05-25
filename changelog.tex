@@ -14,35 +14,34 @@ Thank you for reviewing my dissertation. I have gone through the details of each
 \begin{enumerate}
 \item \textbf{Fuzzing – Why did you use fuzzing?}
 
-It is just my personal choice.
-
 Abacus identifies and quantifies side-channel leakages in a single trace. So it suffers from the problem of code coverage.  That is, Abacus misses side-channel leakages in the unexecuted code path. 
 
-I have a few choices to address the limitation. First, I can use static analysis (model checking or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are several papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
+I have a few choices to address the limitation. First, I can use static analysis (model checking or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are many papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
 
-On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years. In particular, I find fuzzing is becoming a hot trend these years, especially after DARPA CGC in 2016.
+On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years. In particular, fuzzing is becoming a hot trend these years, especially after DARPA CGC in 2016. The fuzzing method is suitable for a task such as side-channel detection. If a program executes two different code paths or accesses two different addresses with two different input values, the program is vulnerable to side-channel attacks. When we report the leakages sites to developers, we can tell them the two inputs. Developers can quickly reproduce the leakage sites with the inputs.  Interestingly, there are a few (not many) related papers. That's why I used fuzzing at the beginning of the project.
+
 
 \item \textbf{Discuss the limitations of your research
 e.g., can only handle address based …
 you might want to include some discussion on the points (3), (4), and (5) below.}
 
-Like many other research projects, the research presented in the dissertation has a few limitations.
+The research presented in the dissertation has a few limitations.
 
-a. You are right that the methods in the dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx can not find all the leakages due to the code coverage problem. 
+a. The methods in my dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx can not find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, one tools as yet can prove the absence of side-channel leakages in production software.
 
 b. The quantification result only applies to specific threat models. For example, Abacus quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much information in another execution.
 
-c. It is true that the research in the dissertation can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g, timing, EM signals). However, the root cause of many of those attacks is still the same. That is, the program accesses different addresses when it processes different input secrets.
+c. The research in the dissertation can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g, timing, EM signals). However, the root cause of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these attacks.
 
 \item \textbf{Can you extend your research (especially the quantification part) to include other side channel signals?}
 
-It is possible to extend the quantification part to include other side-channel signals. The key is to model the noises (e.g., Sound, CPU usages, EM signals) properly. In my dissertation, we assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model the noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information can be reliably transferred between the source (confidential data) and the destination (attackers). From a research project aspect, I hope to have a stronger motivation before starting the project. 
+It is possible to extend the quantification part to include other side-channel signals. The key is to model the noises (e.g., Sound, CPU usages, EM signals) properly. In my dissertation, we assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model the noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information that can be reliably transferred over a channel between secret data and attackers' observations. From a research project aspect, I hope to have a stronger motivation before starting the project. 
 \item \textbf{A bits vs. Q bits. Lower bounds?
        Improve the presentation
        Make the comparison more meaningful
        Etc.}
 
-It is hard to explain Entropy. There is a rumor about entropy between John von Neumann and Claude Shannon. When Shannon developed the concept of information theory, he did not have a good idea to name the measurement of uncertainty in a system. Neumann told Shannon, ``You should call it entropy, for two reasons. In the first place your uncertainty function has been used in statistical mechanics under that name, so it already has a name. In the second place, and more important, nobody knows what entropy really is, so in a debate you will always have the advantage.'' In my dissertation proposal, everyone does not really understand how we quantify the amount of leaked information in Abacus. In my final defense, everyone is confused with the term ``lower bounds'' except my advisor. 
+It is hard to explain Entropy. There is a rumor about entropy between John von Neumann and Claude Shannon. When Shannon developed the concept of information theory, he did not have a good idea to name the measurement of uncertainty in a system. Neumann told Shannon, ``You should call it entropy, for two reasons. In the first place,your uncertainty function has been used in statistical mechanics under that name, so it already has a name. In the second place, and more important, nobody knows what entropy really is, so in a debate you will always have the advantage.'' In my dissertation proposal, everyone does not really understand how we quantify the amount of leaked information in Abacus. In my final defense, everyone is confused with the term ``lower bounds'' except my advisor. 
 
 a. Abacus quantifies the amount of leaked information for a given address access behavior.
 
