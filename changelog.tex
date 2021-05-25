@@ -27,11 +27,11 @@ you might want to include some discussion on the points (3), (4), and (5) below.
 
 The research presented in the dissertation has a few limitations.
 
-a. The methods in my dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx can not find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, one tools as yet can prove the absence of side-channel leakages in production software.
+a. The methods in my dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx can not find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
 
 b. The quantification result only applies to specific threat models. For example, Abacus quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much information in another execution.
 
-c. The research in the dissertation can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g, timing, EM signals). However, the root cause of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these attacks.
+c. The research in the dissertation can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g, timing, EM signals). However, the root cause of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these leakage sites.
 
 \item \textbf{Can you extend your research (especially the quantification part) to include other side channel signals?}
 
@@ -43,9 +43,9 @@ It is possible to extend the quantification part to include other side-channel s
 
 It is hard to explain Entropy. There is a rumor about entropy between John von Neumann and Claude Shannon. When Shannon developed the concept of information theory, he did not have a good idea to name the measurement of uncertainty in a system. Neumann told Shannon, ``You should call it entropy, for two reasons. In the first place,your uncertainty function has been used in statistical mechanics under that name, so it already has a name. In the second place, and more important, nobody knows what entropy really is, so in a debate you will always have the advantage.'' In my dissertation proposal, everyone does not really understand how we quantify the amount of leaked information in Abacus. In my final defense, everyone is confused with the term ``lower bounds'' except my advisor. 
 
-a. Abacus quantifies the amount of leaked information for a given address access behavior.
+a. Abacus quantifies the amount of leaked information for a given address access behavior. It is a measure of the amount of leaked information that an attacker can get, given that another event has already occurred. 
 
-b. Quincunx defines the amount of leaked information by the empirical entropy of the observations. For a determinism program, channel capacity is the tight upper bound of the the empirical entropy of the observations. That's why I used the term ``lower bound'' during my PhD defense. I have removed the term ``lower bound'' right know.
+b. Quincunx defines the amount of leaked information by the empirical entropy of the observations. For a determinism program, channel capacity is the tight upper bound of the the empirical entropy of the observation. That's why I used the term ``lower bound'' during my PhD defense. I have removed the term ``lower bound'' to avoid any confusion in my dissertation.
 
 c. I agree with Dr. Liu's comments that the quantification metrics in Chapter 4 and Chapter 5 are different. The reason that I compare them together in Table 5.3 is that they have the same dimensional unit (bit) under the dimensional analysis. I have removed the comparison in the current version.
 
