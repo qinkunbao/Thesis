@@ -8,7 +8,7 @@ The cause of most side-channel attacks is the combination of the hardware design
 
 Recent work has made good progress in detecting side-channel leakages automatically. Some tools (e.g., CacheD~\cite{203878}, CaSym~\cite{Brotzman19Casym}) have successfully identified unknown leakage sites in software products automatically. However, those tools have limitations.
 
-First, although some tools~\cite{Brotzman19Casym} can find side-channel leakages in real-world software products, they can only analyze one code fragment at a time due to the expensive performance overhead. As a result, users of those tools sometimes need to cut off manually irrelevant code based on their experience. The trimming process is tedious and needs domain knowledge of the target software (e.g., which part of the code is more likely to have side-channel leakage sites). More importantly, if serious leakage sites are on the trimmed code, those tools will miss those leakage sites as well.
+First, although some tools~\cite{Brotzman19Casym} can find side-channel leakages in real-world software products, they can only analyze one code fragment at a time due to the expensive performance overhead. As a result, users of these tools sometimes need to cut off manually irrelevant code based on their experience. The trimming process is tedious and needs domain knowledge of the target software (e.g., which part of the code is more likely to have side-channel leakage sites). More importantly, if serious leakage sites are on the trimmed code, these tools will miss leakage sites as well.
 
 Second, many tools perform the analysis at the level of intermediate representations (IR) instead of the machine code. It is a design decision to facilitate the implementations. While analyzing the IRs can simplify the implementation, it is not suitable for side-channel analysis.  Side-channel leakages are a low-level issue and only the low-level analysis can produce the most accurate results. For example, the IR-level branches are not necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches with conditional moves, and the converse could also happen. Moreover, translating the machine code into IRs can cause a significant overhead for the trace analysis, as we will discuss in the dissertation.
 
@@ -167,10 +167,10 @@ movzx  eax, [addr_T + eax*1]
   \caption{Secret-dependent data accesses}\label{fig:chapter3:da}
 \end{figure}
 
-Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, those tools may miss such vulnerabilities.
+Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, these tools may miss such vulnerabilities.
 
 \subsection{Performance}
-The second limitation of current side-channel detection tools is the performance bottleneck, especially for those tools based on symbolic analysis. For example, CaSym can only analyze small programs. CacheD performs better than CaSym. However, it still can not handle large programs such as RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks.
+The second limitation of current side-channel detection tools is the performance bottleneck, especially for tools based on symbolic analysis. For example, CaSym can only analyze small programs. CacheD performs better than CaSym. However, it still can not handle large programs such as RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks.
 Nevertheless, it is significantly less likely for cache side channel bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the solver and find side-channel leakages more efficiently.
 
 \section{Method}\label{chapter3:method}
@@ -184,7 +184,7 @@ In the section, we give necessary definitions and notations for dealing with
 programs and side-channels.
 
 Shown in Figure~\ref{fig:side-channel-attack}, a side-channel attack can be formulated into the following steps.  A program ($\beta$) has $K$ as its sensitive input (e.g., the encryption key) and $M$ as its the public input (e.g., the plaintext). In a real execution, an adversary may have
-some observations ($O$) of the program. Examples of those observations include the timing, CPU usages, and electromagnetic signals (EM). In this dissertation, we use secret-dependent control flows and secret-dependent data
+some observations ($O$) of the program. Examples of these observations include the timing, CPU usages, and electromagnetic signals (EM). In this dissertation, we use secret-dependent control flows and secret-dependent data
 accesses as observations.
 
 With the above definition, we have the following mapping between $\beta$, $K$, $M$, and $O$:
@@ -245,7 +245,7 @@ work~\cite{203878,Chattopadhyay:2017:QIL:3127041.3127044} has serious
 performance bottlenecks. As a result, these approaches either apply only to
 small programs~\cite{Chattopadhyay:2017:QIL:3127041.3127044} or require
 domain knowledge~\cite{Wang:2007:NCD:1250662.1250723} to simplify the analysis.
-Those tools interpret each
+These tools interpret each
 instruction and update memory cells and registers with formulas that
 captured the semantics of the execution and search different input values that
 can lead to different execution behaviors using a constraint solver.
@@ -356,7 +356,7 @@ The trace data has the following information:
 
 \subsection{Instruction Level Symbolic Execution}
 \label{InstructionSE}
-The primary purpose of the step is to generate constraints of the input sensitive information from the execution trace. If we give the target program a new input which is different from the original input that was used to generate the execution trace but still satisfies those constraints, as an attacker, he will have the same observations on control-flow transfers and data-access patterns.
+The primary purpose of the step is to generate constraints of the input sensitive information from the execution trace. If we give the target program a new input which is different from the original input that was used to generate the execution trace but still satisfies these constraints, as an attacker, he will have the same observations on control-flow transfers and data-access patterns.
 
 The tool runs symbolic execution on top of execution traces. At the beginning of the symbolic execution, the tool creates new symbols for each byte in the raw buffer. For other data in the register or memory at the beginning, we use actual values from the runtime information collected during the runtime. During the symbolic execution for each instruction, the tool updates every variable in the memory and registers with a math formula. The formula is made up of concrete values and the input key as the symbols accumulated through the symbolic execution. We implement several rules to simplify the formulas. For each formula, the tool will check weather it can be reduced into a concrete values (e.g., $k_1+12-k_1 = 12$ ). If so, the tool will only use the concrete values in the following symbolic execution.
 
@@ -415,7 +415,7 @@ If the value is a formula, it means the original information passes through the 
 We evaluate our method on real-world crypto libraries, which include  OpenSSL, mbedTLS, Libgcrypt and Monocypher\@. OpenSSL is the most commonly used crypto libraries in today's software. mbedTLS\@ (previous known as PolarSSL) is designed to be easy to understand and fit on embedded devices. We also evaluate Monocypher, a new cryptographic library that resists to most side-channel attacks.
 According to the developers, Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model. Libgcrypt is a cryptographic library from the GunPG. As some previous work (e.g., CacheD) choose to evaluate their tools on Libgcrypt, we can compare the evaluation results by applying the tool on Libgcrypt.
 
-For some crypto libraries, we evaluate multiple versions. After that, we compare the evaluation results with the version history to track those leakages' patches. In summary, we evaluate our tool on the following libraries.
+For some crypto libraries, we evaluate multiple versions. After that, we compare the evaluation results with the version history to track these leakages' patches. In summary, we evaluate our tool on the following libraries.
 \begin{itemize}
   \item OpenSSL: 0.9.7, 1.0.2f, 1.0.2k, 1.1.0f, 1.1.1, 1.1.1g
   \item MbedTLS: 2.5, 2.15
@@ -423,7 +423,7 @@ For some crypto libraries, we evaluate multiple versions. After that, we compare
   \item Monocyper: 3.0
 \end{itemize}
 
-We refer to the examples or test cases of those libraries and write simple
+We refer to the examples or test cases of these libraries and write simple
 programs that use the crypto libraries. For symmetric encryption, the length
 of the keys are 256 bit. For RSA, the length of the keys is 1024. For ECDSA, the
 length of the key is 384 bit. The input public message is ``Hello World!''.
@@ -532,11 +532,11 @@ vulnerabilities. \detect{} can detect secret-dependent control-flows as well.
 Second, according to the CacheD paper, CacheD times out after 20 hours to process
 asymmetric ciphers. CacheD applies some domain knowledge to simplify and speed up
 the analysis.
-While those optimizations do not introduce false positives, they may miss some
+While these optimizations do not introduce false positives, they may miss some
 vulnerabilities.
 Third, CacheD only symbolizes the encryption keys. Some side-channel leakages when the input messages equal to some certain values. It is possible that CacheD miss some
 leakages as we have discussion the previous sections.
-We notice that the number of instructions in those traces are different due to the different analysis starting functions and building options during the evaluation.
+We notice that the number of instructions in these traces are different due to the different analysis starting functions and building options during the evaluation.
 Table~\ref{eval:cacheD} shows that
 \detect{} is faster than CacheD. \detect{} is much faster than CacheD when analyzing the same
 number of instructions. For example, when we test~\detect{} on AES from OpenSSL
@@ -583,10 +583,10 @@ respectively. On the other hand, \detect{} finishes its analysis in
 less than ten seconds while finding all the leakages reported by
 DATA. b) Because \detect{} does not exexute the test program again when we
 have a new \emph{secret input}, \detect{} can test more input secrets
-on those formulas within the same time to achieve better precision.
+on these formulas within the same time to achieve better precision.
 c) DATA tries to use leakage models (domain knowledge) to classify each leakage.
 The strength of \ctool{} is that it does not need such domain knowledge.
-DATA reports 278 control-flow and 460 memory-access leaks for the RSA implementation in OpenSSL 1.1.0f. Among those leakages, they find one new vulnerability in RSA after some manual analysis.
+DATA reports 278 control-flow and 460 memory-access leaks for the RSA implementation in OpenSSL 1.1.0f. Among these leakages, they find one new vulnerability in RSA after some manual analysis.
 \detect{} finds the vulnerability.  For each leakage site, \detect{} can provide
 concrete examples to trigger the issue.
 \subsection{Case Studies}
@@ -635,10 +635,10 @@ Monocypher is a small, easy to use cryptographic library with
 performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}.
 We choose four ciphers that are
 designed to be side-channel resistant from the library.
-Because those ciphers have no
+Because these ciphers have no
 data flow from secrets to branch conditions and load addresses.
 Monocypher should be safe under our threat models.
-We analyze those ciphers with \detect{}, and it reports no leaks.
+We analyze these ciphers with \detect{}, and it reports no leaks.
 This indicates that \detect{} is effective for validating countermeasures.
 
 

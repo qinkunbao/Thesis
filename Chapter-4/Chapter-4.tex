@@ -12,7 +12,7 @@ weaknesses. Third, most vulnerabilities pose a negligible risk. Although some vu
 Previous work on side-channel quantification~\cite{182946,5207642} can identify numerous leakages or even provide an upper bound on the amount of leakage, which is useful to verify that an implementation is secure if it incurs zero leakage.
 However, these techniques cannot quantify the severity of a leak because they over approximate the leakage. For example, CacheAudit~\cite{182946}
 reports that the upper-bound leakage of AES-128 exceeds the original key size. Besides, existing side-channel quantification work~\cite{182946,5207642} assumes an attacker runs the target program multiple times with different
-input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, those results are less useful to assess the severity level of each leakage site.
+input secrets and calculates an ``average'' estimation, which is different from real attack scenarios when the secret that an attacker wants to retrieve is fixed. As a consequence, these results are less useful to assess the severity level of each leakage site.
 
 To overcome these limitations, we propose a novel method to quantify information
 leakage precisely. We quantify the number of bits that can leak during a real
@@ -37,7 +37,7 @@ We collect execution traces of these libraries and apply
 symbolic execution to each instruction. We model
 each side-channel leak as a logic formula. These
 formulas precisely model side-channel vulnerabilities.
-Then we use the conjunction of those formulas to model the
+Then we use the conjunction of these formulas to model the
 leaks at a statement that appears in different location in
 the execution trace file (e.g., leaks inside a loop).
 Finally, we introduce a Monte Carlo sampling method to estimate
@@ -433,7 +433,7 @@ usually public. The problem of quantifying the leaked information has been
 transferred into the problem of estimating the size of input key $|K^o|$ under
 the condition $o \in O$. The result is shown in Table~\ref{shtable2}. We can see
 that some branches (e.g., A) or traces leak much more information than some others.
-Those kinds of branches can be vulnerable when an attacker's data is incorporate.
+These kinds of branches can be vulnerable when an attacker's data is incorporate.
 For example, the code will skip some of the calculation if the value is 0 in big
 number multiplication.
 
@@ -481,7 +481,7 @@ have as many as 512 symbols.
 
 We adopt multiple-step Monte Carlo sampling methods to count the number of
 possible inputs that satisfy the logic formula groups. The key idea is to split
-those constraints into several small formulas and sample them independently.
+these constraints into several small formulas and sample them independently.
 We will introduce the method in the following subsection.
 
 
@@ -494,7 +494,7 @@ In this section, we present the algorithm to calculate the information leakage b
 
 \subsection{Problem Statement}
 For each leakage site, we model it with a constraint using the
-method presented in the previous section. Suppose the address of the leakage site is $\addr{i}$, we use $c_{\addr{i}}$ to denote the constraint that models its side-channel leakage. For multiple leakage sites, we take the conjunction of those constraints to represent those leakage sites.
+method presented in the previous section. Suppose the address of the leakage site is $\addr{i}$, we use $c_{\addr{i}}$ to denote the constraint that models its side-channel leakage. For multiple leakage sites, we take the conjunction of these constraints to represent these leakage sites.
 
 According to the Definition~\ref{chapter4:def}, to calculate the amount of leaked
 information, the key is to calculate the cardinality
@@ -646,7 +646,7 @@ $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
 
 \subsection{Multiple-step Monte Carlo Sampling}
 
-After we split those constraints into several small constraints, we count the number of solutions for each constraint. Even though the dimension has been
+After we split these constraints into several small constraints, we count the number of solutions for each constraint. Even though the dimension has been
 significantly reduced by the previous step, this is still a \#P problem. For our project, we apply the approximate counting instead of exact counting for two reasons. First, we do not need to have a very precise result of the exact number of total solutions since the information is defined with a logarithmic function. We do not need to distinguish between constraints having $10^{10}$ or $10^{10} + 10$ solutions; they are very close to after taking logarithmic. Second, the
 precise model counting approaches, such as Davis-Putnam-Logemann-Loveland (DPLL)
 search, have difficulty scaling up to large problem sizes.
@@ -880,7 +880,7 @@ Our testbed is comprised of several popular cryptography libraries. We choose th
 on the following aspects. First, they should be widely used in many popular software.
 In general, it is hard to implement a secure cryptography library from scratch. So most
 software only use a few number of different cryptography libraries. Second, we choose some
-libraries which are well studied in the previous work. We can refer to those conslusions to
+libraries which are well studied in the previous work. We can refer to these conclusions to
 verify our results. Based on the two requirements, we evaluate \tool{} on the following libraries:
 OpenSSL, Libgcrypt, mbedTLS, Monocypher. OpenSSL, Libgcrypt, and mebdTLS are the most widely used
 cryptography libraries. OpenSSL and mbedTLS have been widely studied in the previous research.
@@ -907,7 +907,7 @@ With our tool, developers can
 distinguish non-critical ``vulnerabilities'' from severe ones.
 
 Symmetric encryption implementations in OpenSSL and mbedTLS have significant leakage due to their lookup table implementations. 
-\tool{} confirms that those leakage comes from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. Those changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
+\tool{} confirms that these leakage comes from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. These changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
 
 \tool{} can estimate how
 much information is leaked from each vulnerability. During the evaluation,
