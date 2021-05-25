@@ -16,15 +16,29 @@ To solve the above problem, we propose a method to estimate the effect of side-c
 
 The method consists of three phases. In the first phase, we fuzz the target program with various inputs and collect the memory access information. In the second phase, we map the memory access information with the source code. With the debug information, we can precisely know the address access information of the source code. In the third phase, we exam the source code. If one function has two memory access patterns, then the function is vulnerable to side-channel attacks. Based on the distribution of memory access patterns under different inputs, we quantify each function's side-channel leakage.
 
-This chapter makes the following contributions:
+In this work, we make the following contributions:
 
 \begin{itemize}
 
-  \item We propose a novel method that automatically detects and analyzes the effect of each side-channel leakage site. Our analysis combines information from both the source code and the runtime execution, which makes the method more effective in finding the leakages. The method can combine multiple leakage sites to retrieve more information as well.
+  \item We propose a method that automatically detects and analyzes the
+  effect of each side-channel leakage site. Our analysis combines
+  information from both the source code and the run-time execution,
+  which makes the method more effective in finding the leakages. The
+  technique can combine multiple leakage sites to retrieve more
+  information as well.
 
-  \item We analyze the amount of information leakage from side-channel vulnerabilities based on the channel capacity.  The theory can serve as the foundation of future work on quantifying the information leakage based on the fuzzing.
+  \item We analyze the amount of information leakage from side-channel
+  vulnerabilities based on the channel capacity.   The
+  information leakage our tool reports for each leakage
+  site is quite precise and thus can reflect the severity level of the
+  leakage.
 
-  \item We implement the above method in a tool called \ctool{} and evaluate the tool with several benchmarks and several real-world applications such as OpenSSL, mbedTLS, TinyDNN, and GTK. The results show that our tool can detect and quantify the side-channel leakages effectively. Moreover, the leakage reports given by the \ctool{} can help developers fix the reported vulnerabilities.
+  \item We implement the above method in a tool called \ctool{} and
+  evaluate the tool with several benchmarks and several real-world
+  applications such as OpenSSL, mbedTLS, TinyDNN, and GTK\@. The results
+  show that our tool can detect and quantify the side-channel leakages
+  effectively. Moreover, the leakage reports given by the \ctool{} can
+  help developers fix the reported vulnerabilities.
 \end{itemize}
 
 \section{Background and Threat Model}
