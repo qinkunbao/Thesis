@@ -50,8 +50,8 @@ However, eliminating side-channel vulnerabilities from real-world software code 
 In summary, it is hard to apply software approaches in practice due to the following reasons.
 
 \begin{enumerate}
-    \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of the secret inputs. Recent work can identify side-channel leakages. But those tools can only work on small programs or need to apply domain knowledge of the target program to simplify the analysis.
-    \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because those leakages are either false positives or leaked very little information.
+    \item It is hard to identify side-channel vulnerabilities in real-world software. In general, many side-channel vulnerabilities are low-level problems. Control-flows or memory accesses may not be side-channel vulnerabilities if they are independent of the secret inputs. Recent work can identify side-channel leakages. But these tools can only work on small programs or need to apply domain knowledge of the target program to simplify the analysis.
+    \item Side-channel vulnerabilities are ubiquitous. While some vulnerabilities can result in the key being entirely compromised, many other vulnerabilities are hard to exploit. Moreover, some vulnerable implementations perform better. Recent work can identify thousands of leaked points, but most of them are not patched by developers because these leakages are either false positives or leaked very little information.
 \end{enumerate}
 
 In this dissertation, we try to address the above problem from the following two aspects.

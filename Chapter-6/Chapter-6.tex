@@ -6,7 +6,7 @@
 
 \textbf{Cache Model.} We use a simple cache model in this work. Recent work~\cite{Brotzman19Casym,182946} uses an LRU cache. First, there is no fundamental difficulties for us to adopt a more realistic cache models. Second, the LRU model is still a substantial simplification of a real cache. However, the choice of a logical model of cache can bring expensive overheads.
 
-\textbf{Leakages.} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has several sensitive leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. After we manually analyze those leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which partially explain why developers are not interested in fix all the leakages. 
+\textbf{Leakages.} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has several sensitive leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. After we manually analyze these leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which partially explain why developers are not interested in fix all the leakages. 
 \section{Precise Analysis on Single-trace Attacks}
 While recent work found many side-channel vulnerabilities,
 we note that many of them have not been patched by developers.
@@ -58,25 +58,25 @@ which means the number of $K^o$ is very small. According to Definition~\ref{chap
 \section{Precise Analysis on Multiple-trace Attacks}
 This paper presents an approach that tries to give a conservative
 estimate of the amount of leaked information by address-based
-side-channel attacks. Those attacks exploit the data-flow from secrets
+side-channel attacks. These attacks exploit the data-flow from secrets
 to load address and the data-flow from the data-flow from secrets to
 branch conditions to retrieve secrets based on the observation on the
-memory accesses. Although those kinds of side-channel leakages have
+memory accesses. Although these kinds of side-channel leakages have
 been discovered for decades, the up-to-date software still has some
-side-channel leakages. For some of those vulnerabilities, developers
-do not fix them because they think those side-channel vulnerabilities
-are not important. To show the importance of those side-channel
+side-channel leakages. For some of these vulnerabilities, developers
+do not fix them because they think these side-channel vulnerabilities
+are not important. To show the importance of these side-channel
 leakages, one way is to demonstrate an end-to-end attack based on the
 vulnerability. However, demonstrating an end-to-end attack often need
 a lot of manual effort and the domain knowledge of the victim program,
 which is not often the case in practice. It is good to have a tool
-that automatically assesses the severity level of those side-channel
+that automatically assesses the severity level of these side-channel
 leakages. So it would be better to have a proper metric to quantify
 the side-channel leakage. However, we find previous side-channel
 quantification tools are developed to ensure the noninterference of
 the program. They use the over-approximation heuristics method to
 quantify the leakage. For example, CacheAudit estimates that a 128-bit
-AES encryption can leak more than 128 bits. As a result, even those
+AES encryption can leak more than 128 bits. As a result, even these
 tools report severe leakage, it does not mean the program has a truly
 severe leakage.
 
