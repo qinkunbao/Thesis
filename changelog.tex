@@ -16,9 +16,9 @@ Thank you for reviewing my dissertation. I have gone through the details of each
 
 Abacus identifies and quantifies side-channel leakages in a single trace. So it suffers from the problem of code coverage.  That is, Abacus misses side-channel leakages in the unexecuted code path. 
 
-I have a few choices to address the limitation. First, I can use static analysis (model checking or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are many papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
+I have a few choices to address the limitation. First, I can use static methods (verification or static program analysis). Although I am interested in static analysis, I am not a big fan of current static analysis tools, especially for side-channel research. There are many papers on static side-channel analysis. Nearly all of these tools are used to prove the absence of side-channel leakages. However, most of them have high false-positive rates. 
 
-On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years. In particular, fuzzing is becoming a hot trend these years, especially after DARPA CGC in 2016. The fuzzing method is suitable for a task such as side-channel detection. If a program executes two different code paths or accesses two different addresses with two different input values, the program is vulnerable to side-channel attacks. When we report the leakages sites to developers, we can tell them the two inputs. Developers can quickly reproduce the leakage sites with the inputs.  Interestingly, there are a few (not many) related papers. That's why I used fuzzing at the beginning of the project.
+On the other hand, there are many success stories with dynamic tools (e.g., SAGE, AFL, Valgrind) in recent years. In particular, fuzzing is becoming a hot trend these years, especially after DARPA CGC in 2016. The fuzzing method is suitable for a task such as side-channel detection. If a program executes two different code paths or accesses two different variables with two different input values, the program is vulnerable to side-channel attacks. When we report the leakages sites to developers, we can tell them the two inputs. Developers can quickly reproduce the leakage sites with the inputs.  Interestingly, there are a few (not many) related papers. That's why I used fuzzing at the beginning of the project.
 
 
 \item \textbf{Discuss the limitations of your research
@@ -35,7 +35,7 @@ c. The research in the dissertation can only handle address-based side-channel a
 
 \item \textbf{Can you extend your research (especially the quantification part) to include other side channel signals?}
 
-It is possible to extend the quantification part to include other side-channel signals (e.g., Sound, CPU usages, EM signals). The key is to model the noises properly. In my dissertation, we assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model the noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information that can be reliably transferred over a channel between secret data and attackers' observations. From a research project aspect, I hope to have a stronger motivation before starting the project. 
+It is possible to extend the quantification part to include other side-channel signals (e.g., Sound, CPU usages, EM signals). The key is to model the noises properly. In my dissertation, we assume that an attacker can have a noise-free observation. While a noise-free observation is possible for some address-based side-channel attacks, the assumption is too ideal for many other side-channel attacks. The good news is that there are some mature methods in information theory to model noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a computable method to estimate the information that can be reliably transferred over a channel between secret data and attackers' observations. From a research project aspect, I hope to have a stronger motivation before starting the project. 
 \item \textbf{A bits vs. Q bits. Lower bounds?
        Improve the presentation
        Make the comparison more meaningful
@@ -47,18 +47,18 @@ a. Abacus quantifies the amount of leaked information for a given address access
 
 b. Quincunx defines the amount of leaked information by the empirical entropy of the observations. For a determinism program, channel capacity is the tight upper bound of the the empirical entropy of the observation. That's why I used the term ``lower bound'' during my PhD defense. I have removed the term ``lower bound'' to avoid any confusion in my dissertation.
 
-c. I agree with Dr. Liu's comments that the quantification metrics in Chapter 4 and Chapter 5 are different. The reason that I compare them together in Table 5.3 is that they have the same dimensional unit (bit) under the dimensional analysis. I have removed the comparison in the current version.
+c. I agree with Dr. Liu's comments that the quantification metrics in Chapter 4 and Chapter 5 are different. The reason that I compare them together in Table 5.3 is that they have the same dimensional unit (bit) under the dimensional analysis. I have removed the comparison from the evaluation section in the current version.
 
 To address the above concerns, I have made the following revisions.
 
-a. I revised the description in Chapter 5. I abandoned the term lower bound.
+a. I revised the description in Chapter 5. I avoided the use of ``term lower bound''.
 
 b. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus in the current version because they are calculated with different methods and have different threat models.
 \item \textbf{iid assumption – does it fit your research on side-channel?}
 
-It is true that Quincunx requires the random input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
+It is true that Quincunx requires the input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
 
-The situation is a little different for a machine learning library. In the dissertation, we evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we can not get correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning algorithms. In my dissertation, we used MINIST, a well-known handwriting dataset. We believe the dataset is i.i.d.
+The situation is a little different for a machine learning library. In my dissertation, we also evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we can not get correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning algorithms. In my dissertation, we used MINIST, a well-known handwriting dataset. We believe the dataset is i.i.d..
 
 I have revised my dissertation to include the discussion on iid.
 
@@ -69,7 +69,7 @@ As suggested by Dr. Wu, I added a new chapter on Discussion and Limitations (Cha
 
 \item \textbf{Improve Grammar.}
 
-Dr. Larus helped me fix many grammar issues. I have revised the dissertation multiple times. In addition, I used Grammarly to proofread my dissertation.
+Dr. Larus helped me fix many grammar issues. I also revised the dissertation multiple times. In addition, I used Grammarly to proofread my dissertation.
 
 
 \end{enumerate}
