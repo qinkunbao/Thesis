@@ -81,7 +81,7 @@ To address Problem 2, we make the following contributions on quantifying side-ch
 To address Problem 2, we make the following contributions on quantifying side-channel leakages on a multiple trace attack:
 \begin{itemize}
     \item We propose a novel method that can detect and analyze the effect of each side-channel leakage site automatically. Our analysis combines the information from both the source code and the run-time execution, which makes the method more effective in finding the leakages. By applying a chi-squared test, the method can find independent leakages. Attackers can combine multiple leakage sites to retrieve more information as well.
-    \item We analyze the amount of information leakage from side-channel vulnerabilities based on the channel capacity. We propose a method that can estimate the lower bound of information leakages. The theory can serve as the foundation of the future work on quantifying the information leakage based on the fuzzing.
+    \item We analyze the amount of information leakage from side-channel vulnerabilities based on the channel capacity. The theory can serve as the foundation of the future work on quantifying the information leakage based on the fuzzing.
     \item We implement the above method in a tool called \ctool{} and evaluate the tool with several benchmarks and real-world applications such as OpenSSL, mbedTLS, Libgcrpyt, TinyDNN, and GTK. The results show that our tool can detect and quantify the side-channel leakages effectively. Moreover, the leakage reports given by the \ctool{} can help developers fix the reported vulnerabilities.
 \end{itemize}
 
