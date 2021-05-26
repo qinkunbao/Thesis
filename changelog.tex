@@ -51,10 +51,11 @@ c. I agree with Dr. Liu's comments that the quantification metrics in Chapter 4 
 
 To address the above concerns, I have made the following revisions.
 
-a. I revised the description in Chapter 5. I avoided the use of ``term lower bound''.
+a. I revised the description in Chapter 5. I avoided the use of ``term lower bound''. 
 
 b. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus in the current version because they are calculated with different methods and have different threat models.
 \item \textbf{iid assumption – does it fit your research on side-channel?}
+
 
 It is true that Quincunx requires the input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
 
