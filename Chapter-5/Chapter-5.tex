@@ -287,20 +287,23 @@ void bar(uint8_t secret)
   \end{minipage}
   \caption{A minor leakage. }\label{chapter5:fig:example2}
 \end{figure}
-On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker can not uniquely determine the secret based on the observation of table $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, we think the vulnerability is minor than the previous one. Here comes the definition of the amount of leaked information of the vulnerability.
+On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker cannot uniquely determine the secret based on the observation of table $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, we think the vulnerability is less severe than the previous one.
 
+Let's formally define the amount of leaked information based on the above observation.
 
 \begin{mydef}
   \label{chapter5:def}
-  Suppose we have a program $\beta$ with the input set $K$. We randomly select $k_1, k_2, \dots, k_n \in K' \subseteq K$ as the input. We denote it as
-  $$\beta(K') \rightarrow	O'$$
-
-  Here $O$ is a set that consists of various observations $o_1, o_2, \dots, o_m$. The amount of leaked information $L_{\beta(K')\rightarrow O'}$ based on the observation ($o$) is
-  $$L_{\beta(K')\rightarrow O'} = H(O') $$
+    Suppose we have a program $\beta$ with the input space $K$ and observation set $O$. We randomly select $k_1, k_2, \ldots, k_n \in K$ as the input and get observations $o_1, o_2, \ldots, o_n \in O$. Assume $K'=\{k_1, k_2, \ldots, k_n\}$  ($K' \subseteq K$) and
+    $O'=\{o_1, o_2, \ldots, o_n\}$  ($O' \subseteq O$).
+    We denote it as
+    $$\beta(K') \rightarrow	O'.$$
+    %Here $O$ is a set that consists of various observations $o_1, o_2, \dots, o_m$.
+    The amount of leaked information $L_{\beta(K')\rightarrow O'}$ based on the observations ($O'$) is
+    $$L_{\beta(K')\rightarrow O'} = H(O'). $$
 \end{mydef}
 
 
-With Definition~\ref{chapter5:def}, we can calculate the information leakage in Figure~\ref{chapter5:fig:example1} and Figure~\ref{chapter5:fig:example2} respectively. In Figure~\ref{chapter5:fig:example1}, we have $8$ kinds of observations and each observation is uniformly distributed. Therefore, the information leakage is $log_2{8} = 3$ bits. In Figure~\ref{chapter5:fig:example2}, we have $4$ kinds of observations and each observation is also uniformly distributed. Therefore, the information leakage is $log_2{4} = 2$ bits. We test the program with $8$ inputs. Therefore, the Shannon entropy of the original K $H(K)$ is also $3\,\mathrm{bits}$. According to Equation~\ref{chapter5:eq1}. the secret-dependent data accesses in Figure~\ref{chapter5:fig:example1} can leak the sensitive information totally.
+With Definition~\ref{chapter5:def}, we can calculate the information leakage in Figure~\ref{chapter5:fig:example1} and Figure~\ref{chapter5:fig:example2}, respectively. In Figure~\ref{chapter5:fig:example1}, we have $8$ kinds of observations and each observation is uniformly distributed. Therefore, the information leakage is $\log_2{8} = 3$ bits. In Figure~\ref{chapter5:fig:example2}, we have $4$ kinds of observations and each observation is also uniformly distributed. Therefore, the information leakage is $\log_2{4} = 2$ bits. We test the program with $8$ inputs. Therefore, the Shannon entropy of the original K $H(K)$ is also $3\,\mathrm{bits}$, according to Equation~\ref{chapter5:eq1}. Therefore, the leakage in Figure~\ref{chapter5:fig:example1} show the input secret is leaked totally.
 
 \subsection{A Conservative Estimation}
 In this section, we prove Definition~\ref{chapter5:def} is the conservative estimation of the amount of leaked information based on the channel capacity.
