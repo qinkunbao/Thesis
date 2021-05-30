@@ -201,16 +201,16 @@ $K$, $M$, and $O$:
 \end{displaymath}
 
 
-Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$) shown in the figure~\ref{fig:side_channel}. As an attacker, he can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of paper, we use $\beta(K) \rightarrow O$ to denote a victim program with side-channel vulnerabilities.
+Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$). As shown in the figure~\ref{fig:side_channel}, we assume that an attacker can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of the paper, we use $\beta(K) \rightarrow O$ to denote a victim program that may have side-channel leakage sites.
 
 
-In thios chapter, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
+In this chapter, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
 
 \section{Method}
 In this section, we first provide two examples that show how we rank the side-channel vulnerability. After that, we prove that our method is the conservative estimate of the amount of each leakage.
 
 \subsection{An Example}
-Figure~\ref{fig:example1} shows a function that is vulnerable to side-channel attacks. The function takes an input secret from the caller. Depending on the value of the secret, it may access different values at line 7. Suppose an attacker can observe which item in the table \textsf{T} is accessed. He can infer the secret based on the observation.
+Figure~\ref{chapter5:fig:example1} shows a function that is vulnerable to side-channel attacks. The function takes an input secret from the caller. Depending on the value of the secret, it may access different values at line 7. Suppose an attacker can observe which item in the table \textsf{T} is accessed. He can infer the secret based on the observation.
 
 \begin{figure}[h]
   \begin{minipage}{0.6\linewidth}
