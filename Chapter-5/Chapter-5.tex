@@ -85,16 +85,17 @@ In the section, we give an overview of the background knowledge of information t
 
 
 \subsection{Channel Capacity}
+$K$ is a random variable.
 Let $k$ be one of the possible
-value of $K$. The Shannon entropy $H(K)$ is defined as
+values of $K$. The Shannon entropy $H(K)$ is defined as
 \begin{equation}\label{chapter5:eq1}
   H(K) = - \sum_{k {\in} K}p(k)\log_2(k)
 \end{equation}
 
-Shannon entropy can be used to quantify the initial uncertainty about the sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose each key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
+Shannon entropy can be used to quantify the initial uncertainty about sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose each key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
 
 
-In the chapter, we use the channel capacity to describe the amount of information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
+In this chapter, we use the channel capacity to describe the amount of information leakages through a channel. In information theory, the channel capacity is used to quantify the rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
 
 \begin{equation}\label{chapter5:eq2}
   C(K;O) = \max_{p(x)} I(K;O)
