@@ -372,8 +372,8 @@ There are two types of possible solutions to assign the value.
 We propose to combine both the information from the source code and the runtime to align the memory access during the execution. At the point the memory is allocated, we use the tuple $\texttt{(start\ address, length)}$ to represent the buffer. In the following execution, we check if any memory access falls into the range of these tuples. If so, we add the memory access into the tuple. After the execution, the tuple can be mapped into the location of the source code, and we only compare memory accesses that belong to the same lines in the source code.
 
 \section{Multiple Leakages Sites}
-Real-world software can have many side-channel vulnerabilities. These vulnerabilities may spread throughout the whole program. An adversary may exploit more than one side-channel vulnerabilities to gain more information~\cite{7163052, 191010}. In order to precisely quantify the
-total information leakage, we need to know the relation of these leakage sites. 
+Real-world software can have many side-channel vulnerabilities. These vulnerabilities may spread throughout the whole program. An adversary may exploit more than one side-channel vulnerabilities to gain more information~\cite{7163052, 191010}. In order to quantify the
+total information leakage precisely, we need to know the relation of these leakage sites. 
 
 \begin{figure}[h]
 \begin{minipage}{0.4\linewidth}
