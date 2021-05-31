@@ -414,12 +414,16 @@ Considering the examples in Figure~\ref{chapter5:fig:multiple}, Figure~\ref{chap
 
 Suppose one program has two side-channel vulnerabilities $A$ and $B$, which can leak $L_A$ and $L_B$ bits, respectively, according to Definition~\ref{chapter5:def}. 
 For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote that the function \textsf{a} executes, and $\lnot a$ to denote that the function \textsf{a} does not execute during the execution.
-Depending on the relation between A and B, the total leaked information $L_{\mathit{AB}}$ will be:
+Depending on the relation between $A$ and $B$, the total leaked information $L_{\mathit{AB}}$ will be:
 
 \subsection{Independent Leakages}
-If any observation of A does not affect the probability of occurrence of the any observation leakage B, we call the two leakage sites A and B are independent.
-If A and B are two independent leakages, the total amount of leaked information is:
-\[L_{\mathit{AB}} = - \sum_{k {\in} K}p(k)\log_2(p(k)) = L_A + L_B \]
+If any observation of $A$ does not affect the probability of occurrence of any observation of $B$, we call the two leakage sites $A$ and $B$ are independent. $p_{ab} = p_ap_b$.
+If $A$ and $B$ are two independent leakages, the total amount of leaked information is:
+\begin{align*} 
+L_{\mathit{AB}} &= - \sum_{}p_{ab}\log_2p_{ab} = - \sum_{}p_ap_b\log_2p_ap_b \\
+                &= - \sum_{}p_{a}\log_2p_{a} - \sum_{}p_{b}\log_2p_{b} \\
+                &= L_A + L_B
+\end{align*} 
 
 \subsection{Dependent Leakages}
 If A and B are dependent leakages, the total information leakage will be:
