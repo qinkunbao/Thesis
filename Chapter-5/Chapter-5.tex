@@ -428,7 +428,7 @@ We use the chi-squared test to check if two leakage sites are independent. A chi
 Here $O$ is the observed value, and $E$ is the expected value. A low value means that there is a high correlation between the two variables. 
 
 The null hypothesis is that the two leakages are independent.
-We generate random inputs as the secret input and record the memory access for each execution. Each time, the execution is independent of the previous execution, and the target program is the same as the program executed in the previous experiment.  Therefore, the times of the same observation for each event should satisfy the binomial distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
+We generate random inputs as the secret input and record the memory access for each execution. Each time, the execution is independent of the previous execution, and the target program is the same as the program executed in the previous experiment. For one type of event(e.g., function $a$ executes), we use $p$ to denote the probability of the event. Suppose the target program is executed $n$ times, the probability that we observe the event happens $k \,(k < n)$ times is $P = \binom{k}{n}p^n(1-p)^{n-k}$. Therefore, the times of the same observation for each event should satisfy the binomial distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
 
 \begin{figure}[h]
   \begin{minipage}{0.40\linewidth}
@@ -460,7 +460,7 @@ We generate random inputs as the secret input and record the memory access for e
 \end{figure}
 
 
-Assume we generate $1024$ random inputs and record the memory access each time. For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote that the function \textsf{a} executes, and $\lnot a$ to denote that the function \textsf{a} does not execute during the execution. After calculating the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}. Suppose the observations of function \textsf{a} and function \textsf{b} are independent.  We calculate the expected value for the observation $ab$ based on the frequency.
+Assume we generate $1024$ random inputs and record the memory access each time. For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote that the function \textsf{a} executes, and $\lnot a$ to denote that the function \textsf{a} does not execute during the execution. After calculating the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}. Suppose the observations of the execution of function \textsf{a} and the execution of function \textsf{b} are independent.  We calculate the expected value for the observation $ab$ based on the frequency.
 \[ E_{ab} = \frac{(255+256)*(255+253)}{1024} = 255.5\]
 Similarly, we calculate the rest expected values with the hypothesis that the leakages are independent and fill in them in Figure~\ref{chapter5:fig:con_table}. The degree of freedom $v$ is $(2-1)*(2-1) = 1$.
 
