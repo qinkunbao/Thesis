@@ -89,7 +89,7 @@ $K$ is a random variable.
 Let $k$ be one of the possible
 values of $K$. The Shannon entropy $H(K)$ is defined as
 \begin{equation}\label{chapter5:eq1}
-  H(K) = - \sum_{k {\in} K}p(k)\log_2(k)
+  H(K) = - \sum_{k {\in} K}p(k)\log_2(p(k))
 \end{equation}
 
 Shannon entropy can be used to quantify the initial uncertainty about sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose each key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
@@ -299,7 +299,7 @@ Let's formally define the amount of leaked information based on the above observ
     $$\beta(K') \rightarrow	O'.$$
     %Here $O$ is a set that consists of various observations $o_1, o_2, \dots, o_m$.
     The amount of leaked information $L_{\beta(K')\rightarrow O'}$ based on the observations ($O'$) is
-    $$L_{\beta(K')\rightarrow O'} = H(O'). $$
+    $$L_{\beta(K')\rightarrow O'} = H(O') = - \sum_{o {\in} O'}p(o)\log_2(p(o)). $$
 \end{mydef}
 
 
@@ -414,15 +414,16 @@ Considering the examples in Figure~\ref{chapter5:fig:multiple}, Figure~\ref{chap
 
 Suppose one program has two side-channel vulnerabilities $A$ and $B$, which can leak $L_A$ and $L_B$ bits, respectively, according to Definition~\ref{chapter5:def}. 
 For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote that the function \textsf{a} executes, and $\lnot a$ to denote that the function \textsf{a} does not execute during the execution.
-Depending on the relation between A and B, the total leaked information $L_{\mathit{total}}$ will be:
+Depending on the relation between A and B, the total leaked information $L_{\mathit{AB}}$ will be:
 
 \subsection{Independent Leakages}
-If A and B are independent leakages, the total information leakage will be:
-\[L_{\mathit{total}} = L_A + L_B \]
+If any observation of A does not affect the probability of occurrence of the any observation leakage B, we call the two leakage sites A and B are independent.
+If A and B are two independent leakages, the total amount of leaked information is:
+\[L_{\mathit{AB}} = - \sum_{k {\in} K}p(k)\log_2(p(k)) = L_A + L_B \]
 
 \subsection{Dependent Leakages}
 If A and B are dependent leakages, the total information leakage will be:
-\[\max{\{L_A, L_B\}}  \leq L_{\mathit{total}} < L_A + L_B\]
+\[\max{\{L_A, L_B\}}  \leq L_{\mathit{AB}} < L_A + L_B\]
 
 We use the chi-squared test to check if two leakage sites are independent. A chi-squared test can determine if there is a relationship between two categorical variables. Suppose we can summarize the data in a $r*c$ two-way contingency table. The chi-squared test statistic and the degrees of freedom $v$ are calculated with the below formula:
 \[\tilde{\chi}^2=\sum_{k=1}^{rc} \frac{(O_k - E_k)^2}{E_k} \qquad	 v = (r - 1)(c - 1)\]
