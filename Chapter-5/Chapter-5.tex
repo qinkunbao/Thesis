@@ -417,7 +417,7 @@ For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote that
 Depending on the relation between $A$ and $B$, the total leaked information $L_{\mathit{AB}}$ will be:
 
 \subsection{Independent Leakages}
-If any observation of $A$ does not affect the probability of occurrence of any observation of $B$, we call the two leakage sites $A$ and $B$ are independent. $p_{ab} = p_ap_b$.
+Given a leakage site $A$, the site has different memory access patterns under different secrets. We call each memory access pattern as an observation. If any observation of $A$ does not affect the probability of occurrence of any observation of $B$, we call the two leakage sites $A$ and $B$ are independent. $p_{ab} = p_ap_b$.
 If $A$ and $B$ are two independent leakages, the total amount of leaked information is:
 \begin{align*} 
 L_{\mathit{AB}} &= - \sum_{}p_{ab}\log_2p_{ab} = - \sum_{}p_ap_b\log_2p_ap_b \\
