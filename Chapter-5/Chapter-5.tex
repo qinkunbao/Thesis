@@ -7,7 +7,7 @@ Side-channel attacks allow attackers to infer sensitive information based on the
 While removing secret-dependent memory-access patterns in existing software completely is hard and tedious, fixing some of the most dangerous leakages appears to be feasible. Previous studies~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus} on side-channel detections have shown their effectiveness in finding such code patterns. Developers can run the tool to analyze the side-channels leakages and fix these patterns. However, fixing all
 these leakages seems not feasible in practice.  Tremendous efforts have been made to remove the side-channel vulnerabilities in cryptography
 libraries in the past decade. However,  there are
-several side-channel leakages in the recent versions of OpenSSL~\cite{OpenSSL-1.1.1-note}. Besides, many side-channel vulnerable versions usually
+still several side-channel leakages in the recent versions of OpenSSL~\cite{OpenSSL-1.1.1-note}. Besides, many side-channel vulnerable versions usually
 have better performance, such as the T-table lookups in AES, CRT
 optimizations in RSA, and Fast Fourier Transform (FFT) in many media processing libraries. For many non-cryptography developers, side-channels are not in consideration usually. However, recent studies~\cite{xu2015controlled,191010,hahnel2017high} have shown a series of attacks on the non-cryptography libraries.
 
