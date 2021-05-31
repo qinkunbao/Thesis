@@ -5,7 +5,7 @@
 Side-channel attacks allow attackers to infer sensitive information based on the non-functional behaviors of the computer system. Examples of these non-functional behaviors include acoustics, CPU usages, timing, EM signals, etc~\cite{agrawal2002side,hund2013practical,halevi2015keyboard,batina2019csi}. In summary, if a program has different execution behaviors when it processes various keys, an attacker can infer nontrivial information by observing secret-dependent behaviors. While separate side-channel attacks may have different forms and patterns, a large portion of them share the same fundamental reasons. That is, the memory access pattern is dependent on the original sensitive input.
 
 While removing secret-dependent memory-access patterns in existing software completely is hard and tedious, fixing some of the most dangerous leakages appears to be feasible. Previous studies~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus} on side-channel detections have shown their effectiveness in finding such code patterns. Developers can run the tool to analyze the side-channels leakages and fix these patterns. However, fixing all
-those leakages seem not feasible in practice.  Tremendous efforts havebeen made to remove the side-channel vulnerabilities in cryptography
+these leakages seems not feasible in practice.  Tremendous efforts have been made to remove the side-channel vulnerabilities in cryptography
 libraries in the past decade. However,  there are
 several side-channel leakages in the recent versions of OpenSSL~\cite{OpenSSL-1.1.1-note}. Besides, many side-channel vulnerable versions usually
 have better performance, such as the T-table lookups in AES, CRT
