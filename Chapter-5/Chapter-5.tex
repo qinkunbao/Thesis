@@ -466,8 +466,8 @@ We generate random inputs as the secret input and record the memory access for e
 \end{figure}
 
 
-Assume we generate $1024$ random inputs and record the memory access each time.  After calculating the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}. Suppose the observations of the execution of function \textsf{a} and the execution of function \textsf{b} are independent.  We calculate the expected value for the observation $ab$ based on the frequency.
-\[ E_{ab} = \frac{(255+256)*(255+253)}{1024} = 255.5\]
+Assume we generate $1024$ random inputs and record the memory access each time.  After calculating the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}. Suppose the observations of the execution of function \textsf{a} and the execution of function \textsf{b} are independent ($p_{ab} = p_a*p_b$),  we calculate the expected value for the observation $ab$ based on the frequency.
+\[ E_{ab} = 1024*p_{ab} = 1024*p_a*p_b = 1024*\frac{515}{1024}*\frac{508}{1024} = 255.5\]
 Similarly, we calculate the rest expected values with the hypothesis that the leakages are independent and fill in them in Figure~\ref{chapter5:fig:con_table}. The degree of freedom $v$ is $(2-1)*(2-1) = 1$.
 
 Based on the equation, we calculate the chi-squared test statistic for two leakage sites in Figure~\ref{chapter5:fig:multiple} (a) and (b).
