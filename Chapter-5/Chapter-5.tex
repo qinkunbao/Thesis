@@ -567,7 +567,7 @@ is, $\forall
 The access of one address is secret-dependent if $ \exists\, k_{i_1}, k_{i_2} \in K, \, B^{l}_{k_{i_1}} \oplus  B^{l}_{k_{i_2}} =1 $. In the step, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to the side-channel attacks.
 
 \begin{myexample}
-Suppose we sample a program from $k1$ to $k8$ and record the memory access at the granularity of each byte from $\mathtt{7ffff7ffd000}$ to $\mathtt{7ffff7ffd03f}$ (One cache line). We perform the bit-wise or operation of each address with the address range. Because the cache line is always accessed. We think it is not a leak here.
+Suppose we sample a program from $k1$ to $k8$ and record memory accesses at the granularity of one byte from $\mathtt{7ffff7ffd000}$ to $\mathtt{7ffff7ffd03f}$ (One cache line). We perform a bit-wise operation of each address within the range. Because the cache line is always accessed. We think it is not a leak here.
 \begin{center}
   \begin{tabular}{c}
     {
