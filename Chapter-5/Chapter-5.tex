@@ -428,7 +428,7 @@ We use the chi-squared test to check if two leakage sites are independent. A chi
 Here $O$ is the observed value, and $E$ is the expected value. A low value means that there is a high correlation between the two variables. 
 
 The null hypothesis is that the two leakages are independent.
-We generate random inputs as the secret and record the memory access for each execution. For each time, the execution is independent of the previous execution. The times of the same observation for each event should satisfy the binomial distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
+We generate random inputs as the secret input and record the memory access for each execution. Each time, the execution is independent of the previous execution, and the target program is the same as the program executed in the previous experiment.  So the times of the same observation for each event should satisfy the binomial distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
 
 \begin{figure}[h]
   \begin{minipage}{0.40\linewidth}
@@ -460,7 +460,7 @@ We generate random inputs as the secret and record the memory access for each ex
 \end{figure}
 
 
-Assume we generate $1024$ random inputs and record the memory access each time. For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote the function \textsf{a} executes and $\lnot a$ to denote the function \textsf{a} does not execute during the execution. After calculating the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}. Suppose the observations of function \textsf{a} and function \textsf{b} are independent. We calculate the expected value for the observation $ab$ based on the frequency.
+Assume we generate $1024$ random inputs and record the memory access each time. For the example in Figure~\ref{chapter5:fig:multiple}, we use $a$ to denote that the function \textsf{a} executes, and $\lnot a$ to denote that the function \textsf{a} does not execute during the execution. After calculating the number of the same observation, we get the contingency table shown in Figure~\ref{chapter5:fig:con_table}. Suppose the observations of function \textsf{a} and function \textsf{b} are independent.  We calculate the expected value for the observation $ab$ based on the frequency.
 \[ E_{ab} = \frac{(255+256)*(255+253)}{1024} = 255.5\]
 Similarly, we calculate the rest expected values with the hypothesis that the leakages are independent and fill in them in Figure~\ref{chapter5:fig:con_table}. The degree of freedom $v$ is $(2-1)*(2-1) = 1$.
 
@@ -469,7 +469,7 @@ Based on the equation, we calculate the chi-square test statistic for two leakag
 \[\tilde{\chi}^2_{a}= \frac{(255.5-255)^2}{255.5} + \frac{(252.5-253)^2}{252.5} + \frac{(259.5-260)^2}{259.5} + \frac{(256.5-256)^2}{256.5} = 0.004\] 
 \[\tilde{\chi}^2_{b}= \frac{(764.8-809)^2}{764.8} + \frac{(126.2-82)^2}{126.2} + \frac{(114.2-70)^2}{114.2} + \frac{(18.8-63)^2}{18.8} = 139.1\] 
 
-According to Chi-squared distribution table, we have the probability $p\approx0.95$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (a). We have the probability $p\approx0.00$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (b). Therefore, we infer that the two leakages in Figure~\ref{chapter5:fig:multiple} (a) are independent. And the two leakages Figure~\ref{chapter5:fig:multiple} (b) are dependent. In thios chapter, for any two leakages, if $p < 0.03$, we think the two leakage sites are independent. We use the above method to test if any two leakage sites are independent for each leakage point. We combine them into a leakage are calculate the total amount of the leakage.
+According to Chi-squared distribution table, we have the probability $p\approx0.95$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (a). We have the probability $p\approx0.00$ to accept the null hypothesis for the two leakages in Figure~\ref{chapter5:fig:multiple} (b). Therefore, we infer that the two leakages in Figure~\ref{chapter5:fig:multiple} (a) are independent. And the two leakages Figure~\ref{chapter5:fig:multiple} (b) are dependent. In this chapter, for any two leakages, if $p < 0.03$, we think the two leakage sites are independent. We use the above method to test if any two leakage sites are independent for each leakage point. We combine them into a leakage are calculate the total amount of the leakage.
 \section{Design}
 In this section, we explain the implementation of \ctool{}.
 We first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
