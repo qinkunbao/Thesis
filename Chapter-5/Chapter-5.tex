@@ -680,22 +680,24 @@ In this section, we evaluate \ctool{} on real-world software trying to answer th
 
 \begin{itemize}
 \item \textbf{Effectiveness:} Can \ctool{} quantify the information leakage with an conservative estimation? If so, what is the loss compared with the real leakage?
-\item \textbf{Performance:} What are overhead costs of \ctool{}?
+%\item \textbf{Performance:} What are overhead costs of \ctool{}?
 \item \textbf{Usage:}  Can \ctool{} help developers find and fix side-channel leakages?
 \end{itemize}
 
-\textbf{Evaluation setup.} We run all the following experiments in a machine with Ubuntu 18.04 LTS. The machine equips with a 2.30GHz Intel Core i9-9880 CPU with 16GB RAM memory. We use the default release settings to build the software's source code into ELF 64-bit executables with GCC 7.5. 
+\textbf{Evaluation setup.} We run all the following experiments in a machine with Ubuntu 18.04 LTS. The machine equips with a 2.30GHz Intel Core i9-9880H CPU with 16GB RAM memory. We use the default release settings to build the software's source code into ELF 64-bit executables with GCC 7.5. 
 
 \textbf{Benchmarks.} 
 We collect benchmarks from real-world applications and libraries. Our test programs cover applications from diverse functionalities, including small programs, cryptography, machine learning applications, and graphic libraries. 
 
 
 
-\textit{Cryptography Applications:} Our benchmarks include the most popular cryptography libraries, such as mebdTLS, OpenSSL, Libgcrypt, and wolfSSL. Encryption ciphers can be divided into three categories:  symmetric ciphers and asymmetric ciphers. For stream ciphers, we use RC4. For symmetric ciphers, we choose AES. We also evaluate the tool on RSA, a widely used algorithm in the public-key cryptosystem.
+\textit{Cryptography Applications:} Our benchmarks include most of the popular cryptography libraries, such as mebdTLS, OpenSSL, Libgcrypt, and wolfSSL. Encryption ciphers can be divided into three categories:  symmetric ciphers and asymmetric ciphers. For symmetric ciphers, we choose AES. We also evaluate the tool on RSA, a widely used algorithm in the public-key cryptosystem.
 
 \textit{Machine Learning Applications:} We evaluate the tool on TinyDNN, a dependency-free deep learning framework in C++.
 
-\textit{Graphic Libraries:} We evaluate the tool on GTK, a popular graphic library. Previous research has demonstrated attacks to infer the keystroke.
+\textit{Graphic Libraries:} We evaluate the tool on GDK, a popular graphic library. Previous research has demonstrated attacks to infer the keystroke.
+
+
 
 \begin{sidewaystable}
 \footnotesize
@@ -728,7 +730,8 @@ GDK 3.24.23 & 4096 & 16.0 & 33&31& 12.1& 6.0&-& 48.5 MB & 1060.8 min & 24.1 min 
 
 \end{sidewaystable}
 
-Table~\ref{chapter5:table:over_result} presents the overview result. The minimum unit of the program during the experiment is the function. Suppose the function has more than one access map, then the function that is vulnerable to side-channel attacks. We measure the side-channel leakages at two different granularities: the byte level and the cache line level. The result shows that the program has more leaked vulnerabilities and tends to leak more information at the byte level compare with the cache line level. Each time we run the target program under random inputs and record memory accesses. For cryptography programs, we run the target program with $4096$ different inputs. During the fuzzing process, if the program does not have a new memory access bitmap after several rounds. We call the fuzzing step is fixed. From the side-channel detection aspect, it is not necessary to continue running the experiments since more rounds do not reveal new leakages. During the experiment, we find AES ciphers reach the fixed point after about 300 rounds, and RSA can reach the fixed point after around 500 rounds. Previous work~\cite{217537} also reported a similar result. During our experiment, we continue running the experiment until the observed value for the same observation is at least 5 to satisfy the requirement of chi-squared test. Therefore, we choose to run all the cipher with different inputs for $4096$ times.  If one program has more than two leaked functions, we run the chi-squared test and calculate the total amount of leakages.
+Table~\ref{chapter5:table:over_result} presents the overview result. The minimum unit of the program during the experiment is the function. Suppose the function has more than one access map, then the function that is vulnerable to side-channel attacks. We measure the side-channel leakages at two different granularities: the byte level and the cache line level. The result shows that the program has more leaked vulnerabilities and tends to leak more information at the byte level than the cache line level. Each time we run the target program under random inputs and record memory accesses. For cryptography programs, we run the target program with $4096$ different inputs. During the fuzzing process, if the program does not have a new memory access bitmap after several rounds. We call the fuzzing step is fixed. From the side-channel detection aspect, it is not necessary to continue running the experiments since more rounds do not reveal new leakages. During the experiment, we find AES ciphers reach the fixed point after about 300 rounds, and RSA can reach the fixed point after around 500 rounds. Previous work~\cite{weiser2018data} also reported a similar result. We continue running the experiment during our experiment until the observed value for the same observation is at least 5 to satisfy the Chi-square test requirement. Therefore, we choose to run all the cipher with different inputs for $4096$ times.  If one program has more than two leaked functions, we run the chi-squared test and calculate the total amount of leakages.
+
 
 
 
