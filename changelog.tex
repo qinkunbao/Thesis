@@ -43,7 +43,7 @@ It is possible to extend the quantification part to include other side-channel s
 
 It is hard to explain Entropy. There is a rumor about entropy between John von Neumann and Claude Shannon. When Shannon developed the concept of information theory, he did not have a good idea to name the measurement of uncertainty in a system. Neumann told Shannon, ``You should call it entropy, for two reasons. In the first place,your uncertainty function has been used in statistical mechanics under that name, so it already has a name. In the second place, and more important, nobody knows what entropy really is, so in a debate you will always have the advantage.'' During my dissertation proposal, everyone does not really understand how we quantify the amount of leaked information in Abacus. In my final oral exam, everyone is confused with the term ``lower bounds'' except my advisor. 
 
-a. Abacus quantifies the amount of leaked information for a given address access behavior. It is a measure of the amount of leaked information that an attacker can get, given that another event has already occurred. 
+a. Abacus quantifies the amount of leaked information for a given address access behavior. It is a measure of the amount of leaked information that an attacker can get, given that another event has already occurred.  
 
 b. Quincunx defines the amount of leaked information by the empirical entropy of the observations. For a determinism program, channel capacity is the tight upper bound of the the empirical entropy of the observation. That's why I used the term ``lower bound'' during my PhD defense. I have removed the term ``lower bound'' to avoid any confusion in my dissertation.
 
@@ -59,9 +59,9 @@ b. I revised Table 5.3. The evaluation section does not compare Quincunx with Ab
 
 It is true that Quincunx requires the input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
 
-The situation is a little different for a machine learning library. In my dissertation, we also evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we can not get correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning algorithms. In my dissertation, we used MINIST, a well-known handwriting dataset. We believe the i.i.d. assumption holds under the circumstance.
+The situation is a little different for a machine learning library. In my dissertation, we also evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we can not get correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning methods. The assumption of i.i.d. simplify many methods by assuming the data won't change over the time. In my dissertation, we used MINIST, a well-known handwriting digit dataset. We believe the i.i.d. assumption holds under the circumstance.
 
-I have revised my dissertation to include the discussion on iid.
+I have revised my dissertation to include the discussion on i.i.d.
 
 
 \item \textbf{Some feedback I gave before your defense.}
