@@ -45,13 +45,13 @@ It is hard to explain Entropy. There is a rumor about entropy between John von N
 
 a. Abacus quantifies the amount of leaked information for a given address access behavior. It is a measure of the amount of leaked information that an attacker can get, given that another event has already occurred.  
 
-b. Quincunx defines the amount of leaked information by the empirical entropy of the observations. For a determinism program, channel capacity is the tight upper bound of the the empirical entropy of the observation. That's why I used the term ``lower bound'' during my PhD defense. I have removed the term ``lower bound'' to avoid any confusion in my dissertation.
+b. Quincunx defines the amount of leaked information by the empirical entropy of the observations. For a determinism program, channel capacity is the tight upper bound of the empirical entropy of the observation. In the early draft of the paper, I use the term ``conservative''. Dr. Wu thinks ``conservative'' might be a confusing term and suggests me with the term ``lower bound''. That's the reason that I used the term ``lower bound'' during my PhD defense. I have removed the term ``lower bound'' to avoid any confusion in my dissertation. 
 
 c. I agree with Dr. Liu's comments that the quantification metrics in Chapter 4 and Chapter 5 are different. The reason that I compare them together in Table 5.3 is that they have the same dimensional unit (bit) under the dimensional analysis. I have removed the comparison from the evaluation section in the current version.
 
 To address the above concerns, I have made the following revisions.
 
-a. I revised the description in Chapter 5. I avoided the use of term ``lower bound''. 
+a. I revised the description in Chapter 5. I avoided the use of term ``lower bound'' and tune my presentation. 
 
 b. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus in the current version because they are calculated with different methods and have different threat models.
 \item \textbf{iid assumption – does it fit your research on side-channel?}
