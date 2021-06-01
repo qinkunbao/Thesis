@@ -107,8 +107,7 @@ Here $I(K;O)$ is the mutual information between $K$ and $O$.
 While the channel capacity in general situations is hard to compute, we consider two special channels.
 
 \subsubsection{Noiseless Lossless Channel}
-An information channel is noiseless and lossless if
-
+An information channel is noiseless and lossless if every $k$ corresponds to exactly one unique $o$. The channel capacity of a noiseless lossless channel equals to
 \begin{equation} \label{chapter5:eq4}
   C(K;O) = \max_{p(k)} I(K;O) = \max_{p(k)} H|O| =\max_{p(k)} H|K|
 \end{equation}
@@ -171,13 +170,13 @@ Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under t
 
 
 \subsubsection{Noiseless Loss Channel}
-In reality, noiseless loss channel is more common. We define the channel is noiseless loss if
+In reality, noiseless loss channel is more common. The channel capacity of a noiseless loss channel equals to
 
 \begin{equation} \label{chapter:eq:5}
   C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O| 
 \end{equation}
 
-Figure~\ref{fig:channel}(b) shows the example of the type of the channel. Once the input symbol is determined, the output symbol is also determined. Shown in Figure~\ref{fig:channel}(b), the channel has the unique output ($o \in O$) for every input ($k \in K$).
+Figure~\ref{fig:channel}(b) shows an example of the type of the channel. Once the input value is determined, the output value is also determined. Shown in Figure~\ref{fig:channel}(b), the channel has the unique output ($o \in O$) for every input ($k \in K$).
 
 
 \subsection{Threat Model and Notation}
