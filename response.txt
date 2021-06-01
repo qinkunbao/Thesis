@@ -1,1 +1,144 @@
+Dear xxx,
 
+Thank you for reviewing my dissertation. I have gone through the details of each
+comment and revised my dissertation multiple rounds to eliminate any logic flows and
+fix all the typos and grammar errors. In summary, the revision covers the following aspects.
+
+1. Fuzzing – Why did you use fuzzing?
+
+Abacus identifies and quantifies side-channel leakages in a single trace. So it
+suffers from the problem of code coverage.  That is, Abacus misses side-channel
+leakages in the unexecuted code path.
+
+I have a few choices to address the limitation. First, I can use static methods
+(verification or program analysis). Although I am interested in static analysis, I am
+not a big fan of current static analysis tools, especially for side-channel research.
+There are many papers on static side-channel analysis. Nearly all of these tools are
+used to prove the absence of side-channel leakages. However, most of them have high
+false-positive rates.
+
+On the other hand, there are many success stories with dynamic tools (e.g., SAGE,
+AFL, Valgrind) in recent years. In particular, fuzzing is becoming a hot trend these
+years, especially after DARPA CGC in 2016. The fuzzing method is suitable for a task
+such as side-channel detection. If a program executes two different code paths or
+accesses two different variables with two different input values, the program is
+vulnerable to side-channel attacks. When we report side-channel leakages sites to
+developers, we can tell them the two inputs. Developers can quickly reproduce the
+leakage sites with the inputs.  Interestingly, there are a few (not many) related
+papers. That's why I used fuzzing at the beginning of the project.
+
+2. Discuss the limitations of your research e.g., can only handle address based …
+you might want to include some discussion on the points (3), (4), and (5) below.
+The research presented in the dissertation has a few limitations.
+
+a. The methods in my dissertation can not find all kinds of side-channel leakages. No
+tool can find all forms of leakages. Even for address-based side-channel leakages,
+Abacus and Quincunx can not find all the leakages due to the code coverage problem.
+Some verification tools can prove the absence of side-channel leakages for some small
+code snippets. However, to the best of my knowledge, no tools as yet can prove the
+absence of side-channel leakages in production software.
+
+b. The quantification result only applies to specific threat models. For example,
+Abacus quantifies the number of leaked bits during one real execution. So it is
+possible that one leakage site leaks little information in one execution but leaks
+much information in another execution.
+
+c. The research in the dissertation can only handle address-based side-channel
+attacks. Many side-channel attacks infer secret data based on other side-channel
+signals (e.g, timing, EM signals). However, the root cause of these attacks is still
+the same. That is, the program accesses different addresses when it processes
+different input secrets. Under the circumstance, our methods can still detect these
+leakage sites.
+
+3. Can you extend your research (especially the quantification part) to include other
+side-channel signals?
+
+It is possible to extend the quantification part to include other side-channel
+signals (e.g., Sound, CPU usages, EM signals). The key is to model the noises
+properly. In my dissertation, we assume that an attacker can have a noise-free
+observation. While a noise-free observation is possible for some address-based
+side-channel attacks, the assumption is too ideal for many other side-channel
+attacks. The good news is that there are some mature methods in information theory to
+model noises (e.g., Gaussian noise). The noisy-channel coding theorem provides a
+computable method to estimate the information that can be reliably transferred over a
+channel between secret data and attackers' observations. From a research project
+aspect, I hope to have a stronger motivation before starting the project.
+
+4.  bits vs. Q bits. Lower bounds?       Improve the presentation
+       Make the comparison more meaningful
+       Etc.
+
+It is hard to explain Entropy. There is a rumor about entropy between John von
+Neumann and Claude Shannon. When Shannon developed the concept of information theory,
+he did not have a good idea to name the measurement of uncertainty in a system.
+Neumann told Shannon, ``You should call it entropy, for two reasons. In the first
+place, your uncertainty function has been used in statistical mechanics under that
+name, so it already has a name. In the second place, and more important, nobody knows
+what entropy really is, so in a debate, you will always have the advantage.'' During
+my dissertation proposal, everyone does not really understand how we quantify the
+amount of leaked information in Abacus. In my final oral exam, everyone is confused
+with the term ``lower bounds'' except my advisor.
+
+a. Abacus quantifies the amount of leaked information for a given address access
+behavior. It is a measure of the amount of leaked information that an attacker can
+get, given that another event has already occurred.  
+
+b. Quincunx defines the amount of leaked information by the empirical entropy of the
+observations. For a determinism program, channel capacity is the tight upper bound of
+the empirical entropy of the observation. In the early draft of the paper, I use the
+term ``conservative''. Dr. Wu thinks ``conservative'' might be a confusing term and
+suggests me with the term ``lower bound''. That's the reason that I used the term
+``lower bound'' during my PhD defense. I have removed the term ``lower bound'' to
+avoid any confusion in my dissertation.
+
+c. I agree with Dr. Liu's comments that the quantification metrics in Chapter 4 and
+Chapter 5 are different. The reason that I compare them together in Table 5.3 is that
+they have the same dimensional unit (bit) under the dimensional analysis. I have
+removed the comparison from the evaluation section in the current version.
+
+To address the above concerns, I have made the following revisions.
+
+a. I revised the description in Chapter 5. I avoided the use of term ``lower bound''
+and tune my presentation.
+
+b. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus
+in the current version because they are calculated with different methods and have
+different threat models. 
+
+5. iid assumption – does it fit your research on side-channel?
+
+It is true that Quincunx requires the input variables to be independent and
+identically distributed. That's why I applied a blackbox fuzzing instead of a
+coverage-guided fuzzing. As long as each time we get a random input from the whole
+input space (Populations) that is independent of the previous input, the input
+variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we
+randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values
+follows the i.i.d. assumption.
+
+The situation is a little different for a machine learning library. In my
+dissertation, we also evaluated Quincunx on a deep learning model. Each time, we
+randomly select an item from a dataset (Samples). If the dataset is biased, then we
+can not get correct results. The good news is that the most well-known data in
+machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning
+methods. The assumption of i.i.d. simplify many methods by assuming the data won't
+change over the time. In my dissertation, we used MINIST, a well-known handwriting
+digit dataset. We believe the i.i.d. assumption holds under the circumstance.
+
+I have revised my dissertation to include the discussion on i.i.d.
+
+6. Some feedback I gave before your defense.
+
+As suggested by Dr. Wu, I added a new chapter on Discussion and Limitations (Chapter 6),
+and discussed potential ways and related work to the mitigated reported side
+(Chapter 2).
+
+7. Improve Grammar.
+
+Dr. Larus helped me a lot in fixing grammar issues. I also revised the dissertation
+multiple times. In addition, I used Grammarly to proofread my dissertation.
+
+I have incorporated some discussions above into my dissertation. Please let me know if you
+have any feedback. Thank you for reviewing my dissertation again.
+
+Thanks,
+Qinkun
