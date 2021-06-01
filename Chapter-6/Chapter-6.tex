@@ -4,13 +4,14 @@
 
 \subsection*{Design Choices} At the early stage of the project, we use SMT solvers to get the solutions of constraints. However, we find for some ciphers (RSA), \detect{} times out after several days. The profiling result shows that the tool spends most its time in Z3. Later, we use a sampling method to detect side-channel leakages. The sampling method seems simple and may miss some leakages in theory. However, the evaluation result shows \detect{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.  
 
-\subsection*{Cache Model} We use a simple cache model in this work. Recent work such as CaSym~\cite{Brotzman19Casym,182946} uses an LRU cache. First, there is no fundamental difficulties for us to adopt a more realistic cache models. Second, the LRU model is still a substantial simplification of a real cache. However, their choice of a logical model of cache can bring expensive overheads. 
+\subsection*{Cache Model} We use a simple cache model in this work. Recent work such as CaSym~\cite{Brotzman19Casym,182946} uses an LRU cache. First, there is no fundamental difficulties for us to adopt a more realistic cache models. Second, the LRU model is still a substantial simplification of a real cache. However, their choice of a logical model of cache can bring expensive overheads. As a result, CaSym can only analyze small code snippets.
 
-\subsection*{Leakages} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has several sensitive leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. After we manually analyze these leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which partially explain why developers are not interested in fix all the leakages. 
+\subsection*{Leakages} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has a few side-channel leakages, but given the end life status of DES, it is still unpatched for the worth of engineering effort. \detect{} also detects several leakages in asymmetric ciphers such as RSA. After we manually analyze these leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which may partially explain why developers are not interested in fix all the side-channel leakages. 
+
 \section{Precise Analysis on Single-trace Attacks}
 While recent work found many side-channel vulnerabilities,
-we note that many of them have not been patched by developers.
-Side-channels are ubiquitous in software and it would be difficult to fix all of them.
+we note that many of them are been patched by developers.
+Side-channels are ubiquitous in software, and it is difficult to fix all of them.
 We need a tool that estimates the sensitivity of each vulnerability
 so software engineers can focus on
 ``severe'' leakages. For example, \tool{} reports that
@@ -23,11 +24,10 @@ and reason about countermeasures.
 in one execution trace. \tool{} is useful for software
 engineers to test programs and fix vulnerabilities.
 The design, which is more precise in reporting true leakages as compared with other static
-methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, obviously misses
-leakages on unexplored traces. The amount of leaked information also depends on the secret key.
+methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, obviously misses leakages on unexplored traces. The amount of leaked information quantified by \tool{} also depends on the value of secret keys.
 However, as the tool is intended for debugging and testing,
 we think it is a software engineer's responsibility to select the input key and trigger
-the path in which they are interested. It is not a problem for crypto software
+the path in which they are interested. It is not a problem for crypto software 
 since virtually all keys follow similar computational paths.
 
 We use the amount of leaked information to represent the sensitivity level of
