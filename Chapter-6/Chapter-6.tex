@@ -1,4 +1,4 @@
-\chapter{Discussion and Limitations}
+\chapter{Discussion and Limitations}\label{chapter6}
 \section{Fast and Precise Side-channel Vulnerability Detection}
 \subsection*{Code Coverage} \detect{} analyzes one native x86 execution trace each time. The design, which is very precise in terms of true leakages compared to many static source code methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, share common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may neglect some side-channel vulnerabilities not covered by the traces analyzed. However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage under various inputs. The evaluation result also confirms the above intuition. For symmetric encryption, there is no secret-dependent control-flow transfers during our evaluation. RSA implementations have several secret-dependent control-flow transfers. Many of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
 
