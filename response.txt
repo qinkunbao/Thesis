@@ -65,7 +65,8 @@ computable method to estimate the information that can be reliably transferred o
 channel between secret data and attackers' observations. From a research project
 aspect, I hope to have a stronger motivation before starting the project.
 
-4.  bits vs. Q bits. Lower bounds?       Improve the presentation
+4.  bits vs. Q bits. Lower bounds?       
+    Improve the presentation
     Make the comparison more meaningful
     Etc.
 
