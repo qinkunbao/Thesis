@@ -132,9 +132,9 @@ As suggested by Dr. Wu, I added a new chapter on Discussion and Limitations (Cha
 and discussed potential ways and related work to the mitigated reported side
 (Chapter 2).
 
-7. Improve Grammar.
+7. Improve English grammar.
 
-Dr. Larus helped me a lot in fixing grammar issues. I also revised the dissertation
+Dr. Larus helped me fix a lot of grammar issues. I also revised the dissertation
 multiple times. In addition, I used Grammarly to proofread my dissertation.
 
 I have incorporated some discussions above into my dissertation. Please let me know if you
