@@ -46,7 +46,7 @@ much information in another execution.
 
 c. The research in the dissertation can only handle address-based side-channel
 attacks. Many side-channel attacks infer secret data based on other side-channel
-signals (e.g, timing, EM signals). However, the root cause of these attacks is still
+signals (e.g., timing, EM signals). However, the root cause of these attacks is still
 the same. That is, the program accesses different addresses when it processes
 different input secrets. Under the circumstance, our methods can still detect these
 leakage sites.
@@ -87,7 +87,7 @@ can be counterintuitive (e.g., the password checker example in my dissertation).
 Let's compare the quantification method in my dissertation to Bayes' theorem.
 I think they are similar in some ways. Bayes' theorem describes the probability of 
 an event, based on prior knowledge of an event has happened. The result from Bayes' theorem 
-can also be counterintuitive (e.g. drug testing).
+can also be counterintuitive (e.g., drug testing).
 
 b. Quincunx defines the amount of leaked information by the empirical entropy of the
 observations. For a determinism program, channel capacity is the tight upper bound of
