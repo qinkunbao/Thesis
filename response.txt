@@ -7,7 +7,7 @@ fix all the typos and grammar errors. In summary, the revision covers the follow
 1. Fuzzing – Why did you use fuzzing?
 
 Abacus identifies and quantifies side-channel leakages in a single trace. So it
-suffers from the problem of code coverage.  That is, Abacus misses side-channel
+suffers from the problem of code coverage. That is, Abacus misses side-channel
 leakages in the unexecuted code path.
 
 I have a few choices to address the limitation. First, I can use static methods
@@ -122,7 +122,7 @@ independent and identically distributed. That's why I applied a blackbox fuzzing
 instead of a coverage-guided fuzzing. As long as each time we get a random input from 
 the whole input space (Population) that is independent of the previous input, the input
 variables should satisfy the i.i.d. assumption. Take AES-128 encryption for example, 
-each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key 
+each time we randomly generate a 128 bit key from 0 to 2^{128}, the sequence of key 
 values follows the i.i.d. assumption.
 
 The situation is a little different for a machine learning library. In my
