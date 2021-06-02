@@ -116,7 +116,7 @@ each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence
 values follows the i.i.d. assumption.
 
 The situation is a little different for a machine learning library. In my
-dissertation, we also evaluated Quincunx on a deep learning model. Each time, we
+dissertation, we also evaluated Quincunx on a deep learning library. Each time, we
 randomly select an item from a dataset (Sample). If the dataset is biased, then we
 can not get correct results. The good news is that the most well-known dataset in
 machine learning is i.i.d. i.i.d. is the foundation of many machine learning
