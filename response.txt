@@ -11,7 +11,7 @@ suffers from the problem of code coverage. That is, Abacus misses side-channel
 leakages in the unexecuted code path.
 
 I have a few choices to address the limitation. First, I can use static methods
-(verification or program analysis). Although I am interested in static analysis, I am
+(verification or program analysis). Although I am interested in the static analysis, I am
 not a big fan of current static analysis tools, especially for side-channel research.
 There are many papers on static side-channel analysis. Nearly all of these tools are
 used to prove the absence of side-channel leakages. However, most of them have high
