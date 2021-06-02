@@ -199,7 +199,7 @@ $K$, $M$, and $O$:
 \end{displaymath}
 
 
-Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$). As shown in the figure~\ref{fig:side_channel}, we assume that an attacker can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of the paper, we use $\beta(K) \rightarrow O$ to denote a victim program that may have side-channel leakage sites.
+Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$). As shown in the figure~\ref{fig:side_channel}, we assume that an attacker can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of the chapter, we use $\beta(K) \rightarrow O$ to denote a victim program that may have side-channel leakage sites.
 
 
 In this chapter, we consider three types of granularity: byte (1 Byte), cache line size (64 Bytes), page size (4 KBs). To the best of our knowledge, the three types of granularities can cover most of the side-channel attacks in literature.
