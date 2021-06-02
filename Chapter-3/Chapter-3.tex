@@ -205,7 +205,7 @@ which are the direct information that an adversary gets during the attack.
 For one execution, a program ($\beta$) has many temporary values ($t_i \in
   T$). Once $\beta$ (program), $k$ (secret), and $m$ (message, public) are
 determined, $t_i$ is also fixed. Therefore, $ t_i = f_i(\beta, k, m)$, where $f_
-  i$ is a function that maps between $t_i$ and ($\beta$, $k$, $m$). In the paper,
+  i$ is a function that maps between $t_i$ and ($\beta$, $k$, $m$). In the chapter,
 we consider two code patterns that can be exploited by an attacker,
 \emph{secret-dependent control transfers} and \emph{secret-dependent data
   accesses}. 
@@ -521,7 +521,7 @@ finish all the analysis in less than 6 hours.
 \label{eval:scala}
 
 In this section, we compare \detect{} with the
-existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the data in the paper. As other tools do not quantify leakage sites, we only include the time of detecting vulnerabilities to perform a fair comparison.
+existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the reported results in their papers. As other tools do not quantify leakage sites, we only include the time of detecting vulnerabilities to perform a fair comparison.
 
 The comparison result with CacheD~\cite{203878} is shown in Table~\ref{eval:cacheD}.
 Note that one statement in the source code can be compiled into several machine instructions. So it is possible that one statement can have multiple leakage points. Under the circumstance, we think it is only a leakage.
