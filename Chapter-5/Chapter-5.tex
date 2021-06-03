@@ -21,13 +21,12 @@ libraries~\cite{wang2019unveiling}, spell checking
 tools~\cite{xu2015controlled}, etc. Unlike side-channel attacks on
 cryptography libraries that exploit one vulnerability at a time,
 attacks on non-cryptography rely on multiple side-channel leakage
-sites to retrieve more information. Suppose a program has two
-leakage sites. It is hard to estimate the total effect of those two
-leakages. However, no existing tools that can estimate the total
+sites to retrieve more information. A program  usually has more than two
+leakage sites. However, no existing tools that can estimate the total
 effect of multiple leakage sites. For real-world applications with
-thousands of lines, it is hard to estimate the amount of leaked
-information. Attackers can guess the values of some temporary
-values. And those temporary values contain some knowledge of the
+thousands of lines, attacker can exploit more than one leakage sites
+to retrieve more information. Attackers can guess the values of many temporary
+values. And these temporary values contain some knowledge of the
 original secret buffer.
 
 Second, many side-channel leakage detection tools rely on
