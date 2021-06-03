@@ -135,7 +135,7 @@ Unlike to the trace comparison, the method is quite precise. Moreover, it can mo
 
 \begin{itemize}
     \item Many tools can only analyze the source code or the intermediate representation level. However, side-channel are low-level problems in general.  Most existing tools are research prototypes. For some projects, the tools can only handle the benchmarks in their papers properly. 
-    \item These tools heavily rely on SMT solvers. Despite SMT solvers having made incredible progress in performance, SMT solving is still the main bottleneck of these tools. SMT solvers are not good at non-linear arithmetic. However, such non-linear arithmetics are quite common in cryptography algorithms.  Recent studies show existing solvers still have bugs when dealing with real number calculations. These calculations are also common in media libraries and machine learning applications.
+    \item These tools heavily rely on SMT solvers. Despite SMT solvers having made incredible progress in performance, SMT solving is still the main bottleneck of these tools. SMT solvers are not good at non-linear arithmetic. However, non-linear arithmetics are quite common in cryptography algorithms.  Recent studies show existing solvers still have bugs when dealing with real number calculations. These calculations are also common in media libraries and machine learning applications.
 \end{itemize}
 
 According to Table~\ref{table:side_channel_detection_tool}, some methods may choose to analyze the source code or the intermediate representations of the vulnerable software. However, it still cannot solve the problem. First, many widely-used libraries (e.g., Intel MKL) do not open the source code. Second, some libraries use hard-coded assembly code to pursue maximum performance.
