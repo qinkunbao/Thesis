@@ -4,24 +4,24 @@
 \section{Introduction}
 Side-channel attacks allow attackers to infer sensitive information based on the non-functional behaviors of the computer system. Examples of these non-functional behaviors include acoustics, CPU usages, timing, EM signals, etc~\cite{agrawal2002side,hund2013practical,halevi2015keyboard,batina2019csi}. In summary, if a program has different execution behaviors when it processes various keys, an attacker can infer nontrivial information by observing secret-dependent behaviors. While separate side-channel attacks may have different forms and patterns, a large portion of them share the same fundamental reasons. That is, the memory access pattern is dependent on the original sensitive input.
 
-While removing secret-dependent memory-access patterns in existing software completely is hard and tedious, fixing some of the most dangerous leakages appears to be feasible. Previous studies~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus} on side-channel detections have shown their effectiveness in finding such code patterns. Developers can run the tool to analyze the side-channels leakages and fix these patterns. However, fixing all
+While removing secret-dependent memory-access patterns in existing software completely is hard and tedious, fixing some of the most dangerous leakages appears to be feasible. Previous studies~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus} on side-channel detection have shown their effectiveness in finding such code patterns. Developers can run a tool to analyze the side-channels leakages and fix these patterns. However, fixing all
 these leakages seems not feasible in practice.  Tremendous efforts have been made to remove the side-channel vulnerabilities in cryptography
 libraries in the past decade. However,  there are
 still several side-channel leakages in the recent versions of OpenSSL~\cite{OpenSSL-1.1.1-note}. Besides, many side-channel vulnerable versions usually
 have better performance, such as the T-table lookups in AES, CRT
-optimizations in RSA, and Fast Fourier Transform (FFT) in many media processing libraries. For many non-cryptography developers, side-channels are not in consideration usually. However, recent studies~\cite{xu2015controlled,191010,hahnel2017high} have shown a series of attacks on the non-cryptography libraries.
+optimizations in RSA, and Fast Fourier Transform (FFT) in many media processing libraries. For many non-cryptography developers, side-channels are not in their threat model. However, recent studies~\cite{xu2015controlled,191010,hahnel2017high} have shown a series of attacks on the non-cryptography libraries.
 
 
 Even a minor leakage can be severe for cryptography libraries because
 the leakage can reduce the encryption algorithm's strength. However,
-many attacks also exploit non-cryptography libraries and applications
-like machine learning
+some attacks also exploit non-cryptography libraries and applications
+such as machine learning
 applications~\cite{yan2020cache,hong2018security}, graphic
 libraries~\cite{wang2019unveiling}, spell checking
 tools~\cite{xu2015controlled}, etc. Unlike side-channel attacks on
 cryptography libraries that exploit one vulnerability at a time,
 attacks on non-cryptography rely on multiple side-channel leakage
-sites to retrieve more information. Suppose one program has two
+sites to retrieve more information. Suppose a program has two
 leakage sites. It is hard to estimate the total effect of those two
 leakages. However, no existing tools that can estimate the total
 effect of multiple leakage sites. For real-world applications with
@@ -35,7 +35,7 @@ techniques such as symbolic executions, taint analysis, and abstract interpretat
 to the limitations of existing binary analysis techniques, it is hard to apply existing methods to analyze side-channels in non-cryptography
 libraries. For many other applications like machine learning, media,
 and graphic libraries built on the top architecture-dependent
-libraries (e.g., Intel MKL~\cite{wang2014intel}), those tools are not able to
+libraries (e.g., Intel MKL~\cite{wang2014intel}), these tools are not able to
 handle them. Moreover, some binary analysis frameworks (e.g.,
 Angr~\cite{shoshitaishvili2016state}) are limited in analyzing
 floating-point instructions. However, the functionality of those
@@ -51,9 +51,9 @@ For example, CacheAudit~\cite{182946} estimates that a 128-bit
 AES encryption can leak more than 128 bits. As a result, even those
 tools report severe leakage, it does not mean the program has a truly severe leakage. 
 
-To solve the above problem, we propose a method to estimate the effect of side-channel leakages automatically. We compare the side-channel attack to a communication system and use the channel capacity to quantify the amount of the information flow from the original secret to an attacker's observation. The method also allows us to combine multiple leakages sites to retrieve the information. The attack can be seen as a process that reduces the search space of the original sensitive inputs. We use the side-channel vulnerability to divide the input space. If the patterns can uniquely distinguish the input space, then we think the information is leaked totally. However, in real cases, many of these side-channel leakage patterns are not enough to distinguish each leakage site but can still discern some secret inputs. In these cases, we call them partial leakages leaks.
+To solve the above problem, we propose a method to estimate the effect of side-channel leakages automatically. We treat the side-channel attack as a communication system and use the channel capacity to quantify the amount of the information flow from the original secret to an attacker's observation. The method also allows us to combine multiple leakages sites to retrieve the information. The attack can be seen as a process that reduces the search space of the original sensitive inputs. We use the side-channel vulnerability to divide the input space. If the patterns can uniquely distinguish the input space, then we think the information is leaked totally. However, in real cases, many of these side-channel leakage patterns are not sufficient to distinguish each leakage site but can still discern some secret inputs. In these cases, we call them partial leakages.
 
-The method consists of three phases. In the first phase, we fuzz the target program with various inputs and collect the memory access information. In the second phase, we map the memory access information with the source code. With the debug information, we can precisely know the address access information of the source code. In the third phase, we exam the source code. If one function has two memory access patterns, then the function is vulnerable to side-channel attacks. Based on the distribution of memory access patterns under different inputs, we quantify each function's side-channel leakage.
+The method consists of three phases. In the first phase, we fuzz the target program with various inputs and collect the memory access information. In the second phase, we map the memory access information with the source code. With the debug information, we can precisely know the address access information of the source code. In the third phase, we examine the source code. If one function has two memory access patterns, then the function is vulnerable to side-channel attacks. Based on the distribution of memory access patterns under different inputs, we quantify each function's side-channel leakage.
 
 In this work, we make the following contributions:
 
