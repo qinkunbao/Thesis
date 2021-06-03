@@ -938,8 +938,8 @@ versions. \tool{} identifies that most leakages are in function
 memory accesses. Shown in Figure~\ref{mbedtls_aes}, there are seven leakage
 sites in total. Leakage 1, 2, 3 are the same and leakage 4, 5, 6, 7 are the
 same. They both use a pre-computed lookup table to speed up computation.
-However, \tool{} reports leakage 1, 2, 3 typically leak more information (7.6 ~ 8.1 bits)
-compared to leakage 4, 5, 6, 7 (~ 4.0 bits). We check the source code and find leakage 1, 2,
+However, \tool{} reports leakage 1, 2, 3 typically leak more information (7.6 - 8.1 bits)
+compared to leakage 4, 5, 6, 7 (4.0 bits). We check the source code and find leakage 1, 2,
 3 use secret to access the lookup table \emph{RT0, RT1, RT2, RT3}, which is 8K
 each. On the contrary, leakage 4, 5, 6, 7 each accesses a smaller lookup table
 (2K). Therefore, leakage 4, 5, 6, 7 leak less information.
