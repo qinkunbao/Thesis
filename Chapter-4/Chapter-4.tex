@@ -795,7 +795,7 @@ Our current implementation supports most Intel 32-bit instructions that are esse
 \begin{table}[]
     \centering
     \small
-    \caption{Evaluation results overview: Name, Side-channel Leaks\,(Leaks),
+    \caption{Evaluation results overview: Side-channel Leaks\,(Leaks),
         Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
         The number of instructions\,(\# Instructions), Symbolic Execution\,(SE) and Monte Carlo\,(MC) time.
     }\label{chapter4:table:over_result}
@@ -885,7 +885,7 @@ verify our results. Based on the two requirements, we evaluate \tool{} on the fo
 OpenSSL, Libgcrypt, mbedTLS, Monocypher. OpenSSL, Libgcrypt, and mebdTLS are the most widely used
 cryptography libraries. OpenSSL and mbedTLS have been widely studied in the previous research.
 Monocyper is designed to be side-channel resistant. We use the library to test if our tool has any
-false positives. Besides, we also test \tool{} on some simple countermeasure implementations. 
+false positives. We also test \tool{} on some simple countermeasure implementations. 
 
 We write simple encryption and decryption function with the above libraries. After that, we build
 the source code into 32-bit binary executions. The configuration of our experiment is shown as follows.
@@ -916,7 +916,7 @@ that the error of the estimated leaked information is less than 1 bit,
 which gives the leakage quantification a \emph{precision guarantee}, 
 or 2) it cannot reach the termination condition after 10 minutes.  In
 the latter case, it means \tool{} cannot estimate the amount of leakage with a
-probabilistic guarantee. We manually check these leakage sites and find most of them are quite severe.
+probabilistic guarantee. \tool{} times out on around 10\% reported side-channel leakage sites. We manually check these leakage sites and find most of them are quite severe.
 We will present the details in the subsequent sections.
 
 \subsection{Case Studies}
@@ -1012,8 +1012,7 @@ return( 0 );
         The mark $*$ means timeout.}
     \label{fig:rsa}
 \end{figure*}
-We also evaluate \tool{} on RSA. Due to the page limit,
-we do not present the detailed leakage report. %, which is available online at the tool release website.
+We also evaluate \tool{} on RSA.  %, which is available online at the tool release website.
 %% \jl{where?}. In general,
 %% developers are interested in fixing side-channel vulnerabilities for the RSA implementations.
 %% \jl{Then maybe find some space to present these results?}
