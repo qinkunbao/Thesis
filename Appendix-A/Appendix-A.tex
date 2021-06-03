@@ -13,7 +13,7 @@
 %% some information and can reduce the size of the search space to
 %% $2^{120}$. Then we can conclude 8 bits of the information are leaked.
 
-\tool{} takes a binary executable as the input. It uses dynamic binary instrumentation tools to collect execution traces. After that, \tool{} analyzes those traces and produces the vulnerability report. While \tool{} can work on the stripped binary executable, \tool{} can also read the symbol and debugging information to give a more fine-grained (e.g., line numbers) report. Table~\ref{tab:DESOpenSSL1.1.1} shows an example of the report. If you are interested in how \tool{} works, please refer to the technical paper~\cite{bao2021abacus}.
+\tool{} takes a binary executable as the input. It uses dynamic binary instrumentation tools to collect execution traces. After that, \tool{} analyzes these traces and produces the vulnerability report. While \tool{} can work on the stripped binary executable, \tool{} can also read the symbol and debugging information to give a more fine-grained (e.g., line numbers) report. Table~\ref{tab:DESOpenSSL1.1.1} shows an example of the report. If you are interested in how \tool{} works, please refer to the technical paper~\cite{bao2021abacus}.
 
 
 \begin{table}[h!]
