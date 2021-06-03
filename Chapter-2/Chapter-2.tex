@@ -138,21 +138,21 @@ Unlike to the trace comparison, the method is quite precise. Moreover, it can mo
     \item These tools heavily rely on SMT solvers. Despite SMT solvers having made incredible progress in performance, SMT solving is still the main bottleneck of these tools. SMT solvers are not good at non-linear arithmetic. However, non-linear arithmetics are quite common in cryptography algorithms.  Recent studies show existing solvers still have bugs when dealing with real number calculations. These calculations are also common in media libraries and machine learning applications.
 \end{itemize}
 
-According to Table~\ref{table:side_channel_detection_tool}, some methods may choose to analyze the source code or the intermediate representations of the vulnerable software. However, it still cannot solve the problem. First, many widely-used libraries (e.g., Intel MKL) do not open the source code. Second, some libraries use hard-coded assembly code to pursue maximum performance.
-Here, we introduce several tools. CacheAudit~\cite{182946} uses abstract domains to compute an
+According to Table~\ref{table:side_channel_detection_tool}, some methods may choose to analyze the source code or the intermediate representations of the vulnerable software. However, it still cannot solve the problem. First, many widely-used libraries (e.g., Intel MKL) do not provide source code. Second, some libraries use hard-coded assembly code to pursue maximum performance.
+CacheAudit~\cite{182946} uses abstract domains to compute an
 over-approximation of cache-based side-channel information leakage upper bound.
 However, it is difficult to judge the sensitive level of the side-channel leakage based on the leakage provided by CacheAudit. Besides, CacheAudit is not scalable enough to analyze ciphers like RSA implementations. CacheS~\cite{236338} improves the approach from
 CacheAudit with a new abstract model that only tracks
 secret-related code. Like CacheAudit, CacheS cannot
-indicate the sensitive level of side-channel vulnerabilities.
+measure the amount of leaked information in each side-channel vulnerability.
 CaSym~\cite{Brotzman19Casym} introduces a static cache-aware symbolic reasoning technique to cover multiple paths in a target program. CaSym can work on two threat models: trace-based attacks and access-based attacks. Again, their
 approaches cannot evaluate the sensitive level for each side-channel vulnerability, and it only works on small code snippets.
 
 The dynamic approach, usually consisting of taint analysis and symbolic execution,
 can perform a very precise analysis. CacheD~\cite{203878} takes a concrete execution trace and runs symbolic execution on the trace
 to get a formula for each memory address. CacheD is
-quite precise in avoiding false positives. However, CacheD is not able to detect secret-dependent control-flows. We adopted a similar approach to model the secret-dependent data accesses in the dissertation. \tool{} differs from CacheD in that we do not use traditional taint tracking or domain knowledge to cut the trace when identifying secret-dependent data access vulnerabilities. \tool{} works on machine instructions directly instead of intermediate representations. Moreover, \tool{} finds secret-dependent control-flows at the same time and gives a precise quantification of the leakage. DATA~\cite{217537} detects address-based side-channel vulnerabilities by comparing and aligning different execution traces under various test inputs. After collecting execution traces, DATA aligns them and finds the differences. It uses statistical hypothesis testing to find true leakages. However, both imperfect trace alignment and a statistical testing result that DATA can produce false positives.
-MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} adopts a similar approach from DATA by comparing all accessed addresses. It uses mutual information (MI) between sensitive input and execution state to quantify the information. 
+quite precise in avoiding false positives. However, CacheD is not able to detect secret-dependent control-flows. We adopted a similar approach to model the secret-dependent data accesses in the dissertation. \tool{} differs from CacheD in that we do not use traditional taint tracking or domain knowledge to cut the execution trace when identifying secret-dependent data access vulnerabilities. \tool{} works on machine instructions directly instead of intermediate representations. Moreover, \tool{} finds secret-dependent control-flows at the same time and gives a precise quantification of the leakage. DATA~\cite{217537} detects address-based side-channel vulnerabilities by comparing and aligning different execution traces under various test inputs. After collecting execution traces, DATA aligns them and finds the differences. It uses statistical hypothesis testing to find true leakages. However, both imperfect trace alignment and the statistical testing that DATA uses can produce false positives.
+MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} adopts a similar approach as DATA by comparing all accessed addresses. It uses mutual information (MI) between sensitive input and execution state to quantify the information. 
 
 \begin{sidewaystable}
 
