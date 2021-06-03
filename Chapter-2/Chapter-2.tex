@@ -56,7 +56,7 @@ Based on the above discussion, we consider three types of granularities in the d
 
 
 \subsection{Attack Models}
-Previous work~\cite{182946} classifies side-channel attacks into three types based on the type of information that an attacker can learn during the attack.
+Previous work~\cite{182946} classifies side-channel attacks into three types based on the type of information that an attacker can learn during an attack.
 \subsubsection*{Timing-based Attacks}
 In timing-based attacks, an adversary can measure and compare the execution time of victim programs. It could be the overall execution time or the execution time of some interesting points (e.g., a function).  The execution time is correlated to some events (e.g., cache hits and misses, page faults, the number of instructions). Timing-based attacks are perilous because these attacks are able to be carried out remotely over the networks remotely~\cite{brumley2005remote}. Examples of these attacks include remote timing attacks~\cite{brumley2005remote}, Bernstein's attack on AES~\cite{bernstein2005cache}, and Kocher’s original attack~\cite{kocher1996timing} from CRYPTO 96.
 \subsubsection*{Access-based Attacks}
