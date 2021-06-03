@@ -1156,7 +1156,7 @@ bn\_div.c& 330&BN\_div&0.3 &\cmark\\
 
 \subsection{Benchmarks}\label{sec:eval_countermeasures}
 \subsubsection*{Bit-slicing}
-Bit-slicing is an efficient method to construct constant-time implementation for side channel to mitigation. The basic concept is to implement a function in terms of single-bit logical gate operations, such as AND, XOR, OR, and NOT\@.
+Bit-slicing is an efficient method to construct constant-time implementations to mitigate side-channels. The basic concept is to implement a function in terms of single-bit logical gate operations, such as AND, XOR, OR, and NOT\@.
 
 Since the table look-ups and conditional jumps are replaced with single-bit logical gates, with no secret-dependent memory addresses or control flow, both the data access and control flow types of side-channel leakages are mitigated.
 \begin{figure}[h!]
