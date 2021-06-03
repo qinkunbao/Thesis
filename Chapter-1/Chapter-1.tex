@@ -75,7 +75,7 @@ To address Problem 2, we make the following contributions on quantifying side-ch
 
 \begin{itemize}
     \item We propose a method that can quantify fine-grained leaked information from side-channel vulnerabilities that result from actual attack scenarios in a single trace attack. Our approach differs from previous ones in that we precisely calculate the amount of leakage. We model the information quantification problem as a counting problem and use a Monte Carlo sampling method to estimate the information leakage.
-    \item We implement the method into a tool and apply it to several pieces of real software. \tool{}\footnote{Abacus is open source under the MIT license.  \url{https://github.com/s3team/Abacus}} successfully identifies previous unknown and known side-channel vulnerabilities and calculates the corresponding information leakage. Our results are useful in practice. The leakage estimates and the corresponding inputs that triggers the vulnerability can help developers triage and fix the vulnerabilities.
+    \item We implement the method into a tool called \tool{} and apply it to several pieces of real software. \tool{}\footnote{Abacus is open source under the MIT license.  \url{https://github.com/s3team/Abacus}} successfully identifies previous unknown and known side-channel vulnerabilities and calculates the corresponding information leakage. Our results are useful in practice. The leakage estimates and the corresponding inputs that triggers the vulnerability can help developers triage and fix the vulnerabilities.
 \end{itemize}
 
 To address Problem 2, we make the following contributions on quantifying side-channel leakages on a multiple trace attack:
