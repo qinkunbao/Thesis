@@ -1,8 +1,8 @@
-Dear xxx,
+Dear Jim,
 
 Thank you for reviewing my dissertation. I have gone through the details of each
 comment and revised my dissertation multiple rounds to eliminate any logic flows and
-fix all the typos and grammar errors. In summary, the revision covers the following aspects.
+fixed all the typos and grammar errors. In summary, the revision covers the following aspects.
 
 1. Fuzzing – Why did you use fuzzing?
 
@@ -15,8 +15,8 @@ I have a few choices to address the limitation. First, I can use static methods
 not a big fan of current static analysis tools, especially for side-channel research.
 There are many papers on static side-channel analysis. Nearly all of these tools are
 used to prove the absence of side-channel leakages. However, most of them have high
-false-positive rates. Besides, there are many talented researchers working on the 
-same direction (e.g., Project Everest). 
+false-positive rates. Besides, there are many talented researchers working on the
+same areas (e.g., Project Everest).
 
 On the other hand, there are many success stories with dynamic tools (e.g., SAGE,
 AFL, Valgrind) in recent years. In particular, fuzzing is becoming a hot trend these
@@ -65,7 +65,7 @@ computable method to estimate the information that can be reliably transferred o
 channel between secret data and attackers' observations. From a research project
 aspect, I hope to have a stronger motivation before starting the project.
 
-4.  bits vs. Q bits. Lower bounds?       
+4.  bits vs. Q bits. Lower bounds?      
     Improve the presentation
     Make the comparison more meaningful
     Etc.
@@ -83,12 +83,12 @@ with the term ``lower bounds'' except my advisor.
 
 a. Abacus quantifies the amount of leaked information for a given address access
 behavior. It is a measure of the amount of leaked information that an attacker can
-get, based on that another event has already occurred. I agree that the result from the tool 
+get, based on that another event has already occurred. I agree that the result from the tool
 can be counterintuitive (e.g., the password checker example in my dissertation).
 Let's compare the quantification method in my dissertation to Bayes' theorem.
-I think they are similar in some ways. Bayes' theorem describes the probability of 
-an event, based on prior knowledge of an event has happened. The result from Bayes' theorem 
-can also be counterintuitive (e.g., drug testing).
+I think they are similar in some ways. Bayes' theorem describes the probability of
+an event, based on prior knowledge of an event that has happened. The result from 
+Bayes' theorem can also be counterintuitive (e.g., drug testing).
 
 b. Quincunx defines the amount of leaked information by the empirical entropy of the
 observations. For a determinism program, channel capacity is the tight upper bound of
@@ -105,35 +105,35 @@ removed the comparison from the evaluation section in the current version.
 
 To address the above concerns, I made the following revisions.
 
-a. I revised the description in Chapter 5. I avoided the use of term ``lower bound''
-and tune my presentation. 
+a. I revised the description in Chapter 5. I avoided the use of the term ``lower bound''
+and tune my presentation.
 
 b. I revised Table 5.3. The evaluation section does not compare Quincunx with Abacus
 in the current version because they are calculated with different methods and have
-different threat models. 
+different threat models.
 
 c. Chapter 5 was an early draft. We submitted the work to a conference later and
-my advisor helped me revise the paper. I updated the chapter from the submitted 
+my advisor helped me revise the paper. I updated the chapter from the submitted
 paper.
 
 5. iid assumption – does it fit your research on side-channel?
 
-It is true that Quincunx requires the assumption that input variables are
-independent and identically distributed. That's why I applied a black box fuzzing 
-instead of a coverage-guided fuzzing. As long as each time we get a random input from 
+You are right that Quincunx requires the assumption that input variables are
+independent and identically distributed. That's why I applied a black box fuzzing
+instead of a coverage-guided fuzzing. As long as each time we get a random input from
 the whole input space (Population) that is independent of the previous input, the input
-variables should satisfy the i.i.d. assumption. Take AES-128 encryption for example, 
-each time we randomly generate a 128 bit key from 0 to 2^{128}, the sequence of key 
+variables should satisfy the i.i.d. assumption. Take AES-128 encryption for example,
+each time we randomly generate a 128 bit key from 0 to 2^{128}, the sequence of key
 values follows the i.i.d. assumption.
 
 The situation is a little different for a machine learning library. In my
 dissertation, we also evaluated Quincunx on a deep learning library. Each time, we
 randomly select an item from a dataset (Sample). If the dataset is biased, then we
-can not get correct results. The good news is that the most well-known data sets in
+can not get the correct results. The good news is that the most well-known data sets in
 machine learning are i.i.d. i.i.d. is the foundation of many machine learning
-techniques (e.g., cross-validation, SVM, back-propagation). The assumption of i.i.d. 
-simplifies many methods by assuming the data won't change over the time. 
-In my dissertation, we used MINIST, a well-known handwriting digit dataset. 
+techniques (e.g., cross-validation, SVM, back-propagation). The assumption of i.i.d.
+simplifies many methods by assuming the data won't change over the time.
+In my dissertation, we used MINIST, a well-known handwriting digit dataset.
 We believe the i.i.d. assumption holds under the circumstance, although the
 assumption can be violated in some real-world scenarios.
 
@@ -147,7 +147,7 @@ and discussed potential ways and related work to the mitigated reported side
 
 7. Improve English grammar.
 
-Dr. Larus helped me fix a lot of grammar issues. I also revised the dissertation
+Thank you for helping me fix a lot of grammar issues. I also revised the dissertation
 multiple times. In addition, I used Grammarly to proofread my dissertation.
 
 I have incorporated some discussions above into my dissertation. Please let me know if you
