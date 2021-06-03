@@ -412,7 +412,7 @@ If the value is a formula, it means the original information passes through the 
 
 \section{Evaluation}
 We evaluate our method on real-world crypto libraries, which include  OpenSSL, mbedTLS, Libgcrypt and Monocypher\@. OpenSSL is the most commonly used crypto libraries in today's software. mbedTLS\@ (previous known as PolarSSL) is designed to be easy to understand and fit on embedded devices. We also evaluate Monocypher, a new cryptographic library that resists to most side-channel attacks.
-According to the developers, Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model. Libgcrypt is a cryptographic library from the GunPG. As some previous work (e.g., CacheD) choose to evaluate their tools on Libgcrypt, we can compare the evaluation results by applying the tool on Libgcrypt.
+According to the developers, Monocypher is designed to have no secret dependent indices and secret dependent branches. Therefore, Monocypher should be secure under our threat model. Libgcrypt is a cryptographic library from the GunPG. As some previous work (e.g., CacheD) choose to evaluate their tools on Libgcrypt, we can compare the evaluation results by applying our tool on Libgcrypt.
 
 For some crypto libraries, we evaluate multiple versions. After that, we compare the evaluation results with the version history to track these leakages' patches. In summary, we evaluate our tool on the following libraries.
 \begin{itemize}
@@ -512,7 +512,7 @@ encryption and asymmetric encryption. Most of the side-channel leakages in symme
 We also evaluate our tool on the RSA implementation. With the optimization
 introduced in the previous sections, we need not apply domain knowledge to
 simplify the analysis. Our tool identifies all leakage sites
-reported by CacheD~\cite{203878} and find new leaks in less time.
+reported by CacheD~\cite{203878} and find a new leak in shorter time.
 We also find newer versions of RSA in OpenSSL have fewer leaks. Our tool can
 finish all the analysis in less than 6 hours. 
 
@@ -520,22 +520,22 @@ finish all the analysis in less than 6 hours.
 \label{eval:scala}
 
 In this section, we compare \detect{} with the
-existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the reported results in their papers. As other tools do not quantify leakage sites, we only include the time of detecting vulnerabilities to perform a fair comparison.
+existing trace-based side-channel detection tools on vulnerability detections. For other tools, we use the reported results in their papers~\cite{203878}. As other tools do not quantify leakage sites, we only include the time of detecting vulnerabilities to perform a fair comparison.
 
-The comparison result with CacheD~\cite{203878} is shown in Table~\ref{eval:cacheD}.
-Note that one statement in the source code can be compiled into several machine instructions. So it is possible that one statement can have multiple leakage points. Under the circumstance, we think it is only a leakage.
+The comparison result with CacheD~\cite{203878,217537} is shown in Table~\ref{eval:cacheD}.
+Note that one statement in the source code can be compiled into several machine instructions. So it is possible that one statement can have multiple leakage points. In the circumstance, we consider it takes only one leakage.
 We have confirmed that \detect{} can identify all the secret-dependent data access vulnerabilities reported by CacheD. In addition, \detect{} finds many new ones.
 CacheD fails to detect some vulnerabilities for two
 reasons. First, CacheD can only detect secret-dependent data access
 vulnerabilities. \detect{} can detect secret-dependent control-flows as well.
-Second, according to the CacheD paper, CacheD times out after 20 hours to process
+Second, according to the CacheD paper, CacheD times out after 20 hours when processing
 asymmetric ciphers. CacheD applies some domain knowledge to simplify and speed up
 the analysis.
 While these optimizations do not introduce false positives, they may miss some
 vulnerabilities.
-Third, CacheD only symbolizes the encryption keys. Some side-channel leakages when the input messages equal to some certain values. It is possible that CacheD miss some
+Third, CacheD only symbolizes the encryption keys. Some side-channel leakages occurs when the input messages equal to some certain values. It is possible that CacheD misses some
 leakages as we have discussion the previous sections.
-We notice that the number of instructions in these traces are different due to the different analysis starting functions and building options during the evaluation.
+We notice that the number of instructions in these traces are different due to the different analysis starting functions and build options during the evaluation.
 Table~\ref{eval:cacheD} shows that
 \detect{} is faster than CacheD. \detect{} is much faster than CacheD when analyzing the same
 number of instructions. For example, when we test~\detect{} on AES from OpenSSL
