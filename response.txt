@@ -32,9 +32,9 @@ papers. That's why I used fuzzing at the beginning of the project.
 you might want to include some discussion on the points (3), (4), and (5) below.
 The research presented in the dissertation has a few limitations.
 
-a. The methods in my dissertation can not find all kinds of side-channel leakages. No
+a. The methods in my dissertation cannot find all kinds of side-channel leakages. No
 tool can find all forms of leakages. Even for address-based side-channel leakages,
-Abacus and Quincunx can not find all the leakages due to the code coverage problem.
+Abacus and Quincunx cannot find all the leakages due to the code coverage problem.
 Some verification tools can prove the absence of side-channel leakages for some small
 code snippets. However, to the best of my knowledge, no tools as yet can prove the
 absence of side-channel leakages in production software.
@@ -129,7 +129,7 @@ values follows the i.i.d. assumption.
 The situation is a little different for a machine learning library. In my
 dissertation, we also evaluated Quincunx on a deep learning library. Each time, we
 randomly select an item from a dataset (Sample). If the dataset is biased, then we
-can not get the correct results. The good news is that the most well-known data sets in
+cannot get the correct results. The good news is that the most well-known data sets in
 machine learning are i.i.d. i.i.d. is the foundation of many machine learning
 techniques (e.g., cross-validation, SVM, back-propagation). The assumption of i.i.d.
 simplifies many methods by assuming the data won't change over the time.

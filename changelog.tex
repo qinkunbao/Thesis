@@ -27,7 +27,7 @@ you might want to include some discussion on the points (3), (4), and (5) below.
 
 The research presented in the dissertation has a few limitations.
 
-a. The methods in my dissertation can not find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx can not find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
+a. The methods in my dissertation cannot find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, Abacus and Quincunx cannot find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
 
 b. The quantification result only applies to specific threat models. For example, Abacus quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much information in another execution.
 
@@ -59,7 +59,7 @@ b. I revised Table 5.3. The evaluation section does not compare Quincunx with Ab
 
 It is true that Quincunx requires the input variables to be independent and identically distributed. That's why I applied a blackbox fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Populations) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption.
 
-The situation is a little different for a machine learning library. In my dissertation, we also evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we can not get correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning methods. The assumption of i.i.d. simplify many methods by assuming the data won't change over the time. In my dissertation, we used MINIST, a well-known handwriting digit dataset. We believe the i.i.d. assumption holds under the circumstance.
+The situation is a little different for a machine learning library. In my dissertation, we also evaluated Quincunx on a deep learning model. Each time, we randomly select an item from a dataset (Samples). If the dataset is biased, then we cannot get correct results. The good news is that the most well-known data in machine learning is i.i.d. i.i.d. is the foundation of supervised machine learning methods. The assumption of i.i.d. simplify many methods by assuming the data won't change over the time. In my dissertation, we used MINIST, a well-known handwriting digit dataset. We believe the i.i.d. assumption holds under the circumstance.
 
 I have revised my dissertation to include the discussion on i.i.d.
 
