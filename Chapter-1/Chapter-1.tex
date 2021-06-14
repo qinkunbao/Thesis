@@ -9,7 +9,7 @@ A large portion of side-channel attacks is the joint result of the underlying co
 
 Various countermeasures have been proposed to defend against side-channel attacks. Existing countermeasures can be divided into two categories, hardware-based methods and software-based methods. Hardware-level solutions, such as reducing shared resources, oblivious RAM, and transnational memory~\cite{203878,217537,shih2017t,Zhang:2015:HDL:2775054.2694372}, need to adopt new hardware features and change  today's modern complex computer systems, which are hard to adopt in reality. Therefore, a promising and universal direction is software countermeasures, detecting and eliminating side-channel vulnerabilities in existing software code base. For example, when we examine recent side-channel attacks, many of them exploit two kinds of code patterns: \emph{secret-dependent control-flow transfers} and \emph{secret-dependent data accesses}.
 \begin{figure}[h]
-    \begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
+    \begin{lstlisting}[xleftmargin=.3\textwidth, xrightmargin=.32\textwidth]
 int secret[32];
 ...
 while(i>0){
@@ -25,7 +25,7 @@ while(i>0){
 Secret-dependent control-flow transfers happen when the value of secret can affect which branch the code executes. Figure~\ref{fig:secret:cf} shows an example. Depending on the value of \textsf{secret}, the code may or may not execute line 6. An attacker can retrieve some information by observing the execution control-flow.
 
 \begin{figure}[h]
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
+    \begin{lstlisting}[xleftmargin=.3\textwidth, xrightmargin=.2\textwidth]
 static char FSb[256] = {...}
 ... 
 uint32_t a = *RK++ ^ \ 
