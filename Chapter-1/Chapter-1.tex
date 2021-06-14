@@ -25,7 +25,7 @@ while(i>0){
 Secret-dependent control-flow transfers happen when the value of secret can affect which branch the code executes. Figure~\ref{fig:secret:cf} shows an example. Depending on the value of \textsf{secret}, the code may or may not execute line 6. An attacker can retrieve some information by observing the execution control-flow.
 
 \begin{figure}[h]
-    \begin{lstlisting}[xleftmargin=.32\textwidth, xrightmargin=.32\textwidth]
+    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
 static char FSb[256] = {...}
 ... 
 uint32_t a = *RK++ ^ \ 

@@ -160,7 +160,7 @@ control-flows, A and B.
 
 \begin{figure}[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
+    \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.1\textwidth]
 uint8_t key[2], t1, t2;
 get_key(key);              // 0 <= key[0], key[1] < 256
 t1 = key[0] + key[1];
@@ -185,7 +185,7 @@ question is how much information can be leaked from the above code if an
 attacker knows which branch is executed?
 
 \begin{table}[ht]
-    \centering\small\footnotesize
+    \centering%\small\footnotesize
     \caption{The distribution of observation}\label{shtable}
     %    \resizebox{\columnwidth}{!}{
     \begin{tabular}{l|cc|cc}
@@ -223,7 +223,7 @@ definition, both leakage sites leak
 
 \textbf{Shannon Entropy.}
 Based on Shannon entropy, the respective amount of information in A and B equals to
-    {\footnotesize
+    {%\footnotesize
         \begin{align*}
             \mathit{Shannon\text{-}entropy_A} & = -(0.9998*\log_{2}0.9998      \\
                                               & \qquad+ 0.0002*\log_{2}0.0002) \\
@@ -255,7 +255,7 @@ information leakage is reported, a program is secure. However, when a tool using
 
 \begin{figure}[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
+    \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.1\textwidth]
 char key[9] = input();
 if(strcmp(key, "password"))   // leakage site C
     pass();                   // branch 1
@@ -441,7 +441,7 @@ In contrast, an \emph{average} estimate based on random secret input information
 information in some attack scenarios.
 
 \begin{table}[ht]
-    \centering\small\footnotesize
+    \centering%\small\footnotesize
     \caption{New leakage modeling results}
     \label{shtable2}
     \vspace*{-9pt}
@@ -946,7 +946,7 @@ each. On the contrary, leakage 4, 5, 6, 7 each accesses a smaller lookup table
 
 \begin{figure}%[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[ frame=none]
 int mbedtls_internal_aes_encrypt( mbedtls_aes_context *ctx,
 const unsigned char input[16],
 unsigned char output[16] )
@@ -979,8 +979,8 @@ return( 0 );
 
 \begin{figure*}
     \centering
-    \vspace*{-9pt}
-    \hspace*{-15pt}
+    %\vspace*{-9pt}
+    %\hspace*{-15pt}
     \subfloat[OpenSSL 0.9.7]{
         \includegraphics[width=.3\linewidth]{./figures/chapter4/result/RSA-openssl-0-9-7.pdf}
         \label{fig:rsa-1}
@@ -1071,7 +1071,7 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
 \tool{} detects a minor vulnerability in the original function that can leak the last bit of the big number \textbf{m}. In the updated version, developers make the fixed windows the default option and rewrite most of the function. However, the leakage site still exists in OpenSSL 1.1.1.
 \begin{figure}
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.08\textwidth, xrightmargin=.0\textwidth, frame=none]
 # define mul_add_c2(a,b,c0,c1,c2)                    \
     t=(BN_ULLONG)a*b;                                \
     tt=(t+t)&BN_MASK;                                \
@@ -1091,7 +1091,7 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
 
 \begin{figure}
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.08\textwidth, xrightmargin=.0\textwidth, frame=none]
 # define mul_add_c2(a,b,c0,c1,c2)      do { \
     BN_ULONG ta = (a), tb = (b);            \
     BN_ULONG lo, hi, tt;                    \
@@ -1106,13 +1106,13 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
 \label{fig:new_sqr2}
 \end{figure}
 
-To evaluate the effectiveness of the leaked bits reported by \tool{}, we conduct a case study of all the leaked sites identidied by \tool{} in OpenSSL 1.1.0f. Table~\ref{chapter4:tab:RSAOpenSSL1.1.0} shows the result. First, all leakage sites that leak more than 5 bits information are fixed by developers. Second, for all leakages that are not patched by developers, the quantification result shows that they leak less than 1.0 bits information. The evaluation results show that \tool{} can help developers find severe leakages automatically.
+To evaluate the effectiveness of the leaked bits reported by \tool{}, we conduct a case study of all the leaked sites identified by \tool{} in OpenSSL 1.1.0f. Table~\ref{chapter4:tab:RSAOpenSSL1.1.0} shows the result. First, all leakage sites that leak more than 5 bits information are fixed by developers. Second, for all leakages that are not patched by developers, the quantification result shows that they leak less than 1.0 bits information. The evaluation results show that \tool{} can help developers find severe leakages automatically.
 
 \begin{table}[!ht]
 \centering\tiny\scriptsize
 \caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0f. According to \tool{}\cite{bao2021abacus}, the mark ``$*$'' means timeout, which indicates more severe leakages. $0.0$ means very small amount of leakage, but not exactly zero.}\label{chapter4:tab:RSAOpenSSL1.1.0}
 %\resizebox{\columnwidth}{!}{
-\begin{tabular}{rrrrc}
+\begin{tabular}{lrrrc}
 \hline
 \textbf{File}  & \textbf{Line Number} & \textbf{Vulnerable Function} & \textbf{Leaked Information (bits)} & \textbf{Fixed in OpenSSL 1.1.1} \\\hline
 bn\_lib.c& 143&BN\_num\_bits\_word&*& \cmark\\
@@ -1160,7 +1160,7 @@ Bit-slicing is an efficient method to construct constant-time implementations to
 Since the table look-ups and conditional jumps are replaced with single-bit logical gates, with no secret-dependent memory addresses or control flow, both the data access and control flow types of side-channel leakages are mitigated.
 \begin{figure}[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t password = input();
 
 uint8_t SBOX[] = {1, 0, 3, 1, 2, 2, 3, 0};
@@ -1175,7 +1175,7 @@ if (password <= 0b111)      \\Leaks 5 bits of password
 
 \begin{figure}[h!]
     \centering
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t password = input();
 
 a = *password & 0b001;
@@ -1215,7 +1215,7 @@ leakage site. \tool{} reports no leakage on the bit-slicing implementation.
 \subsubsection*{Lookup Table}
 \begin{figure}[h]
 \centering
-    \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.1\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.05\textwidth, frame=none]
 static const uint8_t T[1024] = {
       0x63U, 0x7cU, 0x77U, 0x7bU, 0xf2U, 0x6bU, 0x6fU, 0xc5U,
       0x30U, 0x01U, 0x67U, 0x2bU, 0xfeU, 0xd7U, 0xabU, 0x76U,
@@ -1230,7 +1230,7 @@ output = (T[(key[0]>>24)] << 24) ^
 
 \begin{figure}
 \centering
-    \begin{lstlisting}[xleftmargin=.1\textwidth, xrightmargin=.1\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.05\textwidth, frame=none]
 static const uint32_t T[256] = {
     0xc66363a5U, 0xf87c7c84U, 0xee777799U, 0xf67b7b8dU,
     0xfff2f20dU, 0xd66b6bbdU, 0xde6f6fb1U, 0x91c5c554U,
@@ -1257,8 +1257,8 @@ The evaluation result shows the version with smaller lookup tables leaks less in
 
 \subsubsection*{Password Checker}
 \begin{figure}
-  \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.0\textwidth, frame=none]
+  \begin{minipage}{0.8\linewidth}
+    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
 bool pwcheck(uint8_t *key, uint8_t *pub) {
   for (int i = 0; i < 2; ++i) {
     if (key[i] != pub[i]) {
@@ -1267,11 +1267,11 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
   }
   return true;
 }
-\end{lstlisting}
+\end{lstlisting}\caption{A vulnerable password checker.}\label{fig:chapter4:pwcheck1}
   \end{minipage}
-  \hfill
-  \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.0\textwidth, xrightmargin=.00\textwidth, frame=none]
+  \vfill
+  \begin{minipage}{0.8\linewidth}
+    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.00\textwidth, frame=none]
 bool pwcheck(uint8_t *key, uint8_t *pub) {
   bool matched = true;
   for (int i = 0; i < 2; ++i) {
@@ -1280,11 +1280,10 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
   }
   return matched;
 }
-\end{lstlisting}
-  \end{minipage}
-  \caption{A password checker. The left version is vulnerable to side-channel attacks. The right version is the fixed version.}\label{fig:chapter4:pwcheck}
+\end{lstlisting}\caption{A safe password checker.}\label{fig:chapter4:pwcheck2}
+\end{minipage}
 \end{figure}
 
-We illustrate the quantification method on a password checking example.  As shown in Figure~\ref{fig:chapter4:pwcheck}, the left version is vulnerable to side-channel attacks because of the early return at line 4. If the first bytes of \textsf{key} and \textsf{pub} are the same, the function will continue running and access the second byte. The right version fixes the vulnerability because the function will continue comparing the second byte even if the first byte is different.  \tool{} identifies the leakage site in the left figure successfully and estimates the amount of leakage is $16$ bits. 
+We illustrate the quantification method on two password checking examples.  As shown in Figure~\ref{fig:chapter4:pwcheck1}, the version is vulnerable to side-channel attacks because of the early return at line 4. If the first bytes of \textsf{key} and \textsf{pub} are the same, the function will continue running and access the second byte. Figure~\ref{fig:chapter4:pwcheck2} fixes the vulnerability because the function will continue comparing the second byte even if the first byte is different.  \tool{} identifies the leakage site in Figure~\ref{fig:chapter4:pwcheck1} successfully, and estimates the amount of leakage is $16$ bits. 
 
 
