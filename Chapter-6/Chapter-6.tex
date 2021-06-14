@@ -1,16 +1,16 @@
 \chapter{Discussion and Limitations}\label{chapter6}
 \section{Fast and Precise Side-channel Vulnerability Detection}
-\subsection*{Code Coverage} \detect{} analyzes one native x86 execution trace each time. The design, which is very precise in terms of true leakages compared to many static source code methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, but shares common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may miss some side-channel vulnerabilities not covered by the analyzed trace. However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage under various inputs. The evaluation result also confirms the above intuition. For symmetric encryption, there is no secret-dependent control-flow transfers during our evaluation. RSA implementations have several secret-dependent control-flow transfers. Many of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
+\subsection*{Code Coverage} \detect{} analyzes one native x86 execution trace each time. The design is very precise in terms of true leakages compared to many static source code methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, but shares common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may miss some side-channel vulnerabilities not covered by the analyzed trace. However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage under various inputs. The evaluation result also confirms the above intuition. For symmetric encryption, there is no secret-dependent control-flow transfers during our evaluation. RSA implementations have several secret-dependent control-flow transfers. Many of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
 
-\subsection*{Design Choices} At the early stage of the project, we use SMT solvers to get the solutions of constraints. However, we find for some ciphers (RSA), \detect{} timed out after several days. The profiling result showed that the tool spent most its time in Z3. Later, we used a sampling method to detect side-channel leakages. The sampling method seems simple and may miss some leakages in theory. However, the evaluation result shows \detect{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.  
+\subsection*{Design Choices} At the early stage of the project, we used SMT solvers to get the solutions of constraints. However, we found for some ciphers (RSA), \detect{} timed out after several days. The profiling result showed that the tool spent most its time in Z3. Later, we used a sampling method to detect side-channel leakages. The sampling method seems simple and may miss some leakages in theory. However, the evaluation result shows \detect{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.  
 
-\subsection*{Cache Model} We use a simple cache model in this work. Recent works such as CacheAudit and CaSym~\cite{Brotzman19Casym,182946} use a Least Recently Used (LRU) cache. First, there is no fundamental difficulties that prevent us from adopting a more realistic cache models. Second, the LRU model is still a substantial simplification of a real cache. For example, Intel Sandy Bridge CPUs use an undisclosed hash function to map memory addresses to L3 cache lines~\cite{farshin2019make}. However, the choice of LRU  cache models can bring expensive overheads. For example, CaSym can only analyze small code snippets.
+\subsection*{Cache Model} We use a simple cache model in this work. Recent works such as CacheAudit~\cite{182946} and CaSym~\cite{Brotzman19Casym} use a Least Recently Used (LRU) cache. First, there is no fundamental difficulties that prevent us from adopting a more realistic cache models. Second, the LRU model is still a substantial simplification of a real cache. For example, Intel Sandy Bridge CPUs use an undisclosed hash function to map memory addresses to L3 cache lines~\cite{farshin2019make}. However, the choice of LRU  cache models can bring expensive overheads. For example, CaSym can only analyze small code snippets.
 
 \subsection*{Leakages} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has a few side-channel leakages, but given the end of life status of DES, it is still unpatched for the worth of engineering effort. \detect{} also detects several leakages in asymmetric ciphers such as RSA. After we manually analyze these leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which may partially explain why developers are not interested in fixing all the side-channel leakages. 
 
 \section{Precise Analysis on Single-trace Attacks}
 While recent work found many side-channel vulnerabilities,
-we note that many of them are been patched by developers.
+we note that many of them are not patched by developers.
 Side-channels are ubiquitous in software, and it is difficult to fix all of them.
 We need a tool that estimates the sensitivity of each vulnerability
 so software engineers can focus on
@@ -30,7 +30,7 @@ we think it is a software engineer's responsibility to select the input key and 
 the path in which they are interested. It is not a problem for crypto software 
 since virtually all keys follow similar computational paths.
 
-We use the amount of leaked information to represent the sensitivity level of
+We use the amount of leaked information to represent the severity level of
 each side-channel vulnerability. Although imperfect, \tool{} produces a reasonable
 measurement for each leak. For example, the simple modular exponentiation is
 notoriously famous for multiple side-channel attacks~\cite{kocher1996timing}.
@@ -41,20 +41,20 @@ loop is severe. If a site in the loop leaks the same bit from the
 original key, and these leaks are not independent. \tool{} captures most
 fine-grained information by modeling each leak during the execution as a
 formula and the conjunction of the formulas to describe its total effect.
-Some leakage sites (e.g., square and multiply)
+Some leakage sites (e.g., square and multiply in RSA)
 can leak one particular bit of the original key, but some leakage sites leak one bit
 from several bytes in the original key. \tool{} can capture the dependency among the leaks and
 reports more precise leakage information.
 
 \tool{} reaches full precision if the number of estimated leaked bits
-equals to Definition~\ref{chapter4:def}.
+equals to Definition~\ref{chapter4:def} in Chapter~\ref{chapter4}.
 \tool{} may lose precision from the
 memory model it uses in theory. However, we did not find false positives
 caused by the imprecise memory model during our evaluation.
 Sampling introduces imprecision but with a probabilistic guarantee.
 However, during the evaluation, we find that \tool{} cannot estimate
 the amount of leakage for some leakage sites in a reasonable time,
-which means the number of $K^o$ is very small. According to Definition~\ref{chapter4:def}, it means the leakage is very severe. 
+which means the number of $K^o$ is very small. According to Definition~\ref{chapter4:def} in Chapter~\ref{chapter4}, it means the leakage is very severe. 
 \section{Precise Analysis on Multiple-trace Attacks}
 In this work, we present an approach that tries to give a 
 estimation of the amount of leaked information by access-based
@@ -85,18 +85,18 @@ side-channel leakage based on Channel Capacity. The channel capacity
 measures the information flow between the source and the
 destination. One useful characteristic of channel capacity is not
 affected by the input, which is useful because we cannot
-assume the input secrets of the software in practice. In the chapter, we
+assume the input secrets of the software in practice. In Chapter~\ref{chapter5}, we
 use the sampling result to approximate the true value of the
 channel capacity. We prove the sampling method presented in the chapter can only give the conservative estimation of the amount of the true leakage.
 
-\ctool{} requires the random input variables to be independent and identically distributed (i.i.d.). That's why I apply a black box fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Population) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption. The situation is a little different for machine learning libraries. In the dissertation, we evaluated \ctool{} on a deep learning model. Each time, we randomly select an item from a dataset (Sample). If the dataset is biased, then we cannot get correct results. The good news is that the most well-known data sets in
-machine learning are i.i.d. i.i.d. is the foundation of many machine learning
-techniques (e.g., cross-validation, SVM, back-propagation). The assumption of i.i.d. 
-simplify many methods by assuming the data won't change over the time. 
+\ctool{} requires the random input variables to be independent and identically distributed (i.i.d.). That's why we apply a black box fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Population) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption. The situation is a little different for machine learning libraries. In this dissertation, we evaluated \ctool{} on a deep learning model. Each time, we randomly select an item from a dataset (Sample). If the dataset is biased, then we cannot get correct results. The good news is that the most well-known data sets in
+machine learning are independent and identically distributed. The assumption of i.i.d. is required by many machine learning
+techniques (e.g., cross-validation, SVM, back-propagation). The i.i.d. assumption
+simplifies many methods by assuming the data will not change over the time. 
 In my dissertation, we used MINIST, a well-known handwriting digit dataset. 
 We believe the i.i.d. assumption holds under the circumstance, although the
 assumption can be violated in some real-world scenarios.
 
 
-\ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} cannot cover all the paths and may miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control flow under various inputs. For other libraries such as graphic rendering, machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find every side-channel vulnerabilities. The goal of \ctool{} is to pick up really serious side-channel vulnerabilities from the numerous vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem. 
+\ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} cannot cover all the paths and may miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control flow under various inputs. For other libraries such as graphic rendering and machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find every side-channel vulnerability. The goal of \ctool{} is to identify severe side-channel vulnerabilities from many less severe vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem. 
 
