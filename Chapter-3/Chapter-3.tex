@@ -24,7 +24,7 @@ Figure~\ref{fig:memory_hierarchy} shows the overview of one example of the hiera
 The main memory is at the bottom of the memory hierarchy.
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=.5\columnwidth]{./figures/chapter3/architecture.pdf}
+  \includegraphics[width=.65\columnwidth]{./figures/chapter3/architecture.pdf}
   \caption{Computer memory hierarchy. The hierarchy is designed to minimise the access time with the relatively low cost. It is the root cause of many side-channel attacks.}\label{fig:memory_hierarchy}
 \end{figure}
 
@@ -58,9 +58,9 @@ In this dissertation, we study two types of side-channel leakage code patterns. 
 \subsubsection{Control Flow}
 \begin{figure}[ht]
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
-int example1(uint8_t k, uint32_t m) { // m = 0
-  uint32_t b = (k & m) >> 7;
+    \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.0\textwidth, frame=none]
+int example1(uint8_t k, uint32_t m) { 
+  uint32_t b = (k & m) >> 7; // m = 0
   if (b) {
     ...    // Branch 1
   } else {
@@ -72,7 +72,7 @@ int example1(uint8_t k, uint32_t m) { // m = 0
   \end{minipage}
   \hfill
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+    \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 push  ebp
 mov   ebp, esp
 movzx eax, [addr_k]    
@@ -85,7 +85,7 @@ jne   branch 2
   \end{minipage}\caption*{(a) A False Negative}
 
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
+    \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.0\textwidth, frame=none]
 int example2(uint16_t k) {
   int res;
   if (k > 8) {
@@ -99,7 +99,7 @@ int example2(uint16_t k) {
   \end{minipage}
   \hfill
   \begin{minipage}{0.45\linewidth}
-    \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
+    \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.00\textwidth, frame=none, numbers=none, mathescape=true]
 xor   eax, eax
 cmp   [addr_k], 8
 setbe al
