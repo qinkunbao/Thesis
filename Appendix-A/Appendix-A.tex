@@ -99,7 +99,7 @@ int main() {
 
 \subsection*{Build the example}
 
-Abacus analyzes vulnerabilities on the binary executable. Here we build it into  a 32-bit ELF executable. Note that while Abacus can work on stripped binaries without the source code, we use debug information to get a more detailed result (e.g., the line number in the source code) in this example.
+\tool{} analyzes vulnerabilities on the binary executable. Here we build it into  a 32-bit ELF executable. Note that while \tool{} can work on stripped binaries without the source code, we use debug information to get a more detailed result (e.g., the line number in the source code) in this example.
 \begin{lstlisting}[language=bash]
 $ cd examples
 $ gcc -m32 -g example1.c
@@ -140,7 +140,7 @@ Function Name:  is_odd Module Name:  a.out Offset: 30
 ...
 \end{lstlisting}
 
-As expected, it shows that the function \textsf{is\_odd} has one secret-dependent control-flow vulnerability at line 5. Also, Abacus shows the vulnerability leaks 1 bit information.
+As expected, it shows that the function \textsf{is\_odd} has one secret-dependent control-flow vulnerability at line 5. Also, \tool{} shows the vulnerability leaks 1 bit information.
 
 \section*{Analyze Cryptography Function}
 We have applied \tool{} on the following libraries:
