@@ -434,7 +434,7 @@ The null hypothesis is that the two leakages are independent.
 We generate random inputs as the secret input and record the memory access for each execution. Each time, the execution is independent of the previous execution, and the target program is the same as the program executed in the previous experiment. For one type of event(e.g., function $a$ executes), we use $p$ to denote the probability of the event. Suppose the target program is executed $n$ times, the probability that we observe the event happens $k \,(k < n)$ times is $P = \binom{k}{n}p^n(1-p)^{n-k}$. Therefore, the times of the same observation for each event should satisfy the binomial distribution. After that, we can use the chi-squared test to test whether the two leakage sites are independent.
 
 \begin{figure}[h]
-  \begin{minipage}{0.40\linewidth}
+  \begin{minipage}{0.45\linewidth}
       \begin{tabular}{rrrr}
         \toprule
         & $a$ & $\lnot a$  & total\\
@@ -445,10 +445,10 @@ We generate random inputs as the secret input and record the memory access for e
         \bottomrule
       \end{tabular}\caption*{(a)}
   \end{minipage}
-\hspace{-15pt}
+%\hspace{-15pt}
 \hfill
-\hspace{-15pt}
-  \begin{minipage}{0.40\linewidth}
+%\hspace{-15pt}
+  \begin{minipage}{0.45\linewidth}
       \begin{tabular}{rrrr}
         \toprule
         & $c$ & $\lnot c$  & total\\
