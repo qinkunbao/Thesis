@@ -284,9 +284,9 @@ void bar(uint8_t secret)
   \end{minipage}
   \caption{A minor leakage. }\label{chapter5:fig:example2}
 \end{figure}
-On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker cannot uniquely determine the secret based on the observation of table $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, we think the vulnerability is less severe than the previous one.
+On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker cannot uniquely determine the secret based on the observation of table $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, the vulnerability is less severe than the previous one.
 
-Let's formally define the amount of leaked information based on the above observation.
+Let us formally define the amount of leaked information based on the above analysis.
 
 \begin{mydef}
   \label{chapter5:def}
@@ -306,7 +306,7 @@ With Definition~\ref{chapter5:def}, we can calculate the information leakage in 
 In this section, we prove Definition~\ref{chapter5:def} is a conservative estimation of the amount of leaked information based on the channel capacity.
 
 \begin{theorem}\label{the1}
-  If an attacker launches a side-channel attack on deterministic programs, then the channel between the secret and the observation is a noiseless loss channel.
+  If an attacker launches a side-channel attack on a deterministic program, then the channel between the secret and the observation is a noiseless loss channel.
 \end{theorem}
 
 \begin{myprof}
