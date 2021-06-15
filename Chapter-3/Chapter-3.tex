@@ -375,9 +375,9 @@ The symbolic engine will compute the flag and represent the flag in a symbol
 formula. Because we are running on a symbolic execution on an execution trace, we know which branch is executed.
 If a conditional jump uses the CPU status flag, we will generate the constraint accordingly.
 
-For examples, considering the following x86 code snippet,
+For examples, considering the following x86 code snippet.
 
-\begin{lstlisting}[xleftmargin=.3\textwidth, xrightmargin=.2\textwidth, frame=none][ht]
+\begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.2\textwidth, frame=none][ht]
 ...
 0x0000e781      add dword [local_14h], 1
 0x0000e785      cmp dword [local_14h], 4
