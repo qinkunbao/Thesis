@@ -2,7 +2,7 @@
 
 \chapter{Fast and Precise Side-channel Vulnerability Detection}\label{chapter3}
 \section{Problem}
-Side channels are ubiquitous in modern computer systems as sensitive information can leak through many mechanisms such as power, electromagnetic radiation, and even sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.  Among them, software side-channel attacks, such as cache attacks, memory page attacks, and controlled-channel attacks, are especially problematic as they do not require physical proximity~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These attacks arise from shared micro-architectural components in a computer processor. By observing inadvertent interactions between two programs, attackers can infer program execution flows that manipulate secrets and guess secrets such as encryption keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
+Side channels are ubiquitous in modern computer systems as sensitive information can leak through many mechanisms such as power consumption, execution time, electromagnetic radiation, and even sound~\cite{agrawal2002side,kar20178,chari1999towards,217605,genkin2014rsa}.  Among them, software side-channel attacks, such as cache attacks, memory page attacks, and controlled-channel attacks, are especially problematic as they do not require physical proximity~\cite{7163052,217543,217589,lee2017inferring,191010,liu2015last}. These attacks arise from shared micro-architectural components in a computer processor. By observing inadvertent interactions between two programs, attackers can infer program execution flows that manipulate secrets and guess secrets such as encryption keys~\cite{Osvik2006,Gullasch:2011:CGB:2006077.2006784,203878,10.1007/978-3-540-45238-6_6}.
 
 The cause of most side-channel attacks is the combination of the hardware design and the vulnerable software. Existing countermeasures can be classified into two categories: fixing the software and adopting new hardware. Based on the discussion in \S\ref{chapter1} and \S\ref{chapter2}, fixing side-channel leakage sites in software is usually easier than adopting new hardware to defend against side-channel attacks. In order to eliminate these leakage sites, developers need to find potential leakage sites in a large code base. However, the manual process is tedious and error-prone. Recent work~\cite{203878} also suggests fixing old vulnerabilities can sometimes introduce new leakages.
 
@@ -12,7 +12,7 @@ First, although some tools~\cite{Brotzman19Casym} can find side-channel leakages
 
 Second, many tools perform the analysis at the level of intermediate representations (IR) instead of the machine code. It is a design decision to facilitate the implementations. While analyzing the IRs can simplify the implementation, it is not suitable for side-channel analysis.  Side-channel leakages are a low-level issue and only the low-level analysis can produce the most accurate results. For example, the IR-level branches are not necessarily a superset or a subset of machine-code level branches. Besides, compiler optimizations can eliminate the IR-level branches with conditional moves, and the converse could also happen. Moreover, translating the machine code into IRs can cause a significant overhead for the trace analysis, as we will discuss in the dissertation.
 
-To overcome the above problems, we propose a fast and precise method to detect the side-channel leakages in real-world software products. We examine the bottleneck of current symbolic execution approaches and optimize it to work on real-world cryptography systems. Unlike previous methods, our tool analyzes the machine instructions, which can give more precision than traditional IR-based approaches. We evaluate our tool on popular cryptography libraries including OpenSSL, mbedTLS, Libgcrypt, and Monocypher. The evaluation results show that our tool can identify previous side-channel leakages as well as find new leakages. Compared with recent tools~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741}, our tool is 3-100x faster while finding all the leakages when we evaluate on the same benchmarks. In addition, our tool finds new side-channel vulnerabilities missed by the previous work. 
+To overcome the above problems, we propose a fast and precise method to detect the side-channel leakages in real-world software products. We examine the bottleneck of current symbolic execution approaches and optimize it to work on real-world cryptography systems. Unlike previous methods, our tool analyzes the machine instructions, which can give more precision than traditional IR-based approaches. We evaluate our tool on popular cryptography libraries including OpenSSL, mbedTLS, Libgcrypt, and Monocypher. The evaluation results show that our tool can identify previous side-channel leakages as well as find new leakages. Compared with recent tools~\cite{203878,217537,Wichelmann:2018:MFF:3274694.3274741}, our tool is 3--100x faster while finding all the leakages when we evaluate on the same benchmarks. In addition, our tool finds new side-channel vulnerabilities missed by the previous work. 
 
 \section{Background and Threat Model}
 \subsection{Micro-architectures}
@@ -47,9 +47,9 @@ The attacker attempts to retrieve sensitive information through address-based si
   \item A ring-3 application can probe some sensitive information inside the kernel.
 \end{enumerate}
 
-In reality, attackers may face many possible obstacles, such as the noisy observations of the memory or cache. However, for this project, we assume the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
+In reality, attackers may face many possible obstacles, such as the noisy observations of the memory or cache. However, in this research, we assume the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
 
-\section{Limitations of Current Side-channel Leakage Detection Tools}
+\section{Limitations of Previous Side-channel Leakage Detection Tools}
 In this section, we introduce two limitations of current side-channel leakage detection tools. The first is that some tools have some false positives or false negatives. The second is that current tools are not fast enough to analyze side-channel leakages in real-world software.
 
 
@@ -167,11 +167,11 @@ movzx  eax, [addr_T + eax*1]
   \caption{Secret-dependent data accesses}\label{fig:chapter3:da}
 \end{figure}
 
-Figure~\ref{fig:chapter3:da} shows an example of the secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD) use a concrete base address. Under the circumstance, these tools may miss such vulnerabilities.
+Figure~\ref{fig:chapter3:da} shows an example of secret-dependent data access. \textsf{T} is an array with 128 elements. The size of each element is one byte. So the total size of the array is 128 bytes. Suppose an attacker can observe the memory access at the granularity of one cache lines (64 Bytes), then it is not possible to hold all the data inside the one cache line. An attacker can get some information of the value \textsf{secret} in Figure~\ref{fig:chapter3:da}(a) by observing the cache line access. Figure~\ref{fig:chapter3:da}(b) shows a different example. In this example, only 32 different elements can be accessed in the array and the size of the array is 32 bytes, which is smaller than the size of a cache line. Depending on the base address of the array, the array can be stored in one cache line or two consecutive cache lines. Therefore, such a code may still be vulnerable to side-channel vulnerabilities. However, existing tools (e.g., CacheD~\cite{203878}) use a concrete base address. Under the circumstance, these tools may miss such vulnerabilities.
 
 \subsection{Performance}
-The second limitation of current side-channel detection tools is the performance bottleneck, especially for tools based on symbolic analysis. For example, CaSym can only analyze small programs. CacheD performs better than CaSym. However, it still cannot handle large programs such as RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks.
-Nevertheless, it is significantly less likely for cache side-channel bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side-channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the solver and find side-channel leakages more efficiently.
+The second limitation of current side-channel detection tools is the performance bottleneck, especially for tools based on symbolic analysis. For example, CaSym~\cite{Brotzman19Casym} can only analyze small programs. CacheD performs better than CaSym. However, it still cannot handle large programs such as RSA directly. It uses some domain knowledge to analyze only part of the program. The expensive cost comes from the symbolic execution. Symbolic execution can be used to explore all the possible paths, which is useful for many tasks.
+Nevertheless, it is significantly less likely for cache side-channel bugs in crypto primitives. Cryptography primitives are more likely to have an even coverage of different paths (based on pseudo-random cipher states), and a branch-based side-channel is vulnerable from the very first branch on secret data, making complex path conditions less often relevant. Therefore, we choose to analyze a trace instead of the whole path. Another bottleneck is that the IR. While the IR can significantly decrease the difficulty of the implementation, it also gives introduce an average of 10x of the overall overhead. Third, using SMT solving can be convenient because of its generality, and it is commonly used for its precision when checking branch feasibility in symbolic execution. But the decision problems that an SMT solver handles are typically at least NP-hard. On the other hand, we can use some methods to avoid the expensive SMT solving and find side-channel leakages more efficiently.
 
 \section{Method}\label{chapter3:method}
 \begin{figure}[ht]
@@ -180,7 +180,7 @@ Nevertheless, it is significantly less likely for cache side-channel bugs in cry
   \caption{A side-channel attack}\label{fig:side-channel-attack}
 \end{figure}
 
-In the section, we give necessary definitions and notations for dealing with
+In this section, we give necessary definitions and notations for dealing with
 programs and side-channels.
 
 Shown in Figure~\ref{fig:side-channel-attack}, a side-channel attack can be formulated into the following steps.  A program ($\beta$) has $K$ as its sensitive input (e.g., the encryption key) and $M$ as its the public input (e.g., the plaintext). In a real execution, an adversary may have
@@ -213,10 +213,10 @@ we consider two code patterns that can be exploited by an attacker,
 \subsection{Secret-dependent Control Transfers}
 A control-flow path is secret-dependent if different input-sensitive keys
 ($K$) can lead to different branch conditions.
-We define a branch to be secret-dependent if:
-$$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m) \land PC$$
+We define a branch to be secret-dependent if
+$$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m) \land PC,$$
 
-$PC$ represents the path condition. An adversary can observe which branch the code executes if the branch condition
+where $PC$ represents the path condition. An adversary can observe which branch the code executes if the branch condition
 equals $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
 the observation ($o$) on secret-dependent control-transfers. Note that in the
 above definition, $m$ is also a variable. So it is possible for some $m \in M$,
@@ -227,14 +227,14 @@ we cannot find a pair of two different $k_{i1}$ and $k_{i2}$ to satisfy the abov
 Similar to secret-dependent control-flow transfers, a data access operation is
 secret-dependent if different input sensitive keys ($K$) cause access to different memory addresses. We use the model from CacheD~\cite{203878}. The low $L$ bits of the address are generally unimportant in side-channels.
 
-A data access is secret-dependent if:
+A data access is secret-dependent if
 
-$$\exists k_{i1}, k_{i2} \in K, m \in M,\,f_i(\beta, k_{i1}, m) >> L \neq f_i(\beta, k_{i2}, m) >> L \land PC$$
+$$\exists k_{i1}, k_{i2} \in K, m \in M,\,f_i(\beta, k_{i1}, m) >> L \neq f_i(\beta, k_{i2}, m) >> L \land PC.$$
 
 If the memory access equals to $t_b$, we can use the constraint $c_i :
   f_i(\beta, k, m) >> L = t_b >> L$ to model the observation on secret-dependent
-data accesses. Let's take a look the examples in Figure~\ref{fig:chapter3:da}(a).
-Suppose the base address of the array \textsf{T} is 10. We symbolize both the $k$ and $m$. The formula that represents the memory access at line 6 is $10 + m + (k \mod 128)$. Therefore, we have the formula: $(10 + m + (k_1 \mod 128)) >> 6  \neq (10 + m + (k_2 \mod 128)) >> 6$.
+data accesses. Let us take a look at the examples in Figure~\ref{fig:chapter3:da}(a).
+Suppose the base address of the array \textsf{T} is 10. We symbolize both the $k$ and $m$. The formula that represents the memory access at line 6 is $10 + m + (k \mod 128)$. Therefore, we have the formula $(10 + m + (k_1 \mod 128)) >> 6  \neq (10 + m + (k_2 \mod 128)) >> 6$.
 Here is one possible solution: $m = 0, k_1 = 0, k_2 = 127$. In fact, for any $m$, we can always find possible $k_1$ and $k_2$ that satisfy the above inequation. It is a true leakage. The leakage can also be identified by previous tools such as CacheD. Similarly, we can model the memory access at line 6 with the formula:  $10 + m + (k_1 \mod 32) >> 6  \neq 10 + m + (k_2 \mod 32) >> 6$. If $m = 0$, we cannot find satisfiable $k_1$ and $k_2$ for the above inequation, which indicates that it will always access the same cache line at line 6. However, it is possible that for some $m \in M$, we can find such a pair of $k_1$ and $k_2$ ($m = 53, k_1 = 1, k_2 = 0$). If the actual public input is $0$, existing tools (e.g., CacheD) can miss such a vulnerability. On the other hand, our tool can identify the leakages precisely.
 
 \section{Scalability}
@@ -277,7 +277,7 @@ transform processes, from binary to VEX IR, BAP IR, and finally REIL IR\@.
 Also, IR increases the total number of instructions. For example, x86
 instruction \textit{test eax, eax} transfers into 18 REIL IR instructions.
 
-\textbf{Our Solution:}
+\textbf{Our Solution}
 We abandoned IR and expended the effort to implement
 symbolic execution directly on x86 instructions.
 Table~\ref{scala:ir} shows that eliminating the IR reduces the number
@@ -329,7 +329,7 @@ problem, it is hard to deal for huge formulas. Despite the rapid improvement
 in SMT solvers in recent years, constraint solving remains one of
 the obstacles to scaling the analysis of real-world crypto-systems.
 
-\textbf{Our Solution:}
+\textbf{Our Solution}
 Instead of feeding the formula $f_a(k_1) \neq f_a(k_2)$ into a SMT solver, we
 randomly pick $k_1, k_2 \in K$ and test them if they satisfy the
 formula. Our solution is based on the following intuition. For most combination
@@ -341,7 +341,7 @@ test with different input combination with 100 times, we have $1 -
 
 \section{Design and Implementation}
 \subsection{Trace Logging}
-The trace information can be logged via some emulators (e.g., QEMU) or dynamic binary instrumentation tools (DBI).
+The trace information can be logged via some emulators (e.g., QEMU~\cite{bellard2005qemu}) or dynamic binary instrumentation tools (DBI).
 In this work, we run a program with the concrete input under the DBI to record execution traces.
 The trace data has the following information:
 \begin{itemize}
@@ -357,16 +357,16 @@ The trace data has the following information:
 \label{InstructionSE}
 The primary purpose of the step is to generate constraints of the input sensitive information from the execution trace. If we give the target program a new input which is different from the original input that was used to generate the execution trace but still satisfies these constraints, an attacker will have the same observations on control-flow transfers and data-access patterns.
 
-The tool runs symbolic execution on top of execution traces. At the beginning of the symbolic execution, the tool creates new symbols for each byte in the raw buffer. For other data in the register or memory at the beginning, we use actual values from the runtime information. During the symbolic execution for each instruction, the tool updates every variable in the memory and registers with a math formula. The formula is made up of concrete values and symbols accumulated through the symbolic execution. We implement several rules to simplify the formulas. For each formula, the tool will check whether it can be reduced into a concrete values (e.g., $k_1+12-k_1 = 12$ ). If so, the tool will only use the concrete values in the following symbolic execution.
+The tool runs symbolic execution on top of execution traces. At the beginning of the symbolic execution, the tool creates new symbols for each byte in the raw buffer. For other data in the register or memory at the beginning, we use actual values from the runtime execution information. During the symbolic execution for each instruction, the tool updates every variable in the memory and registers with a math formula. The formula is made up of concrete values and symbols accumulated through the symbolic execution. We implement several rules to simplify the formulas. For each formula, the tool will check whether it can be reduced into a concrete values (e.g., $k_1+12-k_1 = 12$ ). If so, the tool will only use the concrete values in the following symbolic execution.
 
 \subsubsection{Verification and Optimization}
 We run the symbolic execution (SE) on the x86 instructions. In other words, we do not rely on any intermediate languages to simplify the implementation of symbolic execution. While the implementation itself has a lot of benefits (better performance, accurate memory model), we need to implement the symbolic execution rules for each x86 instruction.
 However, due to the complexity of x86, mistakes inevitable. Therefore, we verify the correctness of the SE engine during the execution.
-The tool will collect the runtime information (register values, memory values) and compare them with the formula generated from the symbolic execution. Whenever the tool finishes the symbolic execution of each instruction, the tool will compare the formula for each symbol and its actual value. If the two values do not match, we check the code and fix the error. Also, if the formula does not contain any symbols, the tool will use the concrete value instead of symbolic execution.
+The tool will collect the runtime execution information (register values, memory values) and compare them with the formula generated from the symbolic execution. Whenever the tool finishes the symbolic execution of each instruction, the tool will compare the formula for each symbol and its actual value. If the two values do not match, we check the code and fix the error. Also, if the formula does not contain any symbols, the tool will use the concrete value instead of symbolic execution.
 
 \subsubsection{Secret-dependent Control-flows}
 An adversary can infer sensitive information from secret dependent control-flows. There are two kinds of control-transfer instructions: the unconditional control-transfer instructions and the conditional transfer instructions.
-The unconditional instructions, such as CALL, JUMP, RET transfer control from one code segment location to another. Since the transfer is independent of the input sensitive information, an attacker is not able to infer any sensitive information from the control-flow.
+The unconditional instructions, such as CALL, JUMP, and RET, transfer control flows from one code segment location to another. Since the transfer is independent of the input sensitive information, an attacker is not able to infer any sensitive information from the control-flow.
 So unconditional control-transfer does not leak any information based on our threat model. During the symbolic execution, we update the register information and memory cells with new formulas accordingly.
 
 The conditional control-flow transfer instructions, such as conditional jumps, depending on CPU states, may or may not transfer control flows. For conditional jumps, the CPU will test if certain condition flag
@@ -375,7 +375,7 @@ The symbolic engine will compute the flag and represent the flag in a symbol
 formula. Because we are running on a symbolic execution on an execution trace, we know which branch is executed.
 If a conditional jump uses the CPU status flag, we will generate the constraint accordingly.
 
-For examples, considering the below x86 code snippet,
+For examples, considering the following x86 code snippet,
 
 \begin{lstlisting}[xleftmargin=.3\textwidth, xrightmargin=.2\textwidth, frame=none][ht]
 ...
@@ -393,14 +393,14 @@ $$F(\vec{K}) + 1 = 4$$
 The formula, together with the memory address ($\mathtt{0x0000e789}$) is stored as a \textit{formula tuple (address, formula)}. Each formula tuple represents one potential leakage site.
 
 \subsubsection{Secret-dependent Data Accesses}
-Like input-dependent control-flow transfers, an adversary can also infer sensitive information from the data access pattern as well. We try to find this kind of leakages by checking every memory operand of the instruction. We generate the memory addressing
+Like input-dependent control-flow transfers, an adversary can also infer sensitive information from the data access patterns as well. We try to find this kind of leakages by checking every memory operand of the instruction. We generate the memory addressing
 formulas. As discussed before, every symbol in the formula is the input key. If the formula does not contain any symbols, the memory access is independent
 from the input sensitive information and will not leak any sensitive information according to our threat model. Otherwise, we will generate the constraint for
-the memory addressing. We model the memory address with a symbolic formula $F(\vec{K})$. Because we also have the concrete value of the memory address $\mathtt{Addr1}$. Inspired by the work from~\cite{203878}, the formula can be written as:
+the memory addressing. We model the memory address with a symbolic formula $F(\vec{K})$. Because we also have the concrete value of the memory address $\mathtt{Addr1}$. Inspired by the work CacheD~\cite{203878}, the formula can be written as
 
-$$F(\vec{K}) >> L = \mathtt{Addr1} >> L$$
+$$F(\vec{K}) >> L = \mathtt{Addr1} >> L,$$
 
-$L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6 for 64 byte cache line.
+where $L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6 for 64 byte cache line.
 
 \subsubsection{Information Flow Check}
 \detect{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing bugs, we also track the information flow for each byte of the input
@@ -424,7 +424,7 @@ For some crypto libraries, we evaluate multiple versions. After that, we compare
 
 We refer to the examples or test cases of these libraries and write simple
 programs that use the crypto libraries. For symmetric encryption, the length
-of the keys are 256 bit. For RSA, the length of the keys is 1024. For ECDSA, the
+of keys is 256 bits. For RSA, the length of the keys is 1024 bits. For ECDSA, the
 length of the key is 384 bit. The input public message is ``Hello World!''.
 We mark variables and buffers that store the sensitive data.
 For DES and AES, we mark symmetric keys as secrets.
@@ -502,12 +502,12 @@ aspects:
   \end{tabular}
 \end{table*}
 Table~\ref{table:over_result} summarizes the results.
-\detect{} finds 913 leaks in the crypto libraries.
-Among these 913 leaks, 241 are due to secret-dependent
+\detect{} finds 913 leaks in the crypto libraries,
+among which, 241 are due to secret-dependent
 control-flow transfers and 672 are due to secret-dependent data accesses.
 
 The evaluated algorithms can be classified into two categories: symmetric
-encryption and asymmetric encryption. Most of the side-channel leakages in symmetric implementations are from the lookup tables. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. 
+encryption and asymmetric encryption. Most of the side-channel leakages in symmetric implementations are from the lookup tables. The new implementation of OpenSSL has adopted some methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. 
 
 We also evaluate our tool on the RSA implementation. With the optimization
 introduced in the previous sections, we need not apply domain knowledge to
@@ -545,7 +545,7 @@ number of instructions. For example, when we test~\detect{} on AES from OpenSSL
   \caption{Comparison with CacheD: Time,
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF), The Number of Instructions\,(\# Instructions).}
   \label{eval:cacheD}
-
+    \resizebox{.9\columnwidth}{!}{%
     \begin{tabular}{@{}l|r@{~~}r@{~~}r|r@{~~}r@{~}r@{}}
       \hline
       \multicolumn{1}{l|}{} & \multicolumn{3}{c|}{CacheD} & \multicolumn{3}{c}{Abacus}                                             \\
@@ -559,7 +559,7 @@ number of instructions. For example, when we test~\detect{} on AES from OpenSSL
       Total                 & 22,788.0                    & 55,738,546                 & 84 & 4,125.0  & 51,514,721      & 155+178 \\ \hline
       \multicolumn{7}{l}{\# of Instructions per second \qquad  CacheD: 2,445 \qquad \tool: 12,489}                                 \\ \hline
     \end{tabular}
-
+}
 \end{table*}
 
 DATA~\cite{217537} identifies
@@ -586,7 +586,7 @@ on these formulas within the same time to achieve better precision.
 c) DATA tries to use leakage models (domain knowledge) to classify each leakage.
 The strength of \ctool{} is that it does not need such domain knowledge.
 DATA reports 278 control-flow and 460 memory-access leaks for the RSA implementation in OpenSSL 1.1.0f. Among these leakages, they find one new vulnerability in RSA after some manual analysis.
-\detect{} finds the vulnerability.  For each leakage site, \detect{} can provide
+\detect{} also finds a new vulnerability.  For each leakage site, \detect{} can provide
 concrete examples to trigger the issue.
 \subsection{Case Studies}
 \subsubsection*{DES and AES}
@@ -603,7 +603,10 @@ versions of RSA in OpenSSL tend to have fewer leakages.
 
 Even for the up-to-date version of OpenSSL, \detect{} still find several
 side-channel leakages. Figure~\ref{chapter3:fig:unknown_leakage} shows an unknown leakage site in OpenSSL 1.1.1. It is a secret-dependent control flow transfers. 
-However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer.
+However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer. The function can leak the last digit from big number \textbf{X}. The leakage is severe due to the 
+function \textsf{BN\_rshift1}. Each time, function \textsf{BN\_rshift1}
+shifts \textbf{X} right by one and places the result in \textbf{X}. Therefore,
+an attacker can infer multiple bits of \textbf{X} by observing the branch at line 3.
 
 \begin{figure}[ht]
 \centering
@@ -621,10 +624,7 @@ while (!BN_is_bit_set(B, shift)) { /* note that 0 < B */
 }
 \end{lstlisting}
     \caption{Previously unknown sensitive secret-dependent branch leaks from function 
-             \textsf{int\_bn\_mod\_inverse} in OpenSSL 1.1.1. The function can leak the last digit from big number \textbf{X}. However, the leak is more severe because of the 
-             function \textsf{BN\_rshift1}. Each time, function \textsf{BN\_rshift1}
-             shifts \textbf{X} right by one and places the result in \textbf{X}. Therefore,
-             an attacker can infer multiple bits of \textbf{X} by observing the branch at line 3.}
+             \textsf{int\_bn\_mod\_inverse} in OpenSSL 1.1.1. }
     \label{chapter3:fig:unknown_leakage}
 \end{figure}
 
