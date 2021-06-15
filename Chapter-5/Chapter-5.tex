@@ -429,7 +429,7 @@ If $A$ and $B$ are dependent leakages, the total information leakage will be:
 \[\max{\{L_A, L_B\}}  \leq L_{\mathit{AB}} < L_A + L_B\]
 
 We use the chi-squared test to check if two leakage sites are independent. A chi-squared test can determine if there is a relationship between two categorical variables. Suppose we can summarize the data in a $r \cdot c$ two-way contingency table. The chi-squared test statistic and the degrees of freedom $v$ are calculated with the formula below.
-\[\tilde{\chi}^2=\sum_{k=1}^{rc} \frac{(O_k - E_k)^2}{E_k} \qquad and	 v = (r - 1)(c - 1)\]
+\[\tilde{\chi}^2=\sum_{k=1}^{rc} \frac{(O_k - E_k)^2}{E_k}, \qquad 	 v = (r - 1)(c - 1)\]
 Here $O$ is the observed value and $E$ is the expected value. A low value means that there is a high correlation between the two variables. 
 
 The null hypothesis is that the two leakages are independent.
