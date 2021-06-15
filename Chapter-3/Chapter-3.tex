@@ -216,7 +216,7 @@ A control-flow path is secret-dependent if different input-sensitive keys
 We define a branch to be secret-dependent if
 $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m) \land PC,$$
 
-where $PC$ represents the path condition. An adversary can observe which branch the code executes if the branch condition
+\noindent where $PC$ represents the path condition. An adversary can observe which branch the code executes if the branch condition
 equals $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
 the observation ($o$) on secret-dependent control-transfers. Note that in the
 above definition, $m$ is also a variable. So it is possible for some $m \in M$,
@@ -400,7 +400,7 @@ the memory addressing. We model the memory address with a symbolic formula $F(\v
 
 $$F(\vec{K}) >> L = \mathtt{Addr1} >> L,$$
 
-where $L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6 for 64 byte cache line.
+\noindent where $L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6 for 64 byte cache line.
 
 \subsubsection{Information Flow Check}
 \detect{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing bugs, we also track the information flow for each byte of the input

@@ -101,13 +101,11 @@ In summary, we make the following contributions:
 
 \section{Threat Model}
 
-The threat model is similar to our previous work. That is, we assume
+The threat model in this chapter is similar to the threat model in our previous work from Chapter~\ref{chapter3}. Prior work~\cite{203878,182946,Brotzman19Casym} also shares the same threat model. That is, we assume
 an attacker can share some hardware resource with the victim. The attacker has
 the ability to probe the victim at any time of the execution. We also assume
 an attacker has noise-free observations. The attacker has the access to the victim's
-binary executable. The threat mode is similar to
-the previous work~\cite{203878,182946,Brotzman19Casym} and can catch most of
-the address-based side-channel attacks in the literature.
+binary executable.  We believe that the majority of address-based side-channel attacks in the literature applies to the thread model.
 
 
 \section{Background}
@@ -132,7 +130,7 @@ information $K$ is considered as a random variable.
 Let $k$ be one of the possible
 value of $K$. The Shannon entropy $H(K)$ is defined as
 \begin{displaymath}
-    H(K) = - \sum_{k {\in} K}p(k)\log_2(p(k))
+    H(K) = - \sum_{k {\in} K}p(k)\log_2(p(k)).
 \end{displaymath}
 
 Shannon entropy can be used to quantify the initial uncertainty about the
@@ -172,7 +170,6 @@ if (t2 > 0){               // leakage site B
     doo();    
 }                          
 \end{lstlisting}
-    \vspace*{-1pt}
     \caption{Side-channel leakage}
     \label{fig:side-channel}
 \end{figure}
@@ -186,7 +183,7 @@ attacker knows which branch is executed?
 
 \begin{table}[ht]
     \centering%\small\footnotesize
-    \caption{The distribution of observation}\label{shtable}
+    \caption{The distribution of observations}\label{shtable}
     %    \resizebox{\columnwidth}{!}{
     \begin{tabular}{l|cc|cc}
         \hline
@@ -204,7 +201,7 @@ possibility by counting the number of possible inputs. Table~\ref{shtable}
 describes the probability of each observation. We use the above three types of
 leakage metrics to calculate the amount of leaked information for leak A and leak B.
 
-\textbf{Min Entropy.}
+\subsubsection*{Min Entropy}
 As $p_{A\mathit{max}} = 0.9998$ and $p_{B\mathit{max}} = 0.5$,
 with the definition, min-entropy equals to
 \begin{align*}
@@ -212,7 +209,7 @@ with the definition, min-entropy equals to
     \mathit{min\text{-}entropy_B} & = -\log_2{0.5} = 1.000\ \mathrm{bits}
 \end{align*}
 
-\textbf{Max Entropy.}
+\subsubsection*{Max Entropy}
 Depending on the value of key, the code can run two different branches for each leakage site.
 Therefore, with the max entropy
 definition, both leakage sites leak
@@ -221,15 +218,14 @@ definition, both leakage sites leak
     \mathit{max\text{-}entropy} = -\log_2{2} = 1.000\ \mathrm{bits}
 \end{displaymath}
 
-\textbf{Shannon Entropy.}
+\subsubsection*{Shannon Entropy}
 Based on Shannon entropy, the respective amount of information in A and B equals to
     {%\footnotesize
         \begin{align*}
             \mathit{Shannon\text{-}entropy_A} & = -(0.9998*\log_{2}0.9998      \\
                                               & \qquad+ 0.0002*\log_{2}0.0002) \\
                                               & = 0.000\ \mathrm{bits}         \\
-            \mathit{Shannon\text{-}entropy_B} & = -(0.5*\log_{2}0.5            \\
-                                              & \qquad+ 0.5*\log_{2}0.5)       \\
+            \mathit{Shannon\text{-}entropy_B} & = -(0.5*\log_{2}0.5 + 0.5*\log_{2}0.5)       \\
                                               & = 1.000\ \mathrm{bits}
         \end{align*}
     }
@@ -262,7 +258,6 @@ if(strcmp(key, "password"))   // leakage site C
 else
     fail();                   // branch 2
 \end{lstlisting}
-    \vspace*{-10pt}
     \caption{A dummy password checker}
     \label{fig:password-checker}
 \end{figure}
@@ -277,10 +272,10 @@ size of the original sensitive input when the code executes branch
 $1$.
 
 However, prior static approaches cannot precisely capture the amount of leakage. According to the definition of Shannon entropy, the leakage will be
-$\frac{1}{2^{64}}*\log_{2}\frac{1}{2^{64}} + \frac{2^{64}-1}{2^{64}}
-    *\log_{2}\frac{2^{64}-1}{2^{64}} \approx 0$ bits. Max-entropy is defined from the
+$$\frac{1}{2^{64}}*\log_{2}\frac{1}{2^{64}} + \frac{2^{64}-1}{2^{64}}
+    *\log_{2}\frac{2^{64}-1}{2^{64}} \approx 0\, \mathrm{bits}.$$ Max-entropy is defined from the
 number of possible observations. Because the program has two
-branches, tools based on max-entropy will report the code has a $\log_2{2} = 1$
+branches, tools based on max-entropy will report the code has a $\log_2{2} = 1.0$
 bit leakage.
 Both approaches fail to tell how much information is leaked during the execution
 precisely. The problem with existing methods is that they are static-based so
@@ -302,17 +297,17 @@ methods all fail in real attack models.
 \begin{figure}
     \centering
     \includegraphics[width=.65\columnwidth]{./figures/chapter4/RA.pdf}
-    \caption{The gap between the real attack and previous models}\label{fig:gap}
+    \caption{The gap between real attacks and previous models}\label{fig:gap}
 \end{figure}
 
 \subsection{Precise Analysis}
 Now we present our metric to quantify the amount of leaked information from
 dynamic analysis.
 
-We assume a program ($\beta$) has $K$ as its sensitive input. $K$ should be
+We assume a program ($\beta$) has $K$ as its sensitive input. The input $K$ should be
 a finite set of keys. The program also takes known messages $M$ as its input.
 During an AES encryption, for example,
-$\beta$ is the encryption function. $K$ is the set of all possible AES keys,
+$\beta$ is the encryption function. Here $K$ is the set of all possible AES keys,
 and $M$ represents the set consisting of all plaintext messages to be encrypted. In a real execution, an adversary may have
 some observations ($O$) of the program. This dissertation only
 uses secret-dependent control flows and secret-dependent data
@@ -322,7 +317,7 @@ With the above definition, we have the following mapping between $\beta$,
 $K$, $M$, and $O$:
 %\vspace*{-0pt}
 \begin{displaymath}
-    \beta(K, M) \rightarrow O
+    \beta(K, M) \rightarrow O.
 \end{displaymath}
 
 
@@ -336,25 +331,27 @@ the set of possible $k$ values that produce the same observation: $K^o = \{ k \i
 Then the problem of quantifying the amount of leaked information can be
 restated as the following question:
 
+\
 \emph{How much uncertainty of $K$ is reduced if an attacker knows $\beta$, $m$, and $o$?}
+\
 
 In information theory, the mutual information (I) is a measure of the mutual
 dependence between two variables. Here we use I to describe the
 dependence between original sensitive keys ($K$) and attackers' observations ($O$),
-which is defined as:
+which is defined as
 
 \begin{equation} \label{eq:1}
     I(K;O) = \sum_{k {\in} K}{\sum_{o {\in} O}{p(k, o)\log_2\frac{p(k, o)}{p(k)p(o)}}}
 \end{equation}
 
-where $p(k_i, o_i)$ is the joint discrete distribution of $K$ and $O$.
-Alternatively, the mutual information can also be equivalently expressed as:
+\noindent where $p(k_i, o_i)$ is the joint discrete distribution of $K$ and $O$.
+Alternatively, the mutual information can also be equivalently expressed as
 
 \begin{equation} \label{eq:2}
     I(K;O) = H(K) - H(K|O)
 \end{equation}
 
-$H(K|O)$ is the entropy of $K$ with the condition $O$. It quantifies the
+\noindent where $H(K|O)$ is the entropy of $K$ with the condition $O$. It quantifies the
 uncertainty of $K$ given the value of $O$. In other word, the conditional
 entropy $H(K|O)$ marks the uncertainty about $K$ after an adversary has gained
 some observations ($O$).
@@ -362,7 +359,7 @@ some observations ($O$).
     H(K|O) = - \sum_{o {\in} O} {p(o) \sum_{k {\in} K}{p(k|o)\log_2p(k|o)}}
 \end{equation}
 
-In this project, we hope to give a very precise definition of information
+In this research, we hope to give a very precise definition of information
 leakages. Suppose an attacker runs the target program with one
 fixed input, we want to know how much information he can infer by observing the
 memory access patterns ($o$). We come to the simple slogan
@@ -375,26 +372,26 @@ that
      & ~~~~ \mathit{Initial\ uncertainty} - \mathit{Remaining\ uncertainty}.
 \end{align*}
 
-Next we compare the Eq.~(\ref{eq:2}) with the above slogan, we find $H(K)$
-is the $\mathit{Initial\ uncertainty}$ and $H(K|O)$ is $\mathit{Remaining\
+Next we compare the Eq.~(\ref{eq:2}) with the above slogan, we find that $H(K)$
+is the $\mathit{Initial\ uncertainty}$ and $H(K|O)$ is the $\mathit{Remaining\
         uncertainty}$. During a real attack, the observation ($o$) is known.  Thus we
 have $H(K|O) = H(K|o)$.
 
 Therefore, we define the amount of leaked information as
 \begin{displaymath}
-    Leakage = I(K;o) = H(K) - H(K|o)
+    Leakage = I(K;o) = H(K) - H(K|o).
 \end{displaymath}
 
 For a program ($\beta$) without knowing any domain information, all possible sensitive
 inputs should appear equally. Therefore, for any $k \in K$, $p(k) =
     \frac{1}{|K|}$. So we have
-$$H(K) = \sum_{k {\in} K}\frac{1}{|K|}\log_2{|K|} = \log_2{|K|}$$
+$$H(K) = \sum_{k {\in} K}\frac{1}{|K|}\log_2{|K|} = \log_2{|K|}.$$
 For any $k' \in K \setminus K^o$, $p(k'|o) = 0$. We get
 \begin{align*}
     I(K;o) & = - \sum_{k {\in} K^o}{p(k|o)\log_2p(k|o)}                         \\
            & \qquad   - \sum_{k` {\in} (K \setminus K^o)}{p(k'|o)\log_2p(k'|o)} \\
            & = \sum_{k {\in} K^o}\frac{1}{|K^o|}\log_2{|K^o|}                   \\
-           & = \log_2{|K^o|}
+           & = \log_2{|K^o|}.
 \end{align*}
 
 
@@ -403,10 +400,10 @@ For any $k' \in K \setminus K^o$, $p(k'|o) = 0$. We get
     Given a program $\beta$ with the input set $K$,
     an adversary has the observation $o$ when the input $k{\in}K^o$.
     We denote it as
-    $$\beta(K^o, m) \rightarrow	o$$
+    $$\beta(K^o, m) \rightarrow	o.$$
 
     The amount of leaked information $L_{\beta(k)\rightarrow o}$ based on the observation ($o$) is
-    $$L_{\beta(k)\rightarrow o} = \log_2{|K|} - \log_2{|K^o|}$$
+    $$L_{\beta(k)\rightarrow o} = \log_2{|K|} - \log_2{|K^o|}.$$
 \end{mydef}
 
 The above definition~\cite{AskarovC12} can be understood in an intuitive way. Suppose an attacker
@@ -414,7 +411,7 @@ wants to guess a 128-bit encryption key from a program.
 Without any domain knowledge,
 he can find the key by performing exhaustive search over $2^{128}$ possible keys.
 However, the program has a side-channel leakage site. After the program finishes execution, the
-attacker get some leaked information and only need to find the key by performing
+attacker gets some leaked information and only needs to find the key by performing
 exhaustive search over $2^{120}$ possible keys. Then we can say that 8 bits of the information
 is leaked. In this example, $2^{128}$ is the size of $K$ and $2^{120}$ is the size of $K^o$.
 
@@ -444,7 +441,6 @@ information in some attack scenarios.
     \centering%\small\footnotesize
     \caption{New leakage modeling results}
     \label{shtable2}
-    \vspace*{-9pt}
     %    \resizebox{\columnwidth}{!}{
     \begin{tabular}{l|cc|cc}
         \hline
@@ -458,7 +454,7 @@ information in some attack scenarios.
 
 \section{Approximate Model Counting}
 \label{MCreasons}
-In the previous section, we propose an information leakage definition for realistic attack scenarios to model two types of address-based side-channel leakages and showed how to quantify them by calculating the number of input keys ($K^o$) that satisfy the formulas. Intuitively, we can use symbolic execution to capture math formulas and model counting to obtain the number of satisfying input keys ($K^o$). However, preliminary experiments showed that this approach was far too expensive to use with real-world applications. In this section, we discuss the bottlenecks in this approach and propose a practical solution.
+In the previous section, we propose an information leakage definition for realistic attack scenarios to model two types of address-based side-channel leakages and showed how to quantify them by calculating the number of input keys ($K^o$) that satisfy the formulas. Intuitively, we can use symbolic execution to capture math formulas and model counting to obtain the number of satisfying input keys ($K^o$). However, some preliminary experiments showed that this approach was far too expensive to use with real-world applications. In this section, we discuss the bottlenecks in this approach and propose a practical solution.
 
 
 According to Definition~\ref{chapter4:def} introduced in the previous section,
@@ -862,7 +858,6 @@ Our current implementation supports most Intel 32-bit instructions that are esse
         \item[7] OpenSSL\,1.1.0f ~\item[8] OpenSSL\,1.1.1 ~\item[9] OpenSSL\,1.1.1g \\
         \item[10] Libgcrypt\,1.6.1 ~\item[11] Libgcrypt\,1.7.3 \item[12] Libgcrypt\,1.8.5\\
     \end{tablenotes}
-    \vspace*{-20pt}
 
 \end{table}
 
@@ -1082,10 +1077,8 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
     if ((c0 < t1) && (((++t2)&BN_MASK2) == 0)) c2++; \
     c1=(c1+t2)&BN_MASK2; if ((c1) < t2) c2++;
 \end{lstlisting}
-    \vspace*{-6pt}
     \caption{Macro \textsf{sqr\_add\_c2} in OpenSSL 0.9.7}
     \label{fig:old_sqr2}
-    \vspace*{-8pt}
 \end{figure}
 
 
