@@ -589,11 +589,11 @@ DATA reports 278 control-flow and 460 memory-access leaks for the RSA implementa
 \detect{} also finds a new vulnerability.  For each leakage site, \detect{} can provide
 concrete examples to trigger the issue.
 \subsection{Case Studies}
-\subsubsection*{DES and AES}
+\subsubsection{DES and AES}
 Our tool confirms that both implementations in OpenSSL and mbedTLS have side-channel leakages
 sites. Moreover, we find that all the leakages belong to the secret-dependent data accesses. The reference implementation of AES uses four lookup tables to speed up the computation. However, such implementation are vulnerable to side-channel attacks. Previous work has shown an end-to-end attack to fully recover the key. Our findings is similar to the previous work. We also notice that later version of OpenSSL (after 1.0.1) uses a modified version with smaller S-table. However, \detect{} also finds leakage sites in the version. Recent work also finds the sites through theoretical analysis.
 
-\subsubsection*{RSA}
+\subsubsection{RSA}
 We also evaluate our tool on the RSA implementations. With the optimizations
 introduced in the previous section, we do not apply any domain knowledge to
 simplify the analysis. Therefore, our tools can identify all the leakage sites
@@ -629,7 +629,7 @@ while (!BN_is_bit_set(B, shift)) { /* note that 0 < B */
 \end{figure}
 
 
-\subsubsection*{Monocypher}\label{eval:mono}
+\subsubsection{Monocypher}\label{eval:mono}
 Monocypher is a small, easy to use cryptographic library with
 performance comparable to LibSodium~\cite{libsodium} and NaCl~\cite{bernstein2012security}.
 We choose four ciphers that are
