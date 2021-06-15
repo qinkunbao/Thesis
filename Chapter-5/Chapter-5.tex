@@ -2,7 +2,7 @@
 
 \chapter{Precise Analysis on Multiple-trace Attacks}\label{chapter5}
 \section{Introduction}
-Side-channel attacks allow attackers to infer sensitive information based on the non-functional behaviors of the computer system. Examples of these non-functional behaviors include acoustics, CPU usages, timing, EM signals, etc~\cite{agrawal2002side,hund2013practical,halevi2015keyboard,batina2019csi}. In summary, if a program has different execution behaviors when it processes various keys, an attacker can infer nontrivial information by observing secret-dependent behaviors. While separate side-channel attacks may have different forms and patterns, a large portion of them share the same fundamental reasons. That is, the memory access pattern is dependent on the original sensitive input.
+Side-channel attacks allow attackers to infer sensitive information based on the non-functional behaviors of the computer system. Examples of these non-functional behaviors include acoustics, CPU usages, timing, and EM signals~\cite{agrawal2002side,hund2013practical,halevi2015keyboard,batina2019csi}. In general, if a program has different execution behaviors when it processes various keys, an attacker can infer nontrivial information by observing secret-dependent behaviors. While separate side-channel attacks may have different forms and patterns, a large portion of them share the same fundamental reasons. That is, the memory access pattern is dependent on the original sensitive input.
 
 While removing secret-dependent memory-access patterns in existing software completely is hard and tedious, fixing some of the most dangerous leakages appears to be feasible. Previous studies~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus} on side-channel detection have shown their effectiveness in finding such code patterns. Developers can run a tool to analyze the side-channels leakages and fix these patterns. However, fixing all
 these leakages seems not feasible in practice.  Tremendous efforts have been made to remove the side-channel vulnerabilities in cryptography
@@ -17,19 +17,19 @@ the leakage can reduce the encryption algorithm's strength. However,
 some attacks also exploit non-cryptography libraries and applications
 such as machine learning
 applications~\cite{yan2020cache,hong2018security}, graphic
-libraries~\cite{wang2019unveiling}, spell checking
-tools~\cite{xu2015controlled}, etc. Unlike side-channel attacks on
+libraries~\cite{wang2019unveiling}, and spell checking
+tools~\cite{xu2015controlled}. Unlike side-channel attacks on
 cryptography libraries that exploit one vulnerability at a time,
 attacks on non-cryptography rely on multiple side-channel leakage
 sites to retrieve more information. A program  usually has more than two
 leakage sites. However, no existing tools that can estimate the total
-effect of multiple leakage sites. For real-world applications with
+effect of multiple leakage sites. Are they independent or have the same root cause? For real-world applications with
 thousands of lines, attacker can exploit more than one leakage sites
 to retrieve more information. Attackers can guess the values of many temporary
-values. And these temporary values contain some knowledge of the
+values. These temporary values may contain some knowledge of the
 original secret buffer.
 
-Second, many side-channel leakage detection tools rely on
+Many side-channel leakage detection tools rely on
 techniques such as symbolic executions, taint analysis, and abstract interpretations~\cite{203878,182946,Brotzman19Casym,236338}. Due
 to the limitations of existing binary analysis techniques, it is hard to apply existing methods to analyze side-channels in non-cryptography
 libraries. For many other applications like machine learning, media,
@@ -40,7 +40,7 @@ Angr~\cite{shoshitaishvili2016state}) are limited in analyzing
 floating-point instructions. However, the functionality of these
 applications heavily depends on floating-point calculations.
 
-Third, while many existing works can detect side-channel leakages, few
+While many existing works can detect side-channel leakages, few
 of them can assess the severity levels of these
 vulnerabilities~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus,236334,wang2021data,sung2018canal}.
 Some existing tools~\cite{182946,chattopadhyay2019quantifying, biondi2018scalable,5207642,pasareanu2016multi,AskarovC12,phan2017synthesis} quantify the information leakage by giving an upper
@@ -50,7 +50,7 @@ For example, CacheAudit~\cite{182946} estimates that a 128-bit
 AES encryption can leak more than 128 bits. As a result, even these
 tools report that some leakages can leak lots of information, it does not mean the program has truly severe side-channel vulnerabilities. 
 
-To solve the above problem, we propose a method to estimate the effect of side-channel leakages automatically. We treat the side-channel attack as a communication system and use the channel capacity to quantify the amount of the information flow from the original secret to an attacker's observation. The method also allows us to combine multiple leakages sites to retrieve the information. The attack can be seen as a process that reduces the search space of the original sensitive inputs. We use the side-channel vulnerability to divide the input space. If the patterns can uniquely distinguish the input space, then we think the information is leaked totally. However, in real cases, many of these side-channel leakage patterns are not sufficient to distinguish each leakage site but can still discern some secret inputs. In these cases, we call them partial leakages.
+To solve the above problem, we propose a method to estimate the effect of side-channel leakages automatically. We treat the side-channel attack as a communication system and use the channel capacity to quantify the amount of the information flow from the original secret to an attacker's observation. The method also allows us to combine multiple leakages sites to estimate the overall effect. The attack can be seen as a process that reduces the search space of the original sensitive inputs. We use the side-channel vulnerability to divide the input space. If the patterns can uniquely distinguish the input space, then we think the information is leaked totally. However, in real cases, many of these side-channel leakage patterns are not sufficient to distinguish each leakage site but can still discern some secret inputs. In these cases, we call them partial leakages.
 
 The method consists of three phases. In the first phase, we fuzz the target program with various inputs and collect the memory access information. In the second phase, we map the memory access information with the source code. With the debug information, we can precisely know the address access information of the source code. In the third phase, we examine the source code. If one function has two memory access patterns, then the function is vulnerable to side-channel attacks. Based on the distribution of memory access patterns under different inputs, we quantify each function's side-channel leakage.
 
@@ -60,8 +60,8 @@ In this work, we make the following contributions:
 
   \item We propose a method that automatically detects and analyzes the
   effect of each side-channel leakage site. Our analysis combines
-  information from both the source code and the run-time execution,
-  which makes the method more effective in finding the leakages. The
+  information from both the source code and the runtime execution,
+  which makes the method more effective in finding leakages. The
   technique can combine multiple leakage sites to retrieve more
   information as well.
 
@@ -81,7 +81,7 @@ In this work, we make the following contributions:
 
 \section{Background and Threat Model}
 In this chapter, we treat the side-channel attack as a communication system between two parties.
-In the section, we give an overview of the background knowledge of information theory and present the threat model of the chapter.
+Here we first give an overview of the background knowledge of information theory and present the threat model.
 
 
 \subsection{Channel Capacity}
@@ -89,7 +89,7 @@ Given a discrete random variable $K$,
 $k$ is one of the possible
 values occurring with the probability $p(k)$. The Shannon entropy $H(K)$ is defined as
 \begin{equation}\label{chapter5:eq1}
-  H(K) = - \sum_{k {\in} K}p(k)\log_2p(k)
+  H(K) = - \sum_{k {\in} K}p(k)\log_2p(k).
 \end{equation}
 
 Shannon entropy can be used to quantify the initial uncertainty about sensitive information. It measures the amount of information in a system. For example, an AES encryption program takes a 128-bit key as the input. Suppose each key has the equal opportunity and $p_k = 1/ 2^{128}$, then the encryption system has $128 \, \mathit{bits}$ information according to Shannon entropy.
@@ -97,7 +97,7 @@ Shannon entropy can be used to quantify the initial uncertainty about sensitive 
 For a deterministic program, the program should always have the same memory access patterns under the same input. Therefore, an address-based side-channel attack can be seen as a communication channel between the memory access patterns and secret inputs. In this chapter, we use the channel capacity to describe the amount of information leakages through a channel. In information theory, the channel capacity is used to quantify the maximum rate of information can be reliably transmitted over a channel. If we use $K$ to represent the input secrets and $O$ to represent the output observation. The channel capacity ($C$) is defined as
 
 \begin{equation}\label{chapter5:eq2}
-  C(K;O) = \max_{p(x)} I(K;O)
+  C(K;O) = \max_{p(x)} I(K;O).
 \end{equation}
 Here $I(K;O)$ is the mutual information between $K$ and $O$.
 \begin{equation} \label{chapter5:eq3}
@@ -107,13 +107,13 @@ Here $I(K;O)$ is the mutual information between $K$ and $O$.
 While the channel capacity in general situations is hard to compute, we consider two special channels.
 
 \subsubsection{Noiseless Lossless Channel}
-An information channel is noiseless and lossless if every $k$ corresponds to exactly one unique $o$. The channel capacity of a noiseless lossless channel equals to
+An information channel is noiseless and lossless if every $k$ corresponds to exactly one unique $o$. The channel capacity of a noiseless lossless channel equals
 \begin{equation} \label{chapter5:eq4}
-  C(K;O) = \max_{p(k)} I(K;O) = \max_{p(k)} H|O| =\max_{p(k)} H|K|
+  C(K;O) = \max_{p(k)} I(K;O) = \max_{p(k)} H|O| =\max_{p(k)} H|K|,
 \end{equation}
-$|K|$ represents the number of possible variables in $K$. 
+\noindent where $|K|$ represents the number of possible variables in $K$. 
 
-Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel have the unique output ($o \in O$) for every input ($k \in K$).
+Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under the circumstance, we always have $P(o_i/k_i) = 1$ and $P(k_i/o_i) = 1$. As we can see, the channel has the unique output ($o \in O$) for every input ($k \in K$).
 
 \begin{figure}
   \begin{minipage}{0.45\linewidth}
@@ -170,36 +170,36 @@ Figure~\ref{fig:channel}(a) shows an example of the type of the channel. Under t
 
 
 \subsubsection{Noiseless Loss Channel}
-In reality, noiseless loss channel is more common. The channel capacity of a noiseless loss channel equals to
+In reality, noiseless loss channels are more common. The channel capacity of a noiseless loss channel equals
 
 \begin{equation} \label{chapter:eq:5}
-  C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O| 
+  C(K;O) = \max_{p(x)} I(K;O) = \max_{p(x)} H |O|.
 \end{equation}
 
-Figure~\ref{fig:channel}(b) shows an example of the type of the channel. Once the input value is determined, the output value is also determined. Shown in Figure~\ref{fig:channel}(b), the channel has the unique output ($o \in O$) for every input ($k \in K$).
+Figure~\ref{fig:channel}(b) shows an example of this type of channels. Once the input value is determined, the output value is also determined. Shown in Figure~\ref{fig:channel}(b), the channel has the unique output ($o \in O$) for every input ($k \in K$).
 
 
 \subsection{Threat Model and Notation}
 
 
-We consider an access-based attack~\cite{DBLP:journals/jce/GeYCH18}, where an adversary can probe one time for each run only after the termination of a deterministic program. The attacker may not know the memory access the victim program accesses directly. Still, he can infer whether some memory addresses are accessed or not at various granularities after \textit{each run} of the victim program. We call the memory access information as the observation ($O$) in the rest of the chapter. It is a typical scenario for most side-channel attacks.  We also assume the attacker can have access to the source code of the victim program ($\beta$). It is a valid assumption since most side-channel attacks target open-source software. Similar to recent work, we assume the attacker has a noise-free observation.  The program ($\beta$) has $K$ as the sensitive input. $K$ is a finite set that consists of every possible key ($k \in K$). The program also takes known messages $M$ as the input. 
+We consider an access-based attack~\cite{DBLP:journals/jce/GeYCH18}, where an adversary can probe one time for each run only after the termination of a deterministic program. The attacker may not know the memory access the victim program accesses directly. Still, he can infer whether some memory addresses are accessed or not at various granularities after \textit{each run} of the victim program. We call the memory access information as the observation ($O$) in the rest of the chapter. It is a typical scenario for most side-channel attacks.  We also assume the attacker can have access to the source code of the victim program ($\beta$). It is a valid assumption since most side-channel attacks target open-source software. Similar to recent work, we assume the attacker has a noise-free observation.  The program ($\beta$) has $K$ as the sensitive input, which is a finite set consisted of every possible key ($k \in K$). The program also takes known messages $M$ as the input. 
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=.8\columnwidth]{./figures/chapter5/channel.pdf}
+  \includegraphics[width=.75\columnwidth]{./figures/chapter5/channel.pdf}
   \caption{The relationship between the side-channel attack and the channel capacity. For a deterministic program, the side-channel attack can be seen as the communication between the observation ($o \in O$) and the secret ($k \in K$) via a discrete memoryless channel.}
   \label{fig:side_channel}
 \end{figure}
 
-With the above definitions, we define the following mapping between $\beta$,
+With the above setting, we define the following mapping between $\beta$,
 $K$, $M$, and $O$:
 
 \begin{displaymath}
-  \beta(K, M) \rightarrow O
+  \beta(K, M) \rightarrow O.
 \end{displaymath}
 
 
-Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$). As shown in the figure~\ref{fig:side_channel}, we assume that an attacker can observe the memory address of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of the chapter, we use $\beta(K) \rightarrow O$ to denote a victim program that may have side-channel leakage sites.
+Side-channel attacks can be seen as a process that infers the secret ($K$) based on the observations ($O$). As shown in Figure~\ref{fig:side_channel}, we assume that an attacker can observe the memory addresses of the victim program. He wants to infer the original secret ($k$) based on the observation. We also assume the attacker knows the known message $m \in M$. In the rest of the chapter, we use $\beta(K) \rightarrow O$ to denote a victim program that may have side-channel leakage sites.
 
 
 
@@ -246,7 +246,7 @@ void bar(uint8_t secret)
   \caption{A severe leakage.}\label{chapter5:fig:example1}
 \end{figure}
 
-To assess the sensitive level of the vulnerability, we use the sampling method to estimate the leakage. Suppose we give the function input from $0, 1, \dots, 7$ and observe the array $T$, we can find each different input has one unique observation. Therefore, the secret can be uniquely determined.
+To assess the severity level of the vulnerability, we use the sampling method to estimate the leakage. Suppose we give the function input from $0, 1, \dots, 7$ and observe the array $T$, we can find each different input has one unique observation. Therefore, the secret can be uniquely determined.
 
 \begin{figure}[h]
   \begin{minipage}{0.49\linewidth}
