@@ -738,34 +738,35 @@ AES encryption can be divided into three steps. In the first step, the round key
 The reference implementation uses lookup tables in the first two steps. Intuitively, the implementation is vulnerable to side-channel attacks. There are some mitigated versions of AES. We evaluate \ctool{} on three variants of AES implementations: the reference implementation, the bit-sliced version, and the AES-NI implementation.
 For mebedTLS, we evaluate AES-NI and the reference implementation. We do not find any leakage sites in the AES-NI version. On the other hand, the reference implementation has several leakage sites. The bit-sliced version from OpenSSL and wolfSSL should be resistant to side-channel attacks. However, we find they only adopt the protection in the encryption function but leave the key expansion function unprotected. The T-Table implementation has side-channel leakage sites in both the key expanding function and the actual encryption function. 
 
-The RSA implementations blind the secret data on a random value before operating on it. We use a fixed RSA blinding value to avoid non-deterministic behaviors during the execution. After that, we compare the result with the previous work~\cite{bao2021abacus,203878}. The result shows that \ctool{} can identify all leakage sites reported in the previous work. In addition, \ctool{} identify new leakages in the private key decoded function (\textsf{conv\_ascii2bin}) in OpenSSL 1.1.1.  To evaluate the effectiveness of the quantification result, we compare the two RSA implementations between OpenSSL 1.1.0 and OpenSSL 1.1.1.  \ctool{} identify several functions that are vulnerable to side-channel attacks. We are interested if these leaked functions are fixed in the updated version.
+The RSA implementations blind the secret data on a random value before operating on it. We use a fixed RSA blinding value to avoid non-deterministic behaviors during the execution. After that, we compare the result with the previous work~\cite{bao2021abacus,203878}. The result shows that \ctool{} can identify all leakage sites reported in the previous work. In addition, \ctool{} identifies new leakages in the private key decode function (\textsf{conv\_ascii2bin}) in OpenSSL 1.1.1.  To evaluate the effectiveness of the quantification result, we compare the two RSA implementations between OpenSSL 1.1.0 and OpenSSL 1.1.1.  We are interested if these leaked functions in OpenSSL 1.1.0 are fixed in OpenSSL 1.1.1.
 Note that \ctool{} can analyze the side-channel leakages at both the byte granularity and the cache line granularity. We show the result analyzed with cache line granularity. 
 
 \begin{table}[!ht]
-\centering
-\caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0.}\label{chapter5:tab:RSAOpenSSL1.1.0}
+\centering\normalsize
+\caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0. We manually check if these leaked functions are fixed in OpenSSL 1.1.1.}\label{chapter5:tab:RSAOpenSSL1.1.0}
 %\resizebox{\columnwidth}{!}{
 \begin{threeparttable}
-\begin{tabular}{llrc}
+\begin{tabular}{llrrc}
 \hline
-\textbf{File}  & \textbf{Vulnerable Function} & \textbf{Result (bits)} & \textbf{Fixed in OpenSSL 1.1.1} \\\hline
-bn\_lib.c& BN\_num\_bits\_word& 5.7 & \cmark\\
-bn\_lib.c& bn\_correct\_top&  7.6 & \cmark\\
-bn\_lib.c& BN\_ucmp& 6.7 & \cmark\\
-ct\_b64.c& \_\_udivdi3&4.3 & \cmark\\
-bn\_gcd.c& int\_bn\_mod\_inverse & 7.7 & \cmark\tnote{1} \\
-bn\_exp.c& BN\_mod\_exp\_mont\_consttime&  1.0 & \xmark\\
-bn\_mont.c& BN\_from\_montgomery\_word\tnote{2}& 9.7 &\cmark\\
-bn\_mont.c& BN\_from\_montgomery\_word&  0.1 &\xmark\\
+\textbf{File}  & \textbf{Vulnerable Function} & \textbf{A\tnote{a} (bits)} & \textbf{Q\tnote{b} (bits)} & \textbf{Fixed} \\\hline
+bn\_lib.c& BN\_num\_bits\_word&(*, *, *, *, *, 17.2, 12.6)& 5.7 & \cmark\\
+bn\_lib.c& bn\_correct\_top& 1.7 & 7.6 & \cmark\\
+bn\_lib.c& BN\_ucmp&*& 6.7 & \cmark\\
+ct\_b64.c& \_\_udivdi3&5.9 &4.3 & \cmark\\
+bn\_gcd.c& int\_bn\_mod\_inverse&(14.9, 9.2, 8.2, 7.9, 1.0) & 7.7 & \cmark\tnote{1} \\
+bn\_exp.c& BN\_mod\_exp\_mont\_consttime& (1.0, 1.0) & 1.0 & \xmark\\
+bn\_mont.c& BN\_from\_montgomery\_word\tnote{2}& (*, *, *, *, *, *, 0.0)& 9.7 &\cmark\\
+bn\_mont.c& BN\_from\_montgomery\_word& 0.0& 0.1 &\xmark\\
 
-bn\_asm.c& bn\_sqr\_comba8&5.0& \cmark\\
-bn\_div.c& BN\_div & 7.3  & \cmark\\
-rsa\_ossl.c& rsa\_ossl\_mod\_exp& 4.8 & \cmark\\
-encode.c & conv\_bin2ascii & 1.2 & \xmark\\
+bn\_asm.c& bn\_sqr\_comba8&9.3&5.0& \cmark\\
+bn\_div.c& BN\_div&(17.2, 11.9, 3,8, 0.3, 0.3) & 7.3  & \cmark\\
+rsa\_ossl.c& rsa\_ossl\_mod\_exp& 1.0 & 4.8 & \cmark\\
+encode.c & conv\_bin2ascii & Not Found & 1.2 & \xmark\\
 \hline
 \end{tabular}
 \end{threeparttable}
 \begin{tablenotes}
+    \item[a] \tool{} \item[b] \ctool{}\\
     \item[1] The leakage site at line 144 (OpenSSL 1.1.1) are not fixed.\\
     \item[2] We break the function into two parts during the analysis.
 
@@ -773,7 +774,12 @@ encode.c & conv\_bin2ascii & 1.2 & \xmark\\
 
 \end{table}
 
-Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amount of leakage reported by \ctool{}. First, as the result indicates, the leakage sites that leak a lot of information (> 5.0 bits) are all fixed in OpenSSL 1.1.1. The result indicates that \ctool{} can help developers identify side-channel leakages and pick severe ones from them automatically. As expected, we find that most of the leakages are from big number calculations. OpenSSL has a side-channel mitigated big number implementation. As long as big numbers are derived from secret data, the big number should be enabled with the flag \textsf{BN\_FLG\_CONSTTIME}. However, the flag is off by default. We find developers forget to propagate the flag in the caller, which results in the vulnerabilities in \textsf{BN\_div} and \textsf{int\_bn\_mod\_inverse}. Second, for leakage sites that are not fixed by the developers, \ctool{} reports that they leak less amount of information. For example, function \textsf{BN\_mod\_exp\_mont\_consttime} check if the modulus is odd. However, it is not a side-channel leakage vulnerability. \ctool{} reports that the leakage site can leak one bit of information. Third, previous work~\cite{bao2021abacus} reports some leakage sites leak little information, but \ctool{} reports the vulnerability is severe. Previous work \tool{}~\cite{bao2021abacus} quantifies the amount of leaked information for one execution. So it is possible that some leakage sites leak little information for one input but leak more information for a different input. We run the chi-squared test to determine if any two leaked functions have independent leakages. However, we cannot conclude that any two leakages from cryptography benchmarks are independent under the chi-squared test. We think it is due to the avalanche effect in cryptography.
+
+Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amount of leakage reported by \ctool{} and \tool{}~\cite{bao2021abacus}. According to \tool{}\cite{bao2021abacus}, the mark ``$*$'' means timeout, which indicates more severe leakages. $0.0$ means very small amount of leakage, but not exactly zero. As the result indicates, the leakage sites that leak a lot of information (> 5.0 bits) are all fixed in OpenSSL 1.1.1. The result indicates that \ctool{} can help developers identify side-channel leakages and pick severe ones from them automatically. As expected, we find that most of the leakages are from the big number calculations. OpenSSL has a side-channel mitigated big number implementation. As long as big numbers are derived from the secret data, the big number should be enabled with the flag \textsf{BN\_FLG\_CONSTTIME}. However, the flag is off by default. We find that the developers forget to propagate the flag in the caller, which results in the vulnerabilities in \textsf{BN\_div} and \textsf{int\_bn\_mod\_inverse}. 
+
+For leakage sites that are not fixed by the developers, \ctool{} reports that they leak less amount of information. For example, function \textsf{BN\_mod\_exp\_mont\_consttime} check if the modulus is odd. However, it is not a side-channel leakage vulnerability since the modulus is a prime number and all prime numbers except $2$ are odd. \ctool{} reports that the leakage site can leak one bit of information. 
+
+Previous work~\cite{bao2021abacus} reports some leakage sites leak little information, but \ctool{} reports the vulnerabilities are severe. Previous work \tool{}~\cite{bao2021abacus} quantifies the amount of leaked information for one execution. So it is possible that some leakage sites leak little information for one input but leak more information for a different input. We run the chi-squared test to determine if any two leaked functions have independent leakages. However, we cannot conclude that any two leakages from cryptography benchmarks are independent under the chi-squared test. We think it is probably due to the avalanche effect in cryptography.
 
 \subsection{Non-cryptography Applications}
 
