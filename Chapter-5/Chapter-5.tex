@@ -539,17 +539,16 @@ calculate the offset in the original address.
 
 There are two kinds of memory access: access to the code and access to the data. 
 \begin{itemize}
-\item Code Access. The memory address of the code is the value of $\mathit{rip}$ register. However, the length of x86 instructions can be from 1 byte to 15 bytes. For instructions whose length is longer than one byte, we also update the address after the value $\mathit{rip}$ until the address reaches the instruction's boundary.
-\item Data Access. For instructions with memory access, we identify all the operands of each instruction and. Same as the code address, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory access. We all update the bitmap of the address correspondingly.
+\item Code Access. The memory address of the code is the value of the program counter $\mathit{rip}$ register. However, the length of x86 instructions can be from 1 byte to 15 bytes. For instructions whose length is longer than one byte, we also update the address after the value $\mathit{rip}$ until the address reaches the instruction's boundary.
+\item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code addresses, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory access. We all update the bitmap of the address correspondingly.
 \end{itemize}
 
 \subsection{Step 3: Leakages Detection and Quantification}
-In this step, we detect and quantify the side-channel leakage. For each $k \in K$, we have a boolean number ($0$ or $1$) to describe whether the address $addr$ is accessed or not during the execution when the input is $k$. For the brevity of description, For the brevity of description, we use $B^{addr}_{k_i}$ to denote the boolean number. 
+In this step, we detect and quantify the side-channel leakage. For each $k \in K$, we have a boolean number ($0$ or $1$) to describe whether the address $l$ is accessed or not during the execution when the input is $k$. For the brevity of description, we use $B^{l}_{k_i}$ to denote the boolean number. 
 
 
-
-\subsubsection{Various Granularities Side-channel Detection}
-\ctool{} can detect the side-channel vulnerabilities in different granularities. For each granularity, we calculate a new bitmap that represents access information of each unit. We have the bitmap of the memory access at the byte level. An attacker who has the coarse-grained observation at address space may not be able to distinguish the address difference. For example, modern X64 computer systems use 48-bit virtual memory addresses. The top 36 bit of the virtual address is called Virtual Page Number (VPN), and the bottom 12 bits of the virtual address is called offset. The memory management unit (MMU) transfers the virtual address into the physical address by mapping the Virtual Page Number (VPN) into the Physical Page Number (PPN) while keeping the offset of the address. So two addresses with the Same VPN but different offset are not distinguishable by an attacker who only has the page-level observation. 
+\subsubsection{Multi-granularity Side-channel Detection}
+\ctool{} can detect side-channel vulnerabilities in different granularities. For each granularity, we calculate a new bitmap that represents access information of each unit. We have the bitmap of the memory access at the byte level. An attacker who has the coarse-grained observation at address space may not be able to distinguish the address difference. For example, modern X64 computer systems use 48-bit virtual memory addresses. The top 36 bit of the virtual address is called Virtual Page Number (VPN), and the bottom 12 bits of the virtual address is called offset. The memory management unit (MMU) transfers the virtual address into the physical address by mapping the Virtual Page Number (VPN) into the Physical Page Number (PPN) while keeping the offset of the address. So two addresses with the Same VPN but different offset are not distinguishable by an attacker who only has the page-level observation. 
 
 Suppose a program reads one byte at memory address
 $\mathtt{0x7ffff7ffd001}$ when the secret is $k_1$ and reads a
@@ -563,10 +562,10 @@ is, $\forall
 
 
 \subsubsection{Leakage Detection} 
-The access of one address is secret-dependent if $ \exists\, k_{i_1}, k_{i_2} \in K, \, B^{l}_{k_{i_1}} \oplus  B^{l}_{k_{i_2}} =1 $. In the step, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to the side-channel attacks.
+The access of one address is secret-dependent if $ \exists\, k_{i_1}, k_{i_2} \in K, \, B^{l}_{k_{i_1}} \oplus  B^{l}_{k_{i_2}} =1 $. In this step, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to the side-channel attacks.
 
 \begin{myexample}
-Suppose we sample a program from $k1$ to $k8$ and record memory accesses at the granularity of one byte from $\mathtt{7ffff7ffd000}$ to $\mathtt{7ffff7ffd03f}$ (One cache line). We perform a bit-wise operation of each address within the range. Because the cache line is always accessed. We think it is not a leak here.
+Suppose we sample a program from $k_1$ to $k_8$ and record memory accesses at the granularity of one byte from $\mathtt{7ffff7ffd000}$ to $\mathtt{7ffff7ffd03f}$ (one cache line). We perform a bit-wise operation of each address within the range. Because the cache line is always accessed. It is not a leak here.
 \begin{center}
   \begin{tabular}{c}
     {
@@ -585,8 +584,8 @@ cache line     1   1   1   1   1   1   1   1    0 (No Leaks)
 \end{center}
 \end{myexample}
 
-\subsubsection{Estimate The Leaked Information}
-According to Definition~\ref{chapter5:def}, we quantify the information leakage based on the distribution of the observation. If we calculate the information leakage from a $4MB$ memory area, then the length of the byte-level bitmap is $4 \cdot 1024 \cdot 1024 = 4194304$. While it is possible to compute the distribution of the bitmap theoretically, it is hard to compare the bitmap of such length in practice.
+\subsubsection{Estimate the Leaked Information}
+According to Definition~\ref{chapter5:def}, we quantify the information leakage based on the distribution of the observation. If we calculate the information leakage from a $4 \mathrm{MB}$ memory area, then the length of the byte-level bitmap is $4 \times 1024 \times 1024 = 4194304$. While it is possible to compute the distribution of the bitmap theoretically, it is hard to compare the bitmap of such length in practice.
 
 To solve the problem, we use the debug information to split the bitmap into several segments and map the leakage site into the source code location. Each segment maps the address access situation of the function in the source code. In our setting, the max length of the bitmap of each segment is $1024$, the length of \textsf{uint1024\_t}. So we can put the bitmap into a variable. The split operation eases the computation. However, it also adds the limitation of the max address range when we quantify the side-channel leakage shown in Table~\ref{tab:size_limitation}. We think the range of the memory is big enough for us to quantify most of the cache side-channel attacks.
 
