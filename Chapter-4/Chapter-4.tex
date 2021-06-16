@@ -1253,6 +1253,7 @@ The evaluation result shows the version with smaller lookup tables leaks less in
 
 
 \subsubsection*{Password Checker}
+
 \begin{figure}
   \begin{minipage}{0.8\linewidth}
     \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
@@ -1266,9 +1267,12 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
 }
 \end{lstlisting}\caption{A vulnerable password checker.}\label{fig:chapter4:pwcheck1}
   \end{minipage}
+  
   \vfill
+  
   \begin{minipage}{0.8\linewidth}
     \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.00\textwidth, frame=none]
+
 bool pwcheck(uint8_t *key, uint8_t *pub) {
   bool matched = true;
   for (int i = 0; i < 2; ++i) {

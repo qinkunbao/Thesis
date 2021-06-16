@@ -447,7 +447,7 @@ aspects:
 
 \subsection{Evaluation Result Overview}
 \begin{table*}
-  \centering\small\footnotesize
+  \centering\small
   \caption{Evaluation results overview: Algorithm, Implementation, Side-channel Leaks\,(Leaks),
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF),
     The number of instructions\,(\# Instructions), The Execution Time, and The Memory Usage.
@@ -546,7 +546,8 @@ number of instructions. For example, when we test~\detect{} on AES from OpenSSL
     Secret-dependent Control-flows\,(CF), Secret-dependent Data-flows\,(DF), The Number of Instructions\,(\# Instructions).}
   \label{eval:cacheD}
     \resizebox{.9\columnwidth}{!}{%
-    \begin{tabular}{@{}l|r@{~~}r@{~~}r|r@{~~}r@{~}r@{}}
+    %TODO
+    \begin{tabular}{l|rrr|rrr}
       \hline
       \multicolumn{1}{l|}{} & \multicolumn{3}{c|}{CacheD} & \multicolumn{3}{c}{Abacus}                                             \\
       Benchmark                  & Time (s)                    & \# Instructions            & DF & Time (s) & \# Instructions & CF+DF   \\ \hline
@@ -557,7 +558,7 @@ number of instructions. For example, when we test~\detect{} on AES from OpenSSL
       RSA Libgcrypt 1.6.1     & 11542.3                     & 26,848,103                 & 2  & 128.1    & 9,527,231       & 9+2     \\
       RSA Libgcrypt 1.7.3         & 10788.9                     & 27,775,053                 & 0  & 891.7    & 10,513,606      & 14+0    \\ \hline
       Total                 & 22,788.0                    & 55,738,546                 & 84 & 4,125.0  & 51,514,721      & 155+178 \\ \hline
-      \multicolumn{7}{l}{\# of Instructions per second \qquad  CacheD: 2,445 \qquad \tool: 12,489}                                 \\ \hline
+      \multicolumn{7}{l}{\# of Instructions per second \qquad  CacheD: 2,445 \qquad \qquad \qquad \qquad \tool: 12,489}                                 \\ \hline
     \end{tabular}
 }
 \end{table*}
