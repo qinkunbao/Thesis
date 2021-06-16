@@ -478,12 +478,12 @@ In this section, we explain the design of \ctool{}.
 We first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
 
 \subsection{Overview}
-Figure~\ref{chapter5:fig:workflow} shows an overview of our side-channel leakages quantification tool. Given the source code of the victim program, \ctool{} can find the address-based side-channel leakages by fuzzing the victim program. To assist the illustration, we divide the workflow of ~\ctool{} into three steps. For the first step, we build the target program from the source code. After that, we give them random inputs to the victim program and run the target program and record each of the addresses in the binary file is hit or not, and store the information in a bitmap. Next, we analyze the side-channel leakage from the address access bitmap. We split the address space into several segments to speed up the comparison according to Meta information. Finally, \ctool{} Generate the final leakage report. For each leakage site, \ctool{} gives the conservative estimation of the information leakage. Every leakage site in the report is a true leakage, and there are no false positives.
+Figure~\ref{chapter5:fig:workflow} shows an overview of our side-channel leakages quantification tool. Given the source code of a victim program, \ctool{} can find the address-based side-channel leakages by fuzzing the victim program. To assist the illustration, we divide the workflow of ~\ctool{} into three steps. For the first step, we build the target program from the source code. After that, we give them random inputs to the victim program and run the target program and record the each of the addresses in the binary file is hit or not, and store the information in a bitmap. Next, we analyze the side-channel leakage from the address access bitmap. We split the address space into several segments to speed up the comparison according to the meta information. Finally, \ctool{} generates the final leakage report. For each leakage site, \ctool{} gives a conservative estimation of the information leakage. Every leakage site in the report is a true leakage, and there are no false positives.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=.9\columnwidth]{./figures/chapter5/workflow.pdf}
-  \caption{The workflow of \ctool{}. We try to divide the \ctool{} into three steps to assist the illustration. }\label{chapter5:fig:workflow}
+  \caption{The workflow of \ctool{}. We divide \ctool{} into three steps to help the illustrate the process. }\label{chapter5:fig:workflow}
 \end{figure}
 
 \subsection{Step 1: Fuzzing}
