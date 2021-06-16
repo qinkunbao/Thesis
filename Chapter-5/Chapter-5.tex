@@ -498,10 +498,11 @@ redundancy information and follow a specific format. So not every input
 that satisfies the input length is a valid input. Under the
 circumstance, we have a dictionary that contains the input. For
 example, crypto libraries usually take PKCS \#1 as the input of the
-RSA private key. We use some other tools to generate a list of valid
-keys and use the key to sample the program. Due to the enormous search
+RSA private key. We generate a list of valid
+keys and use the keys to sample the program. Due to the enormous search
 space, we cannot iterate every input. However, our method can give a
 conservative estimate of each leakage site.
+
 \subsection{Step 2: Address Record}
 Next, we record the memory access information based on the input
 secret. We use the dynamic binary instrumentation (DBI) tool to record
