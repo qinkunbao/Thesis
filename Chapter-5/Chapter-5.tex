@@ -243,7 +243,7 @@ void bar(uint8_t secret)
       \end{tabular}%
     }
   \end{minipage}
-  \caption{A severe leakage.}\label{chapter5:fig:example1}
+  \caption{A severe side-channel leakage.}\label{chapter5:fig:example1}
 \end{figure}
 
 To assess the severity level of the vulnerability, we use the sampling method to estimate the leakage. Suppose we give the function input from $0, 1, \dots, 7$ and observe the array $T$, we can find each different input has one unique observation. Therefore, the secret can be uniquely determined.
@@ -282,7 +282,7 @@ void bar(uint8_t secret)
       \end{tabular}%
     }
   \end{minipage}
-  \caption{A minor leakage. }\label{chapter5:fig:example2}
+  \caption{A minor side-channel leakage. }\label{chapter5:fig:example2}
 \end{figure}
 On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker cannot uniquely determine the secret based on the observation of table $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, the vulnerability is less severe than the previous one.
 
