@@ -64,13 +64,13 @@ In this dissertation, we try to address the above problem from the following two
 \section{Contribution}
 This dissertation makes the following contributions. First, we propose a novel method that can detect side-channel vulnerabilities in real-world applications fast and precisely. Second, we propose methods that can quantify precisely each side-channel leakages. In addition, we study two kinds of threat models: single-trace attacks, and multiple-trace attacks. In summary, we make the following contributions:
 
-To address Problem 1, we make the following contributions on detecting side-channel leakages:
+On detecting side-channel leakages from real-world software, we make the following contributions:
 
 \begin{itemize}
     \item We design a symbolic analysis method that can detect secret-dependent control-flow transfers and secret-dependent data accesses. The key idea is to only symbolically execute machine instructions that are relevant to vulnerabilities while executing other instructions natively. We implement the above method in a tool called \detect{}. The evaluation results shows that \detect{} is 3 to 100 times faster than existing tools while identifying all vulnerabilities when we run it on the same library.  We do not need to apply domain knowledge to analyze part of the original program, which simplify the analysis. In addition, \detect{} finds new leakages which are not identified by previous tools. We confirmed these findings with developers.
 \end{itemize}
 
-To address Problem 2, we make the following contributions on quantifying side-channel leakages in a single trace attack:
+On quantifying fine-grained leaked information in a single trace attack, we make the following contributions:
 
 
 \begin{itemize}
@@ -78,7 +78,7 @@ To address Problem 2, we make the following contributions on quantifying side-ch
     \item We implement the method into a tool called \tool{} and apply it to several pieces of real software. \tool{}\footnote{Abacus is open source under the MIT license.  \url{https://github.com/s3team/Abacus}} successfully identifies previous unknown and known side-channel vulnerabilities and calculates the corresponding information leakage. Our results are useful in practice. The leakage estimates and the corresponding inputs that triggers the vulnerability can help developers triage and fix the vulnerabilities.
 \end{itemize}
 
-To address Problem 2, we make the following contributions on quantifying side-channel leakages on a multiple trace attack:
+On quantifying side-channel leakages through a multiple-trace attack, we make the following contributions:
 \begin{itemize}
     \item We propose a novel method that can detect and analyze the effect of each side-channel leakage site automatically. Our analysis combines the information from both the source code and the run-time execution, which makes the method more effective in finding the leakages. By applying a chi-squared test, the method can find independent leakages. Attackers can combine multiple leakage sites to retrieve more information as well.
     \item We analyze the amount of information leakage from side-channel vulnerabilities based on the channel capacity. The theory can serve as the foundation of the future work on quantifying the information leakage based on the fuzzing.
