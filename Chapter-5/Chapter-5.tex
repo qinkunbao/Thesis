@@ -488,12 +488,12 @@ Figure~\ref{chapter5:fig:workflow} shows an overview of our side-channel leakage
 
 \subsection{Step 1: Fuzzing}
 After we build the software into the binary executable, we give the
-binary code the random inputs. For cryptography libraries, the input
+binary executable random inputs. For cryptography libraries, the input
 is the encryption key. For non-cryptography libraries, the input could
 be images, text, and information in another format. Encryption
 algorithms like AES and DES take an array representing the secrets. We
 generate the random input by flipping each bit of the keys. Some other
-programs also take a buffer as the input. The buffer may contain the
+programs also take a buffer as the input. The buffer may contain 
 redundancy information and follow a specific format. So not any input
 that satisfies the input length is a valid input. Under the
 circumstance, we have a dictionary that contains the input. For
