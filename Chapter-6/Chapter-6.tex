@@ -99,15 +99,18 @@ assumption can be violated in some real-world scenarios.
 
 
 \section{Limitations}
-The methods in my dissertation cannot find all kinds of side-channel leakages. No
-tool can find all forms of leakages. Even for address-based side-channel leakages, \tool{} and \ctool{} cannot find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
+The dissertation research has a few limitations.
 
-The quantification result only applies to specific threat models. For example,
-\tool{} quantifies the number of leaked bits during one real execution. So it is
-possible that one leakage site leaks little information in one execution but leaks much more information in another execution.
+\begin{enumerate}
+\item The methods in this dissertation cannot find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, \tool{} and \ctool{} cannot find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
+\item The quantification result only applies to specific threat models. For example,\tool{} quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much more information in another execution.
+\item \tool{} and \ctool{} can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g., timing, EM signals). However, the root cause of many of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these leakage sites.
+\item \ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} cannot cover all the paths and may miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control flow under various inputs. For other libraries such as graphic rendering and machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find every side-channel vulnerability. The goal of \ctool{} is to identify severe side-channel vulnerabilities from many less severe vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem.
+\end{enumerate}
 
-The research in the dissertation can only handle address-based side-channel
-attacks. Many side-channel attacks infer secret data based on other side-channel
-signals (e.g., timing, EM signals). However, the root cause of many of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these leakage sites.
 
-\ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} cannot cover all the paths and may miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control flow under various inputs. For other libraries such as graphic rendering and machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find every side-channel vulnerability. The goal of \ctool{} is to identify severe side-channel vulnerabilities from many less severe vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem. 
+
+
+
+
+ 
