@@ -774,7 +774,7 @@ instruction-level symbolic execution engine, and the back-end that estimates the
     \centering\normalsize
     %    \resizebox{.8\columnwidth}{!}{
     \caption{\tool{}' main components and sizes}\label{tbl:implementation}
-    \begin{tabular}{lr@{~}@{}l}
+    \begin{tabular}{lr@{~}l}
         \hline
         Component            & \multicolumn{2}{c}{Lines of Code (LOC)}             \\ \hline
         Trace Logging        & 501 lines                               & of C++    \\
@@ -943,8 +943,8 @@ each. On the contrary, leakage 4, 5, 6, 7 each accesses a smaller lookup table
 
 \begin{figure}%[h!]
     \centering
-    \begin{lstlisting}[ frame=none]
-int mbedtls_internal_aes_encrypt( mbedtls_aes_context *ctx,
+    \begin{lstlisting}[frame=none]
+int mbedtls_internal_aes_encrypt(mbedtls_aes_context *ctx,
 const unsigned char input[16],
 unsigned char output[16] )
 {
@@ -965,7 +965,7 @@ X0 = *RK++ ^ \                                      // Leakage 4
 ...                                                 // Leakage 5,6,7
 PUT_UINT32_LE( X0, output,  0 );
 ...
-return( 0 );
+return 0;
 }
 \end{lstlisting}
     \caption{Function \textit{mbedtls\_internal\_aes\_encrypt}}
@@ -1107,7 +1107,7 @@ To evaluate the effectiveness of the leaked bits reported by \tool{}, we conduct
 \centering\normalsize
 \caption{Leaked Functions in RSA implemented by OpenSSL 1.1.0f. According to \tool{}\cite{bao2021abacus}, the mark ``$*$'' means timeout, which indicates more severe leakages. $0.0$ means very small amount of leakage, but not exactly zero.}\label{chapter4:tab:RSAOpenSSL1.1.0}
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{lrrrc}
+\begin{tabular}{lrlrc}
 \hline
 \textbf{File}  & \textbf{Line Number} & \textbf{Vulnerable Function} & \textbf{Result (bits)} & \textbf{Fixed} \\\hline
 bn\_lib.c& 143&BN\_num\_bits\_word&*& \cmark\\
@@ -1225,7 +1225,7 @@ output = (T[(key[0]>>24)] << 24) ^
   \caption{Lookup tables with small entries.}\label{fig:chapter4:small_lookup}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 \centering
     \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.05\textwidth, frame=none]
 static const uint32_t T[256] = {
@@ -1254,8 +1254,7 @@ The evaluation result shows the version with smaller lookup tables leaks less in
 
 \subsubsection*{Password Checker}
 
-\begin{figure}
-  \begin{minipage}{0.8\linewidth}
+\begin{figure}[h]
     \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
 bool pwcheck(uint8_t *key, uint8_t *pub) {
   for (int i = 0; i < 2; ++i) {
@@ -1266,13 +1265,10 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
   return true;
 }
 \end{lstlisting}\caption{A vulnerable password checker.}\label{fig:chapter4:pwcheck1}
-  \end{minipage}
-  
-  \vfill
-  
-  \begin{minipage}{0.8\linewidth}
-    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.00\textwidth, frame=none]
+\end{figure}
 
+\begin{figure}[h]
+    \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.00\textwidth, frame=none]
 bool pwcheck(uint8_t *key, uint8_t *pub) {
   bool matched = true;
   for (int i = 0; i < 2; ++i) {
@@ -1282,7 +1278,6 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
   return matched;
 }
 \end{lstlisting}\caption{A safe password checker.}\label{fig:chapter4:pwcheck2}
-\end{minipage}
 \end{figure}
 
 We illustrate the quantification method on two password checking examples.  As shown in Figure~\ref{fig:chapter4:pwcheck1}, the version is vulnerable to side-channel attacks because of the early return at line 4. If the first bytes of \textsf{key} and \textsf{pub} are the same, the function will continue running and access the second byte. Figure~\ref{fig:chapter4:pwcheck2} fixes the vulnerability because the function will continue comparing the second byte even if the first byte is different.  \tool{} identifies the leakage site in Figure~\ref{fig:chapter4:pwcheck1} successfully, and estimates the amount of leakage is $16$ bits. 
