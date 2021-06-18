@@ -1174,21 +1174,16 @@ if (password <= 0b111)      \\Leaks 5 bits of password
     \centering
     \begin{lstlisting}[xleftmargin=.2\textwidth, xrightmargin=.0\textwidth, frame=none]
 uint8_t password = input();
-
 a = *password & 0b001;
 b = (*password & 0b010) >> 1;
 c = (*password & 0b100) >> 2;
-
 na = ~a & 1;
 nb = ~b & 1;
 nc = ~c & 1;
-
 t0 = (b & nc);
 t1 = (b | nc);
-
 l = (a & nb) | t0;
 r = (na & t1) | t0;
-
 ret = l << 1 + r;
 \end{lstlisting}
 \caption{SBOX with bitslicing}
