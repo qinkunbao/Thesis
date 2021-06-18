@@ -19,7 +19,7 @@ There are a few potential directions to extend the dissertation research.
 \textbf{Compiler-assisted Side-channel Vulnerability Analysis and Mitigation.}
 It is promising to mitigate the side-channel leakages in a compiler backend. For example, the conditional execution can be eliminated by using masks. Eliminating side-channel leakages from compilers is not a brand new idea. Coppens et al.~\cite{Coppens:2009:PMT:1607723.1608124} propose several methods to remove all potential leakages that are related to data flow and control flow.  GNU toolchain adds new options (\textsf{-mlfence-after-load}, \textsf{-mlfence-before-indirect-branch}) to mitigate the Load Value Injection (LVI) attack during the compilation. Coppens et al.'s approach has a slowdown with a factor from 2 to 24. The LVI harden binaries generated from GNU toolchains takes 6-10x longer to run.  For example, GNU toolchains insert LFENCE before any possible vulnerable instructions, including all load instructions, indirect branches, and return instructions. We suggest only changing points that are likely to leak sensitive information. Finally, with the tool presented in the dissertation, we can fix only part of the ``severe'' leakage sites.
 
-\textbf{Side-channel Leakage Quantification with A Noisy Observation.} It is possible to extend the quantification part to include other side-channel
+\textbf{Side-channel Leakage Quantification from Noisy Observations.} It is possible to extend the quantification part to include other side-channel
 signals (e.g., sound, CPU usages, EM signals). The key is to model the noises
 properly. In my dissertation, we assume that an attacker can have a noise-free
 observation. While a noise-free observation is possible for some address-based
