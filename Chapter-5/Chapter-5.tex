@@ -45,7 +45,7 @@ of them can assess the severity levels of these
 vulnerabilities~\cite{182946,203878,182946,236338,217537,langley2010ctgrind,xiao2017stacco,wang2019time,Wichelmann:2018:MFF:3274694.3274741,bao2021abacus,236334,wang2021data,sung2018canal}.
 Some existing tools~\cite{182946,chattopadhyay2019quantifying, biondi2018scalable,5207642,pasareanu2016multi,AskarovC12,phan2017synthesis} quantify the information leakage by giving an upper
 bound estimation of each leakage site.  This is helpful to justify that the software is secure if the reported leakage is zero. However,
-these tools cannot report to software developers how severe each leakage site would be because of the over-approximation they apply when they estimate the amount of leakage.  Often the over-approximated estimate is very far away from the amount of real leakage.
+these tools cannot report to software developers how severe each leakage site would be because of the over-approximation they apply when they estimate the amount of leakage. 
 For example, CacheAudit~\cite{182946} estimates that a 128-bit
 AES encryption can leak more than 128 bits. As a result, even these
 tools report that some leakages can leak lots of information, it does not mean the program has truly severe side-channel vulnerabilities. 
