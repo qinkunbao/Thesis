@@ -543,7 +543,7 @@ There are two kinds of memory access: access to the code and access to the data.
 \item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code addresses, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory access. We all update the bitmap of the address correspondingly.
 \end{itemize}
 
-\subsection{Step 3: Leakages Detection and Quantification}
+\subsection{Step 3: Leakage Detection and Quantification}
 In this step, we detect and quantify the side-channel leakage. For each $k \in K$, we have a boolean number ($0$ or $1$) to describe whether the address $l$ is accessed or not during the execution when the input is $k$. For the brevity of description, we use $B^{l}_{k_i}$ to denote the boolean number. 
 
 
