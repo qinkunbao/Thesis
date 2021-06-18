@@ -80,14 +80,14 @@ AES encryption can leak more than 128 bits. As a result, even these
 tools report severe leakage, it does not mean the program has a truly
 severe leakage.
 
-\ctool{} can give a conservative estimation of the
+\ctool{} defines the amount of leaked information by the empirical entropy of the
+observations. For a determinism program, channel capacity is the tight upper bound of the entropy of the observation. The quantification result is always smaller than the channel capacity and can approximate the value of the channel capacity in some cases. \ctool{} can give a conservative estimation of the
 side-channel leakage based on Channel Capacity. The channel capacity
 measures the information flow between the source and the
 destination. One useful characteristic of channel capacity is not
 affected by the input, which is useful because we cannot
-assume the input secrets of the software in practice. In Chapter~\ref{chapter5}, we
-use the sampling result to approximate the true value of the
-channel capacity. We prove the sampling method presented in the chapter can only give the conservative estimation of the amount of the true leakage.
+assume the input secrets of the software in practice. In Chapter~\ref{chapter5}, we use the sampling result to approximate the true value of the
+channel capacity. We show that the sampling method presented in the chapter can only give the conservative estimation of the amount of the true leakage.
 
 \ctool{} requires the random input variables to be independent and identically distributed (i.i.d.). That's why we apply a black box fuzzing instead of a coverage-guided fuzzing. As long as each time we get a random input from the whole input space (Population) that is independent of the previous input, the input variables should satisfy the i.i.d. assumption. For AES-128 encryption, each time we randomly generate a 128 bit key from $0$ to $2^{128}$, the sequence of key values follows the i.i.d. assumption. The situation is a little different for machine learning libraries. In this dissertation, we evaluated \ctool{} on a deep learning model. Each time, we randomly select an item from a dataset (Sample). If the dataset is biased, then we cannot get correct results. The good news is that the most well-known data sets in
 machine learning are independent and identically distributed. The assumption of i.i.d. is required by many machine learning
