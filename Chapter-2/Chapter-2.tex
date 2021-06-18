@@ -183,7 +183,7 @@ MicroWalk~\cite{Wichelmann:2018:MFF:3274694.3274741} adopts a similar approach a
 \subsubsection*{Software Patch}
 Once we have identified side-channel leakages, there are two common approaches to mitigate side-channel attacks. The first approach is to adopt unified behavior code when computing the secret data. For example, a control flow leakage happens when different secret inputs lead to different paths. Software developers can mitigate the leakage by executing both branches and select the result with bit-wise operations~\cite{Coppens:2009:PMT:1607723.1608124}. However, for exiting code base, it is hard to migrate all the code into a side-channel free implementation. The second approach is to introduce randomized behaviors during the execution to obfuscate the information that an attacker can retrieve. One example is cryptographic blinding~\cite{coron1999resistance}. Developers can use a random value to blend the secret key but still generate the same encrypted data with a carefully designed algorithm.  Binding values can alter the program execution to some unpredictable states and introduce the randomization to the execution. However, the binding value can also be retrieved by an attacker through other methods, including side-channel attacks. An attacker can launch an attack to retrieve the binding value to recover the secret input.
 
-\subsubsection{New Implementation}
+\subsubsection*{New Implementation}
 Recent work~\cite{bernstein2012security,libsodium,zinzindohoue2017hacl,monocypher} also proposes to design and implement clean-slate side-channel free libraries from scratch. We notice that most of these new libraries are cryptographic.  
 
 \subsection{Hardware Countermeasures}
