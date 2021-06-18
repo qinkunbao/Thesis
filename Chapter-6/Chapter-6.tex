@@ -42,9 +42,7 @@ original key, and these leaks are not independent. \tool{} captures most
 fine-grained information by modeling each leak during the execution as a
 formula and the conjunction of the formulas to describe its total effect.
 Some leakage sites (e.g., square and multiply in RSA)
-can leak one particular bit of the original key, but some leakage sites leak one bit
-from several bytes in the original key. \tool{} can capture the dependency among the leaks and
-reports more precise leakage information.
+can leak one particular bit of the original key, but some leakage sites leak one bit from several bytes in the original key. \tool{} can capture the dependency among the leaks and reports more precise leakage information.
 
 \tool{} reaches full precision if the number of estimated leaked bits
 equals to Definition~\ref{chapter4:def} in Chapter~\ref{chapter4}.
