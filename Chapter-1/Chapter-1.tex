@@ -42,7 +42,7 @@ uint32_t a = *RK++ ^ \
     \label{fig:secret:da}
 \end{figure}
 
-Secret-dependent data accesses happen when the value of secret data affect which memory location the code reads or writes. Figure~\ref{fig:secret:da} shows an example. \textsf{FSb} is an array. Depending on the value of \textsf{secret}, the code may read or write different items in the array.
+Secret-dependent data accesses happen when the value of secret data affects which memory location the code reads or writes. Figure~\ref{fig:secret:da} shows an example. \textsf{FSb} is an array. Depending on the value of \textsf{secret}, the code may read or write different items in the array.
 
 The key intuition is that the above side-channel attacks happen when a program accesses different memory addresses with different sensitive inputs. As shown in Figure~\ref{fig:secret:cf} and Figure~\ref{fig:secret:da}, if a program shows different patterns in control transfers or data accesses when the program processes different sensitive inputs, the program could have side-channel vulnerabilities. Various techniques can be used to exploit the above leakage site at different granularities. For example, cache channels can observe cache accesses at the level of cache sets~\cite{liu2015last}, cache lines~\cite{184415} or other granularities~\cite{yarom2017cachebleed}. Other types of side-channel attacks such as controlled-channel attacks~\cite{7163052}, can observe a memory access at the level of memory pages. So a natural defense approach is to remove the above code patterns in the software.
 
