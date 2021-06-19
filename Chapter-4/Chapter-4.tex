@@ -910,12 +910,12 @@ Symmetric encryption implementations in OpenSSL and mbedTLS have significant lea
 
 \tool{} can estimate how
 much information is leaked from each vulnerability. During the evaluation,
-for each leakage site, \tool{} will stop once 1) it has 95\% confidence
-that the error of the estimated leaked information is less than 1 bit,
+for each leakage site, \tool{} will stop once 1) it has $95\%$ confidence
+that the error of the estimated leaked information is less than $1.0$ bit,
 which gives the leakage quantification a \emph{precision guarantee}, 
-or 2) it cannot reach the termination condition after 10 minutes.  In
+or 2) it cannot reach the termination condition after $10$ minutes.  In
 the latter case, it means \tool{} cannot estimate the amount of leakage with a
-probabilistic guarantee. \tool{} times out on around 10\% reported side-channel leakage sites. We manually check these leakage sites and find most of them are quite severe.
+probabilistic guarantee. \tool{} times out on around $10\%$ reported side-channel leakage sites. We manually check these leakage sites and find most of them are quite severe.
 We will present the details in the subsequent sections.
 
 \subsection{Case Studies}
@@ -936,7 +936,7 @@ versions. \tool{} identifies that most leakages are in function
 \emph{mbedtls\_aes\_setkey\_enc}.) All leakages are caused by the secret-dependent
 memory accesses. Shown in Figure~\ref{mbedtls_aes}, there are seven leakage
 sites in total. Leakage 1, 2, 3 are the same and leakage 4, 5, 6, 7 are the
-same. They both use a pre-computed lookup table to speed up computation.
+same. They both use a pre-computed lookup table to speed up the computation.
 However, \tool{} reports leakage 1, 2, 3 typically leak more information (7.6 - 8.1 bits)
 compared to leakage 4, 5, 6, 7 (4.0 bits). We check the source code and find leakage 1, 2,
 3 use secret to access the lookup table \emph{RT0, RT1, RT2, RT3}, which is 8K
