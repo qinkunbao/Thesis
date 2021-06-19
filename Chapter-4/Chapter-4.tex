@@ -763,7 +763,7 @@ secrets and leakage sites. The engine only symbolically executes
 instructions that might be affected by the input sensitive data. \tool{} works on one path at a time. The memory model is conceptually similar to other offline executors (e.g., SAGE~\cite{godefroid2008automated} and the trace-based executor of BitBlaze~\cite{song2008bitblaze}). That is, we use symbolic execution to track secrets. When secrets are loaded into the memory, \tool{} starts to interpret instructions symbolically. We treat secrets as symbols ($S$). For other variables, we use concrete values ($C$) from the execution. We do not know which instruction may manipulate a secret until we execute it. For each instruction, if all its operands and implicit memory accesses are concrete values, we perform concrete calculation and update the destination with the concrete value according to the instruction semantics. Otherwise, we symbolically interpret the instruction and update the destination with a formula.
 
 \subsection{Leakage Estimation} 
-We change the information leakage quantification problem into the counting problem. We propose a
+We change the information leakage quantification problem into a counting problem. We propose a
 Monte Carlo method to estimate the number of satisfying solutions. With the help of the Central Limit Theorem (CLT), we also give an error
 estimate with the probability, which provides us with the \emph{precision guarantee}.
 
