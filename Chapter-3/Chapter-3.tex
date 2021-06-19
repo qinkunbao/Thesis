@@ -405,9 +405,9 @@ $$F(\vec{K}) >> L = \mathtt{Addr1} >> L,$$
 \subsubsection{Information Flow Check}
 \detect{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing bugs, we also track the information flow for each byte of the input
 buffer.
-The step can be seen as the multiple-tag taint analysis. With the help of the information from symbolic execution, we can implement a relatively simple but relatively precise information flow track.
+The step can be seen as the multiple-tag taint analysis. With the help of the information from symbolic execution, we can implement a simple but relatively precise information flow track.
 At the beginning of the analysis, \detect{} keep track of each byte in
-the original buffer. When \detect{} symbolically executes each instruction in the trace, it will check every value read from registers or memory. If the value is concrete, it means the instruction has nothing to do with the original buffer.
+the original buffer. When \detect{} symbolically executes each instruction in the trace, it will check every value read from registers or memories. If the value is concrete, it means the instruction has nothing to do with the original buffer.
 If the value is a formula, it means the original information passes through the instruction. Since each byte in the sensitive buffer is represented as a symbol with a unique ID, \detect{} can know which byte in the origin buffer goes through the instruction.
 
 \section{Evaluation}
