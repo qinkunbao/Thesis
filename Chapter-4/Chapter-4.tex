@@ -434,8 +434,10 @@ These kinds of branches can be vulnerable when an attacker's data is incorporate
 For example, the code will skip some of the calculation if the value is 0 in big
 number multiplication.
 
-In contrast, an \emph{average} estimate based on random secret input information is around 1 bit, as shown in the previous section and Table~\ref{shtable}, is not very useful in practice as an attacker is able to get much more leaked
-information in some attack scenarios.
+In contrast, an \emph{average} estimate based on random secret input information is around $1$ bit, as shown in the previous section and Table~\ref{shtable}, is not very useful in practice as an attacker is able to get much more leaked
+information in some attack scenarios. As the size of input-sensitive information is
+usually public, the problem of quantifying the leaked information is equivalent to the problem of estimating the size of input key $|K^o|$ under
+the condition $o \in O$. 
 
 \begin{table}[ht]
     \centering%\small\footnotesize
@@ -454,7 +456,7 @@ information in some attack scenarios.
 
 \section{Approximate Model Counting}
 \label{MCreasons}
-In the previous section, we propose an information leakage definition for realistic attack scenarios to model two types of address-based side-channel leakages and showed how to quantify them by calculating the number of input keys ($K^o$) that satisfy the formulas. Intuitively, we can use symbolic execution to capture math formulas and model counting to obtain the number of satisfying input keys ($K^o$). However, some preliminary experiments showed that this approach was far too expensive to use with real-world applications. In this section, we discuss the bottlenecks in this approach and propose a practical solution.
+In the previous section, we propose an information leakage definition for realistic attack scenarios to model two types of address-based side-channel leakages and show how to quantify them by calculating the number of input keys ($K^o$) that satisfy the formulas. Intuitively, we can use symbolic execution to capture math formulas and model counting to obtain the number of satisfying input keys ($K^o$). However, some preliminary experiments showed that this approach was far too expensive to use with real-world applications. In this section, we discuss the bottlenecks in this approach and propose a practical solution.
 
 
 According to Definition~\ref{chapter4:def} introduced in the previous section,
