@@ -1101,7 +1101,7 @@ developers are more reluctant to fix them or fixing them unintentionally. For ex
 \label{fig:new_sqr2}
 \end{figure}
 
-To evaluate the effectiveness of the leaked bits reported by \tool{}, we conduct a case study of all the leaked sites identified by \tool{} in OpenSSL 1.1.0f. Table~\ref{chapter4:tab:RSAOpenSSL1.1.0} shows the result. First, all leakage sites that leak more than 5 bits information are fixed by developers. Second, for all leakages that are not patched by developers, the quantification result shows that they leak less than 1.0 bits information. The evaluation results show that \tool{} can help developers find severe leakages automatically.
+To evaluate the effectiveness of the leaked bits reported by \tool{}, we conduct a case study of all the leaked sites identified by \tool{} in OpenSSL 1.1.0f. Table~\ref{chapter4:tab:RSAOpenSSL1.1.0} shows the result. First, all leakage sites that leak more than 5 bits information are fixed by developers. Second, for all leakages that are not patched by developers, the quantification result shows that they leak less than $1.0$ bits information. The evaluation results show that \tool{} can help developers find severe leakages automatically.
 
 \begin{table}[!ht]
 \centering\normalsize
@@ -1275,6 +1275,6 @@ bool pwcheck(uint8_t *key, uint8_t *pub) {
 \end{lstlisting}\caption{A safe password checker.}\label{fig:chapter4:pwcheck2}
 \end{figure}
 
-We illustrate the quantification method on two password checking examples.  As shown in Figure~\ref{fig:chapter4:pwcheck1}, the version is vulnerable to side-channel attacks because of the early return at line 4. If the first bytes of \textsf{key} and \textsf{pub} are the same, the function will continue running and access the second byte. Figure~\ref{fig:chapter4:pwcheck2} fixes the vulnerability because the function will continue comparing the second byte even if the first byte is different.  \tool{} identifies the leakage site in Figure~\ref{fig:chapter4:pwcheck1} successfully, and estimates the amount of leakage is $16$ bits. 
+We illustrate the quantification method on two password checking examples.  As shown in Figure~\ref{fig:chapter4:pwcheck1}, the version is vulnerable to side-channel attacks because of the early return at line 4. If the first bytes of \textsf{key} and \textsf{pub} are the same, the function will continue running and access the second byte. Figure~\ref{fig:chapter4:pwcheck2} fixes the vulnerability because the function will continue comparing the second byte even if the first byte is different.  \tool{} identifies the leakage site in Figure~\ref{fig:chapter4:pwcheck1} successfully, and estimates the amount of leakage is $16.0$ bits. 
 
 
