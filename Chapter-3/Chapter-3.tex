@@ -395,12 +395,12 @@ The formula, together with the memory address ($\mathtt{0x0000e789}$), is stored
 \subsubsection{Secret-dependent Data Accesses}
 Like input-dependent control-flow transfers, an adversary can also infer sensitive information from the data access patterns as well. We try to find this kind of leakages by checking every memory operand of the instruction. We generate the memory addressing
 formulas. As discussed before, every symbol in the formula is the input key. If the formula does not contain any symbols, the memory access is independent
-from the input sensitive information and will not leak any sensitive information according to our threat model. Otherwise, we will generate the constraint for
+from the input sensitive information and does not leak any sensitive information according to our threat model. Otherwise, we generate the constraint for
 the memory addressing. We model the memory address with a symbolic formula $F(\vec{K})$. Because we also have the concrete value of the memory address $\mathtt{Addr1}$. Inspired by the work CacheD~\cite{203878}, the formula can be written as
 
 $$F(\vec{K}) >> L = \mathtt{Addr1} >> L,$$
 
-\noindent where $L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload can distinguish between different cache lines, which means the value of L is 6 for 64 byte cache line.
+\noindent where $L$ represents the minimum memory address granularity that an attacker can observe. For example, Flush and Reload attacks target on one cache line, which means the value of L is 6 for 64 byte cache line.
 
 \subsubsection{Information Flow Check}
 \detect{} is designed to help software developers find and understand the side-channel vulnerabilities. To ease the procedure of fixing bugs, we also track the information flow for each byte of the input
