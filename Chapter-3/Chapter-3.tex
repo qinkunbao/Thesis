@@ -606,8 +606,8 @@ Even for the up-to-date version of OpenSSL, \detect{} still find several
 side-channel leakages. Figure~\ref{chapter3:fig:unknown_leakage} shows an unknown leakage site in OpenSSL 1.1.1. It is a secret-dependent control flow transfers. 
 However, as the branch is inside a loop and a bit shift function causes the branch leak different bits from the sensitive buffer. The function can leak the last digit from big number \textbf{X}. The leakage is severe due to the 
 function \textsf{BN\_rshift1}. Each time, function \textsf{BN\_rshift1}
-shifts \textbf{X} right by one and places the result in \textbf{X}. Therefore,
-an attacker can infer multiple bits of \textbf{X} by observing the branch at line 3.
+shifts \textsf{X} right by one and places the result in \textsf{X}. Therefore,
+an attacker can infer multiple bits of \textsf{X} by observing the branch at line 3.
 
 \begin{figure}[ht]
 \centering
