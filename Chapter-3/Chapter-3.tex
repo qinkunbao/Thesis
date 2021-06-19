@@ -211,8 +211,8 @@ we consider two code patterns that can be exploited by an attacker,
   accesses}. 
 
 \subsection{Secret-dependent Control Transfers}
-A control-flow path is secret-dependent if different input-sensitive keys
-($K$) can lead to different branch conditions.
+A control-flow path is secret-dependent if there are two different input-sensitive keys
+($K$) that can lead to different branch conditions.
 We define a branch to be secret-dependent if
 $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta, k_{i2}, m) \land PC,$$
 
@@ -220,7 +220,7 @@ $$\exists k_{i1}, k_{i2} \in K, m \in M, \,f_i(\beta, k_{i1}, m) \neq f_i(\beta,
 equals $t_b$. We use the constraint $c_i : f_i(\beta, k, m) = t_b$ to model
 the observation ($o$) on secret-dependent control-transfers. Note that in the
 above definition, $m$ is also a variable. So it is possible for some $m \in M$,
-we cannot find a pair of two different $k_{i1}$ and $k_{i2}$ to satisfy the above inequation. For example, in Figure~\ref{fig:chapter3:cf}, if $m = \mathtt{0}$, the function \textsf{example1} will always execute the branch 2. However, if $m = \mathtt{0xffffffff}$ and $k = \mathtt{0}$, the function \textsf{example1} executes the branch 1 and the function \textsf{example1} executes the branch 2 when $k = \mathtt{0xf000000}$.
+we cannot find a pair of two different $k_{i1}$ and $k_{i2}$ satisfying the above inequation. For example, in Figure~\ref{fig:chapter3:cf}, if $m = \mathtt{0}$, the function \textsf{example1} will always execute the branch 2. However, if $m = \mathtt{0xffffffff}$ and $k = \mathtt{0}$, the function \textsf{example1} executes the branch 1 and the function \textsf{example1} executes the branch 2 when $k = \mathtt{0xf000000}$.
 
 
 \subsection{Secret-dependent Data Accesses}
