@@ -900,13 +900,13 @@ Table~\ref{chapter4:table:over_result} shows an overview of the evaluation resul
 vulnerabilities leak very little information, which confirms our
 initial assumption.  
 However, \tool{} finds some vulnerabilities with severe
-leakages. Prior research has confirmed that some of these
+leakages. Prior research~\cite{Bonneau11894063_16,Gullasch:2011:CGB:2006077.2006784} has confirmed that some of these
 vulnerabilities can be exploited in real attacks.
 With our tool, developers can
 distinguish non-critical ``vulnerabilities'' from the severe ones.
 
 Symmetric encryption implementations in OpenSSL and mbedTLS have significant leakage due to their lookup table implementations. 
-\tool{} confirms that these leakage comes from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. These changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
+\tool{} confirms that these leakage come from table lookups. The new implementation of OpenSSL has adopted several methods (e.g., one single S-box instead of four lookup tables, smaller lookup tables) to mitigate the problem. These changes are rather easy but significantly decrease the total amount of leaked information as the quantification result indicates.
 
 \tool{} can estimate how
 much information is leaked from each vulnerability. During the evaluation,
