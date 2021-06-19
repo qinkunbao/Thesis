@@ -508,7 +508,7 @@ Next, we record the memory access information based on the input
 secret. We use the dynamic binary instrumentation (DBI) tool to record
 whether a particular memory access information is accessed or
 not. Inspired by AFL and Valgrind, we use a bitmap to represent
-whether a particular memory is accessed or not. For example, the
+whether a particular memory address is accessed or not. For example, the
 bitmap ${0101}$ of address $l_1, l_2, l_3, l_4$ means that $l_2, l_4$
 are hit during the execution. During the execution, the direct
 information we get is the virtual memory address (VMA). However, we
@@ -518,7 +518,7 @@ systems employ the Address Space Layout Randomization (ASLR). With
 ASLR, the operating system randomly puts the code and data at
 various memory offset. As a result, the code will get different
 execution traces even for the same input because the image is
-loaded at a different address each time. Second, it helps us find the
+loaded at a different address each time. Second, it helps us locate the
 leakage site in the source code.
 
 We rely on the program header and symbol information to recover the
@@ -540,7 +540,7 @@ calculate the offset in the original address.
 There are two kinds of memory access: access to the code and access to the data. 
 \begin{itemize}
 \item Code Access. The memory address of the code is the value of the program counter $\mathit{rip}$ register. However, the length of x86 instructions can be from 1 byte to 15 bytes. For instructions whose length is longer than one byte, we also update the address after the value $\mathit{rip}$ until the address reaches the instruction's boundary.
-\item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code addresses, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory access. We all update the bitmap of the address correspondingly.
+\item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code address, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory accesses. We all update the bitmap of the address correspondingly.
 \end{itemize}
 
 \subsection{Step 3: Leakage Detection and Quantification}
