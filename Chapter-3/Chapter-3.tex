@@ -278,7 +278,7 @@ Also, IR increases the total number of instructions. For example, x86
 instruction \textit{test eax, eax} transfers into 18 REIL IR instructions.
 
 \textbf{Our Solution}
-We abandoned IR and expended the effort to implement
+We abandoned IR layers and expended the effort to implement
 symbolic execution directly on x86 instructions.
 Table~\ref{scala:ir} shows that eliminating the IR reduces the number
 of instructions examined during analysis. Previous works~\cite{217563} also
