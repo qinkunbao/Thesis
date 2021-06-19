@@ -361,7 +361,7 @@ The tool runs symbolic execution on top of execution traces. At the beginning of
 
 \subsubsection{Verification and Optimization}
 We run the symbolic execution (SE) on the x86 instructions. In other words, we do not rely on any intermediate languages to simplify the implementation of symbolic execution. While the implementation itself has a lot of benefits (better performance, accurate memory model), we need to implement the symbolic execution rules for each x86 instruction.
-However, due to the complexity of x86, mistakes inevitable. Therefore, we verify the correctness of the SE engine during the execution.
+However, due to the complexity of x86, mistakes are inevitable. Therefore, we verify the correctness of the SE engine during the execution.
 The tool will collect the runtime execution information (register values, memory values) and compare them with the formula generated from the symbolic execution. Whenever the tool finishes the symbolic execution of each instruction, the tool will compare the formula for each symbol and its actual value. If the two values do not match, we check the code and fix the error. Also, if the formula does not contain any symbols, the tool will use the concrete value instead of symbolic execution.
 
 \subsubsection{Secret-dependent Control-flows}
