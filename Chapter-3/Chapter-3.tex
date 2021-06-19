@@ -42,9 +42,9 @@ the translation process keeps the bottom bits same while using the top bits to m
 We assume that an attacker shares the same hardware platform with the victim.
 The attacker attempts to retrieve sensitive information through address-based side-channel attacks. The attacker has no direct access to the victim's data, but he can probe the memory or cache at each program point. Here are a few examples.
 \begin{enumerate}
-  \item A host machine has several virtual machines (VMs). The victim runs the application inside one VM. An attacker can control a different VM and probe the process running on the other VM.
+  \item A host machine has several virtual machines (VMs). The victim runs the application inside one VM. An attacker can control a different VM and probe the process running on other VMs.
   \item  In a shielding system~\cite{arnautov2016scone,schuster2015vc3}, a malicious operating system can extract sensitive information from protected user-level applications.
-  \item A ring-3 application can probe some sensitive information inside the kernel.
+  \item A ring-3 application can infer some sensitive information inside the kernel.
 \end{enumerate}
 
 In reality, attackers may face many possible obstacles, such as the noisy observations of the memory or cache. However, in this research, we assume the attacker has noise-free observations as in previous work~\cite{203878,182946,Brotzman19Casym}. The threat model captures most address-based side-channel attacks and apply to the three attack models: 1) time-based attacks, 2) access-based attacks, 3) trace-based attacks. We only consider deterministic programs and assume an attacker has access to the source code or binary executable of the target program.
