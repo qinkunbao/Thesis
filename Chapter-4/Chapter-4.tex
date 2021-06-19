@@ -265,7 +265,7 @@ else
 Consider a password checker sketched in Figure~\ref{fig:password-checker}.
 The password checker takes an 8-byte char array (exclude \textsf{NULL} character)
 and checks if the input is the correct password. If an attacker uses a side-channel attack to determine that the code executes branch
-$\{{1\}}$, they can infer the password equals to
+$\{{1\}}$, they can infer that the password equals to
 ``password'', in which case the attacker retrieves the full password.
 Therefore, the total leaked information should be 64 bits, which equals to the
 size of the original sensitive input when the code executes branch
