@@ -567,7 +567,7 @@ constraint into a set of different input symbols. For example, $\pi(k1 + k2 >
 \begin{mydef}[]
     \label{independentC}
     Given two constraints $c_m$ and $c_n$, we call them independent iff
-    $$\pi(c_m) \cap \pi(c_n) = \emptyset$$
+    $$\pi(c_m) \cap \pi(c_n) = \emptyset.$$
 \end{mydef}
 
 Based on Definition~\ref{independentC}, we can split the constraint
@@ -581,11 +581,11 @@ one.
     $g_{1}, g_{2}, \ldots, g_{m}$
     the maximum independent partition of $c_t(\addr{1},\addr{2},\ldots,\addr{n})$ iff
     \begin{enumerate}
-        \item $g_{1} \land g_{2} \land \ldots \land g_{m} = c_t(\addr{1},\addr{2},\ldots,\addr{n})$
+        \item $g_{1} \land g_{2} \land \ldots \land g_{m} = c_t(\addr{1},\addr{2},\ldots,\addr{n})$,
         \item $\forall i, j \in \{1, \ldots, m\} \quad \textrm{and} \quad
-                  i \neq j,\quad\pi(g_{i}) \cap \pi(g_{j}) = \emptyset $
+                  i \neq j,\quad\pi(g_{i}) \cap \pi(g_{j}) = \emptyset $,
         \item For any other partitions  $h_{1}, h_{2}, \ldots, h_{m'}$ satisfy 1) and
-              2), $m \geq m'$
+              2), $m \geq m'$.
     \end{enumerate}
 
 \end{mydef}
@@ -604,7 +604,7 @@ with Theorem~\ref{IndependentConstraint}.
     $c_t(\addr{1},\addr{2},\ldots,\addr{n})$.
     $K_c$ is the input set that satisfies constraint $c$. We have the following
     equation with regard to the size of $K_c$
-    $$|K_{c_t(\addr{1},\addr{2},\ldots,\addr{n})}| = |K_{g_{1}}| \cdot |K_{g_{2}}| \cdot \ldots \cdot|K_{g_{n}}|$$
+    $$|K_{c_t(\addr{1},\addr{2},\ldots,\addr{n})}| = |K_{g_{1}}| \cdot |K_{g_{2}}| \cdot \ldots \cdot|K_{g_{n}}|.$$
 \end{theorem}
 With Theorem~\ref{IndependentConstraint}, we transfer the problem of counting the number of solutions to a complicated constraint in a high-dimension
 space into counting solutions to several small constraints. We compute the maximum independent partition by iterating each $\addr{i}$ and applying the function $\pi$ over the constraint $\addr{i}$.
