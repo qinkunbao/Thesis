@@ -540,7 +540,7 @@ calculate the offset in the original address.
 There are two kinds of memory access: access to the code and access to the data. 
 \begin{itemize}
 \item Code Access. The memory address of the code is the value of the program counter $\mathit{rip}$ register. However, the length of x86 instructions can be from 1 byte to 15 bytes. For instructions whose length is longer than one byte, we also update the address after the value $\mathit{rip}$ until the address reaches the instruction's boundary.
-\item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code address, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory accesses. We all update the bitmap of the address correspondingly.
+\item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code address, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory accesses. We all update the bitmap correspondingly.
 \end{itemize}
 
 \subsection{Step 3: Leakage Detection and Quantification}
