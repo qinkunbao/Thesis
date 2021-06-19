@@ -81,7 +81,7 @@ In this work, we make the following contributions:
 
 \section{Background and Threat Model}
 In this chapter, we treat the side-channel attack as a communication system between two parties.
-Here we first give an overview of the background knowledge of information theory and present the threat model.
+Here we first give an overview of the background knowledge of information theory.
 
 
 \subsection{Channel Capacity}
@@ -182,12 +182,12 @@ Figure~\ref{fig:channel}(b) shows an example of this type of channels. Once the 
 \subsection{Threat Model and Notation}
 
 
-We consider an access-based attack~\cite{ge2018survey}, where an adversary can probe one time for each run only after the termination of a deterministic program. The attacker may not know the memory access the victim program accesses directly. Still, he can infer whether some memory addresses are accessed or not at various granularities after \textit{each run} of the victim program. We call the memory access information as the observation ($O$) in the rest of the chapter. It is a typical scenario for most side-channel attacks.  We also assume the attacker can have access to the source code of the victim program ($\beta$). It is a valid assumption since most side-channel attacks target open-source software. Similar to recent work, we assume the attacker has a noise-free observation.  The program ($\beta$) has $K$ as the sensitive input, which is a finite set consisted of every possible key ($k \in K$). The program also takes known messages $M$ as the input. 
+We consider an access-based attack~\cite{ge2018survey}, where an adversary can probe one time for each run only after the termination of a deterministic program. The attacker may not know the memory accesses of the victim program directly. Still, he can infer whether some memory addresses are accessed or not at various granularities after \textit{each run} of the victim program. We call the memory access information as the observation ($O$) in the rest of the chapter. It is a typical scenario for most side-channel attacks.  We also assume that the attacker can have access to the source code of the victim program ($\beta$). It is a valid assumption since most side-channel attacks target open-source software. Similar to recent work, we assume the attacker has a noise-free observation.  The program ($\beta$) has $K$ as the sensitive input, which is a finite set consisted of every possible key ($k \in K$). The program also takes known messages $M$ as the input. 
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=.75\columnwidth]{./figures/chapter5/channel.pdf}
-  \caption{The relationship between the side-channel attack and the channel capacity. For a deterministic program, the side-channel attack can be seen as the communication between the observation ($o \in O$) and the secret ($k \in K$) via a discrete memoryless channel.}
+  \caption{The relationship between the side-channel attack and the channel capacity. For a deterministic program, the side-channel attack can be seen as a communication channel between the observation ($o \in O$) and the secret ($k \in K$).}
   \label{fig:side_channel}
 \end{figure}
 
