@@ -1020,7 +1020,7 @@ implementation for RSA\@. With this design, the sequence of squares and
 multiples and the memory access patterns are independent of the secret key.
 \tool{}'s result confirms the new exponentiation implementation has mitigated 
 most leakages effectively because the four newer versions have fewer
-leakages than version 0.9.7, which introduced this change.
+leakages than version 0.9.7.
 OpenSSL version 1.0.2f, 1.0.2k, and 1.1.0f almost have the
 same amount of leakage. We check the ChangeLog and find only one change to
 patch vulnerability CVE-2016-0702. 
@@ -1064,7 +1064,7 @@ Therefore, source-level code reviews are not accurate
 enough to detect side-channels. 
 
 For vulnerabilities that leak less amount of information,
-developers are more reluctant to fix them or fixing them unintentionally. For example, OpenSSL 0.9.7 adds a fixed windows version of function \textsf{BN\_mod\_exp\_mont\_consttime} to replace original function \textsf{BN\_mod\_exp\_mont}.
+developers are more reluctant to fix them or fixing them unintentionally. For example, OpenSSL 0.9.7 adds a fixed windows version of function \textsf{BN\_mod\_exp\_mont\_consttime} to replace the original function \textsf{BN\_mod\_exp\_mont}.
 \tool{} detects a minor vulnerability in the original function that can leak the last bit of the big number \texttt{m}. In the updated version, developers make the fixed windows the default option and rewrite most of the function. However, the leakage site still exists in OpenSSL 1.1.1.
 \begin{figure}
     \centering
