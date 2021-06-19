@@ -82,7 +82,7 @@ test  eax, eax
 jne   branch 2
 ...
 \end{lstlisting}
-  \end{minipage}\caption*{(a) A False Negative}
+  \end{minipage}\caption*{(a) A false negative}
 
   \begin{minipage}{0.45\linewidth}
     \begin{lstlisting}[xleftmargin=.05\textwidth, xrightmargin=.0\textwidth, frame=none]
@@ -106,7 +106,7 @@ setbe al
 xor   edx, edx
 ret
 \end{lstlisting}
-  \end{minipage}\caption*{(b) A False Positive}
+  \end{minipage}\caption*{(b) A false positive}
   \caption{Secret-dependent control-flow transfers}\label{fig:chapter3:cf}
 \end{figure}
 
@@ -138,7 +138,7 @@ add    eax, [addr_m]
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
-  \end{minipage}\caption*{(a) A True Leakage}
+  \end{minipage}\caption*{(a) A true leakage}
 
   \begin{minipage}{0.4\linewidth}
     \begin{lstlisting}[xleftmargin=.15\textwidth, xrightmargin=.0\textwidth, frame=none]
@@ -163,7 +163,7 @@ add    eax, [addr_m]
 movzx  eax, [addr_T + eax*1]
 ...
 \end{lstlisting}
-  \end{minipage}\caption*{(b) A False Positive}
+  \end{minipage}\caption*{(b) A false positive}
   \caption{Secret-dependent data accesses}\label{fig:chapter3:da}
 \end{figure}
 
