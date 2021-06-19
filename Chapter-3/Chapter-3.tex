@@ -42,7 +42,7 @@ the translation process keeps the bottom bits same while using the top bits to m
 We assume that an attacker shares the same hardware platform with the victim.
 The attacker attempts to retrieve sensitive information through address-based side-channel attacks. The attacker has no direct access to the victim's data, but he can probe the memory or cache at each program point. Here are a few examples.
 \begin{enumerate}
-  \item A host machine has several virtual machines (VMs). The victim runs the application inside one VM. An attacker can control one VM and probe the process running on the other VM.
+  \item A host machine has several virtual machines (VMs). The victim runs the application inside one VM. An attacker can control a different VM and probe the process running on the other VM.
   \item  In a shielding system~\cite{arnautov2016scone,schuster2015vc3}, a malicious operating system can extract sensitive information from protected user-level applications.
   \item A ring-3 application can probe some sensitive information inside the kernel.
 \end{enumerate}
