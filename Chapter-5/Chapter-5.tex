@@ -551,7 +551,7 @@ In this step, we detect and quantify the side-channel leakage. For each $k \in K
 \ctool{} can detect side-channel vulnerabilities in different granularities. For each granularity, we calculate a new bitmap that represents access information of each unit. We have the bitmap of the memory access at the byte level. An attacker who has the coarse-grained observation at address space may not be able to distinguish the address difference. For example, modern X64 computer systems use 48-bit virtual memory addresses. The top 36 bit of the virtual address is called Virtual Page Number (VPN), and the bottom 12 bits of the virtual address is called offset. The memory management unit (MMU) transfers the virtual address into the physical address by mapping the Virtual Page Number (VPN) into the Physical Page Number (PPN) while keeping the offset of the address. So two addresses with the same VPN but different offsets are not distinguishable by an attacker who can perform the page-level observation. 
 
 Suppose a program reads one byte at memory address
-$\mathtt{0x7ffff7ffd001}$ when the secret is $k_1$ and reads a
+$\mathtt{0x7ffff7ffd001}$ when the secret is $k_1$, and reads a
 different byte at memory $\mathtt{0x7ffff7ffda01}$ when the secret is
 $k_2$, an attacker who has the page-level observation cannot launch
 the attack but an attacker who launches the cache attack can know the
@@ -608,7 +608,7 @@ To solve the problem, we use the debug information to split the bitmap into seve
 After that, we traverse the bitmap for each $k$ and count it to get the distribution of the bitmap. The counting process is like traversing a binary tree.
 
 \begin{myexample}
-Shown in Figure~\ref{fig:design:example2}, we have the following observation from $k_1$ to $k_8$, then we count the distribution of  the observation. The process is like traversing a binary tree and increase the counter of the child node. According to Definition~\ref{chapter5:def}, the amount of the leakage is $1.4$ $\mathit{bits}$.
+Shown in Figure~\ref{fig:design:example2}, we have the following observation from $k_1$ to $k_8$. We count the distribution of  the observation. The process is like traversing a binary tree and increase the counter of the child node. According to Definition~\ref{chapter5:def}, the amount of the leakage is $1.4$ $\mathit{bits}$.
 
 \begin{displaymath}
   H(O') = - \frac{3}{8} \cdot \log_2{\frac{3}{8}}- \frac{1}{2} \cdot \log_2{\frac{1}{2}}
