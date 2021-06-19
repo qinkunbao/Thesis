@@ -369,9 +369,9 @@ An adversary can infer sensitive information from secret dependent control-flows
 The unconditional instructions, such as CALL, JUMP, and RET, transfer control flows from one code segment location to another. Since the transfer is independent of the input sensitive information, an attacker is not able to infer any sensitive information from the control-flow.
 So unconditional control-transfer does not leak any information based on our threat model. During the symbolic execution, we update the register information and memory cells with new formulas accordingly.
 
-The conditional control-flow transfer instructions, such as conditional jumps, depending on CPU states, may or may not transfer control flows. For conditional jumps, the CPU will test if certain condition flag
-(e.g., CF = 0, ZF =1) is met and jump to certain branches, respectively.
-The symbolic engine will compute the flag and represent the flag in a symbol
+The conditional control-flow transfer instructions, such as conditional jumps, depending on CPU states, may or may not transfer control flows. For conditional jumps, the CPU will test if certain condition flags
+(e.g., CF = 0, ZF =1) are met and jump to certain branches, respectively.
+The symbolic engine computes the flag and represents the flag in a symbol
 formula. Because we are running on a symbolic execution on an execution trace, we know which branch is executed.
 If a conditional jump uses the CPU status flag, we will generate the constraint accordingly.
 
@@ -390,7 +390,7 @@ At the address $\mathtt{0x0000e781}$, the value at the address of $\mathtt{local
 
 $$F(\vec{K}) + 1 = 4$$
 
-The formula, together with the memory address ($\mathtt{0x0000e789}$) is stored as a \textit{formula tuple (address, formula)}. Each formula tuple represents one potential leakage site.
+The formula, together with the memory address ($\mathtt{0x0000e789}$), is stored as a \textit{formula tuple (address, formula)}. Each formula tuple represents one potential leakage site.
 
 \subsubsection{Secret-dependent Data Accesses}
 Like input-dependent control-flow transfers, an adversary can also infer sensitive information from the data access patterns as well. We try to find this kind of leakages by checking every memory operand of the instruction. We generate the memory addressing
