@@ -315,7 +315,7 @@ accesses as observations.
 
 With the above definition, we have the following mapping between $\beta$,
 $K$, $M$, and $O$:
-%\vspace*{-0pt}
+
 \begin{displaymath}
     \beta(K, M) \rightarrow O.
 \end{displaymath}
@@ -335,20 +335,20 @@ restated as the following question:
 \emph{How much uncertainty of $K$ is reduced if an attacker knows $\beta$, $m$, and $o$?}
 \
 
-In information theory, the mutual information (I) is a measure of the mutual
-dependence between two variables. Here we use I to describe the
+In information theory, the mutual information ($I$) is a measure of the mutual
+dependence between two variables. Here we use $I$ to describe the
 dependence between original sensitive keys ($K$) and attackers' observations ($O$),
 which is defined as
 
 \begin{equation} \label{eq:1}
-    I(K;O) = \sum_{k {\in} K}{\sum_{o {\in} O}{p(k, o)\log_2\frac{p(k, o)}{p(k)p(o)}}}
+    I(K;O) = \sum_{k {\in} K}{\sum_{o {\in} O}{p(k, o)\log_2\frac{p(k, o)}{p(k)p(o)}}},
 \end{equation}
 
 \noindent where $p(k_i, o_i)$ is the joint discrete distribution of $K$ and $O$.
 Alternatively, the mutual information can also be equivalently expressed as
 
 \begin{equation} \label{eq:2}
-    I(K;O) = H(K) - H(K|O)
+    I(K;O) = H(K) - H(K|O),
 \end{equation}
 
 \noindent where $H(K|O)$ is the entropy of $K$ with the condition $O$. It quantifies the
@@ -430,7 +430,7 @@ usually public. The problem of quantifying the leaked information has been
 transferred into the problem of estimating the size of input key $|K^o|$ under
 the condition $o \in O$. The result is shown in Table~\ref{shtable2}. We can see
 that some branches (e.g., A) or traces leak much more information than some others.
-These kinds of branches can be vulnerable when an attacker's data is incorporate.
+These kinds of branches can be vulnerable when an attacker's data is incorporated.
 For example, the code will skip some of the calculation if the value is 0 in big
 number multiplication.
 
