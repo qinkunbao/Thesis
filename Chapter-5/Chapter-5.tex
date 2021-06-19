@@ -284,7 +284,7 @@ void bar(uint8_t secret)
   \end{minipage}
   \caption{A minor side-channel leakage. }\label{chapter5:fig:example2}
 \end{figure}
-On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker cannot uniquely determine the secret based on the observation of table $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, the vulnerability is less severe than the previous one.
+On the other hand, the second example also has side-channel leakages at line 7. However, the leakage is slightly different. Still, we test the program with input from $0, 1, \dots, 7$. However, we find the attacker cannot uniquely determine the secret based on the observation of array $T$, for example. Both $0$ and $4$ read the first item of the table. Therefore, the vulnerability is less severe than the previous one.
 
 Let us formally define the amount of leaked information based on the above analysis.
 
