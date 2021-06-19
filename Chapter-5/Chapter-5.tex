@@ -779,7 +779,7 @@ Table~\ref{chapter5:tab:RSAOpenSSL1.1.0} shows the leaked function and the amoun
 
 For leakage sites that are not fixed by the developers, \ctool{} reports that they leak less amount of information. For example, function \textsf{BN\_mod\_exp\_mont\_consttime} check if the modulus is odd. However, it is not a side-channel leakage vulnerability since the modulus is a prime number and all prime numbers except $2$ are odd. \ctool{} reports that the leakage site can leak one bit of information. 
 
-Previous work~\cite{bao2021abacus} reports some leakage sites leak little information, but \ctool{} reports the vulnerabilities are severe. Previous work \tool{}~\cite{bao2021abacus} quantifies the amount of leaked information for one execution. So it is possible that some leakage sites leak little information for one input but leak more information for a different input. We run the chi-squared test to determine if any two leaked functions have independent leakages. However, we cannot conclude that any two leakages from cryptography benchmarks are independent under the chi-squared test. We think it is probably due to the avalanche effect in cryptography.
+Previous work~\cite{bao2021abacus} reports some leakage sites leak little information, but \ctool{} reports the vulnerabilities are severe. \tool{} quantifies the amount of leaked information for one execution. So it is possible that some leakage sites leak little information for one input but leak more information for a different input. We run the chi-squared test to determine if any two leaked functions have independent leakages. However, we cannot conclude that any two leakages from cryptography benchmarks are independent under the chi-squared test. We think it is probably due to the avalanche effect in cryptography.
 
 \subsection{Non-cryptography Applications}
 
@@ -787,7 +787,7 @@ Previous work~\cite{bao2021abacus} reports some leakage sites leak little inform
 %% TODO Analyze the result of the GTK
 
 We evaluate \ctool{} on TinyDNN, a deep learning framework in C++. We
-construct a LeNet-5 model~\cite{lecun1998gradient} and trained it with
+construct a LeNet-5 model~\cite{lecun1998gradient} and train it with
 the MINIST dataset. LeNet-5 network has six layers, including three
 convolutional layers, one fully connected layer, and two pooling
 layers. The batch size in our experiment is 10, and the number of
