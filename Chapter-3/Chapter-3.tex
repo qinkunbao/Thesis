@@ -592,7 +592,7 @@ concrete examples to trigger the issue.
 \subsection{Case Studies}
 \subsubsection{DES and AES}
 Our tool confirms that both implementations in OpenSSL and mbedTLS have side-channel leakages
-sites. Moreover, we find that all the leakages belong to the secret-dependent data accesses. The reference implementation of AES uses four lookup tables to speed up the computation. However, such implementation are vulnerable to side-channel attacks. Previous work has shown an end-to-end attack to fully recover the key. Our findings is similar to the previous work. We also notice that later version of OpenSSL (after 1.0.1) uses a modified version with smaller S-table. However, \detect{} also finds leakage sites in the version. Recent work also finds the sites through theoretical analysis.
+sites. Moreover, we find that all the leakages belong to the secret-dependent data accesses. The reference implementation of AES uses four lookup tables to speed up the computation. However, such implementation are vulnerable to side-channel attacks. Previous work has shown an end-to-end attack to fully recover the key. Our findings is similar to the previous work. We also notice that recent versions of OpenSSL (after 1.0.1) use a modified implementation with smaller S-tables. However, \detect{} also finds leakage sites in the version. 
 
 \subsubsection{RSA}
 We also evaluate our tool on the RSA implementations. With the optimizations
