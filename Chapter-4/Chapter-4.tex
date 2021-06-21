@@ -130,7 +130,7 @@ information $K$ is considered as a random variable.
 Let $k$ be one of the possible
 value of $K$. The Shannon entropy $H(K)$ is defined as
 \begin{displaymath}
-    H(K) = - \sum_{k {\in} K}p(k)\log_2(p(k)).
+    H(K) = - \sum_{k {\in} K}p(k)\log_2p(k).
 \end{displaymath}
 
 Shannon entropy can be used to quantify the initial uncertainty about the
@@ -141,7 +141,7 @@ For example, min-entropy can be used to describe the
 best chance of success in guessing one's password using the
 most common password. %, which is defined as
 \begin{displaymath}
-    \mathit{min\text{-}entropy} = - \log_2(p_{\mathit{max}})
+    \mathit{min\text{-}entropy} = - \log_2p_{\mathit{max}}
 \end{displaymath}
 
 Max-entropy is defined solely on the number of possible observations.
