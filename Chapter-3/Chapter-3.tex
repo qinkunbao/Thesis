@@ -24,8 +24,8 @@ Figure~\ref{fig:memory_hierarchy} shows the overview of one example of the hiera
 The main memory is at the bottom of the memory hierarchy.
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=.65\columnwidth]{./figures/chapter3/architecture.pdf}
-  \caption{Computer memory hierarchy. The hierarchy is designed to minimise the access time with a relatively low cost. It is the root cause of many side-channel attacks.}\label{fig:memory_hierarchy}
+  \includegraphics[width=.75\columnwidth]{./figures/chapter3/architecture.pdf}
+  \caption{Computer memory hierarchy. The memory hierarchy is designed to minimise the access time with a relatively low cost. It is the root cause of many side-channel attacks.}\label{fig:memory_hierarchy}
 \end{figure}
 
 The current computer memory hierarchy opens the way for side-channel attacks from two aspects. First, the architecture relies on the system software to manage the memory, which becomes a problem in a threat model when the operating system is not untrusted (e.g., Intel SGX). Second, the size of the cache is smaller than the main memory. It is possible that different units in the main memory share the same address in the cache.

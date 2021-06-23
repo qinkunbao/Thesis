@@ -1,5 +1,6 @@
 \chapter{Discussion and Limitations}\label{chapter6}
-\section{Fast and Precise Side-channel Vulnerability Detection}
+%\section{Fast and Precise Side-channel Vulnerability Detection}
+\section{Side-channel Vulnerability Detection}
 \subsection*{Code Coverage} \detect{} analyzes one x86 execution trace each time. The design is very precise in terms of true leakages compared to many static source code methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, but shares common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may miss some side-channel vulnerabilities not covered by the analyzed trace. However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage under various inputs. The evaluation result also confirms the above intuition. For symmetric encryption, there is no secret-dependent control-flow transfers during our evaluation. RSA implementations have several secret-dependent control-flow transfers. Many of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
 
 \subsection*{Design Choices} At the early stage of the project, we used SMT solvers to get the solutions of constraints. However, we found for some ciphers (RSA), \detect{} timed out after several days. The profiling result showed that the tool spent most its time in Z3. Later, we used a sampling method to detect side-channel leakages. The sampling method seems simple and may miss some leakages in theory. However, the evaluation result shows \detect{} can identify all leakages found by the previous work~\cite{203878,236338,Brotzman19Casym}.  
@@ -8,7 +9,8 @@
 
 \subsection*{Leakages} While recent works have reported lots of potential side-channel vulnerabilities, most of them are not patched by developers. The DES implementation of OpenSSL has a few side-channel leakages, but given the end of life status of DES, it is still unpatched for the worth of engineering effort. \detect{} also detects several leakages in asymmetric ciphers such as RSA. After we manually analyze these leakage sites, we find many of them leak very little or useless information (e.g., the length of big numbers), which may partially explain why developers are not interested in fixing all the side-channel leakages. 
 
-\section{Precise Analysis on Single-trace Attacks}
+%\section{Precise Analysis on Single-trace Attacks}
+\section{Analysis on Single-trace Attacks}
 While recent work found many side-channel vulnerabilities,
 we note that many of them are not patched by developers.
 Side-channels are ubiquitous in software, and it is difficult to fix all of them.
@@ -53,7 +55,9 @@ Sampling introduces imprecision but with a probabilistic guarantee.
 However, during the evaluation, we find that \tool{} cannot estimate
 the amount of leakage for some leakage sites in a reasonable time,
 which means the number of $K^o$ is very small. According to Definition~\ref{chapter4:def} in Chapter~\ref{chapter4}, it means the leakage is very severe. 
-\section{Precise Analysis on Multiple-trace Attacks}
+
+%\section{Precise Analysis on Multiple-trace Attacks}
+\section{Analysis on Multiple-trace Attacks}
 In this work, we present an approach that tries to give an 
 estimation of the amount of leaked information by access-based
 side-channel attacks. These attacks exploit the data-flow from secrets
