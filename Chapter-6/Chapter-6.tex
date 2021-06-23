@@ -1,4 +1,7 @@
 \chapter{Discussion and Limitations}\label{chapter6}
+
+In this chapter, we discuss some of the design choices and limitations.
+
 %\section{Fast and Precise Side-channel Vulnerability Detection}
 \section{Side-channel Vulnerability Detection}
 \subsection*{Code Coverage} \detect{} analyzes one x86 execution trace each time. The design is very precise in terms of true leakages compared to many static source code methods~\cite{197207,BacelarAlmeida:2013:FVS:2483313.2483334}, but shares common limitations of dynamic approaches. \detect{} may only cover part of the code. Each time we only get one single execution trace. Therefore, we may miss some side-channel vulnerabilities not covered by the analyzed trace. However, this is not a crucial problem for analyzing cryptographic libraries, because cryptographic libraries are designed to have the same code coverage under various inputs. The evaluation result also confirms the above intuition. For symmetric encryption, there is no secret-dependent control-flow transfers during our evaluation. RSA implementations have several secret-dependent control-flow transfers. Many of them are bound checks, which do not leak much information and have negligible effects on the whole code coverage as well.
@@ -101,18 +104,11 @@ assumption can be violated in some real-world scenarios.
 
 
 \section{Limitations}
-The dissertation research has a few limitations.
+The dissertation research has a few limitations. 
+First, the methods in this dissertation cannot find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, \tool{} and \ctool{} cannot find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
 
-\begin{enumerate}
-\item The methods in this dissertation cannot find all kinds of side-channel leakages. No tool can find all forms of leakages. Even for address-based side-channel leakages, \tool{} and \ctool{} cannot find all the leakages due to the code coverage problem. Some verification tools can prove the absence of side-channel leakages for some small code snippets. However, to the best of my knowledge, no tools as yet can prove the absence of side-channel leakages in production software.
-\item The quantification result only applies to specific threat models. For example, \tool{} quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much more information in another execution.
-\item \tool{} and \ctool{} can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g., timing, EM signals). However, the root cause of many of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these leakage sites.
-\item \ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} cannot cover all the paths and may miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control flow under various inputs. For other libraries such as graphic rendering and machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find every side-channel vulnerability. The goal of \ctool{} is to identify severe side-channel vulnerabilities from many less severe vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem.
-\end{enumerate}
+Second, the quantification result only applies to specific threat models. For example, \tool{} quantifies the number of leaked bits during one real execution. So it is possible that one leakage site leaks little information in one execution but leaks much more information in another execution.
 
+Third, \tool{} and \ctool{} can only handle address-based side-channel attacks. Many side-channel attacks infer secret data based on other side-channel signals (e.g., timing, EM signals). However, the root cause of many of these attacks is still the same. That is, the program accesses different addresses when it processes different input secrets. Under the circumstance, our methods can still detect these leakage sites.
 
-
-
-
-
- 
+Also, \ctool{} is a dynamic approach. So it bears the same limitations of dynamic approaches as well. \ctool{} cannot cover all the paths and may miss some side-channel vulnerabilities. It is usually not a crucial problem for cryptography libraries as cryptography libraries are designed to have the same control flow under various inputs. For other libraries such as graphic rendering and machine learning, \ctool{} is very likely to miss some side-channel vulnerabilities. However, \ctool{} is not designed to find every side-channel vulnerability. The goal of \ctool{} is to identify severe side-channel vulnerabilities from many less severe vulnerabilities. So we do not think it is the main limitation of \ctool{}. However, users of \ctool{} should be aware of the code coverage problem.
