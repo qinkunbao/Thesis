@@ -478,7 +478,7 @@ In this section, we explain the design of \ctool{}.
 We first present the overview of \ctool{}. After that, we discuss some design details to implement \ctool{}.
 
 \subsection{Overview}
-Figure~\ref{chapter5:fig:workflow} shows an overview of our side-channel leakages quantification tool. Given the source code of a victim program, \ctool{} can find the address-based side-channel leakages by fuzzing the victim program. To assist the illustration, we divide the workflow of ~\ctool{} into three steps. For the first step, we build the target program from the source code. After that, we give them random inputs to the victim program and run the target program and record each of the addresses in the binary file is hit or not, and store the information in a bitmap. Next, we analyze the side-channel leakage from the address access bitmap. We split the address space into several segments to speed up the comparison according to the meta information. Finally, \ctool{} generates the final leakage report. For each leakage site, \ctool{} gives a conservative estimation of the information leakage. Every leakage site in the report is a true leakage, and there are no false positives.
+Figure~\ref{chapter5:fig:workflow} shows an overview of our side-channel leakage quantification tool. Given the source code of a victim program, \ctool{} can find address-based side-channel leakages by fuzzing the victim program. To assist the illustration, we divide the workflow of \ctool{} into three steps. For the first step, we build the target program from the source code. After that, we give them random inputs to the victim program, run the target program, record each address in the binary file is hit or not, and store the information in a bitmap. Next, we analyze side-channel leakages from the bitmaps. We split the address space into several segments to speed up the comparison according to the meta information. Finally, \ctool{} generates the final leakage report. For each leakage site, \ctool{} gives a conservative estimation of the information leakage. Every leakage site in the report is a true leakage, and there are no false positives.
 
 \begin{figure}[ht]
   \centering
@@ -491,12 +491,11 @@ After we build the software into a binary executable, we give the
 binary executable random inputs. For cryptography libraries, the input
 is the encryption key. For non-cryptography libraries, the input could
 be images, text, and information in another format. Encryption
-algorithms like AES and DES take an array representing the secrets. We
-generate the random input by flipping each bit of the keys. Some other
+algorithms like AES and DES take an array representing the secrets. Some other
 programs also take a buffer as the input. The buffer may contain 
 redundancy information and follow a specific format. So not every input
 that satisfies the input length is a valid input. Under the
-circumstance, we have a dictionary that contains the input. For
+circumstance, we have a dictionary that contains the valid inputs. For
 example, crypto libraries usually take PKCS \#1 as the input of the
 RSA private key. We generate a list of valid
 keys and use the keys to sample the program. Due to the enormous search
@@ -506,7 +505,7 @@ conservative estimate of each leakage site.
 \subsection{Step 2: Address Recording}
 Next, we record the memory access information based on the input
 secret. We use the dynamic binary instrumentation (DBI) tool to record
-whether a particular memory access information is accessed or
+whether a particular address is accessed or
 not. Inspired by AFL and Valgrind, we use a bitmap to represent
 whether a particular memory address is accessed or not. For example, the
 bitmap ${0101}$ of address $l_1, l_2, l_3, l_4$ means that $l_2, l_4$
@@ -539,30 +538,30 @@ calculate the offset in the original address.
 
 There are two kinds of memory access: access to the code and access to the data. 
 \begin{itemize}
-\item Code Access. The memory address of the code is the value of the program counter $\mathit{rip}$ register. However, the length of x86 instructions can be from 1 byte to 15 bytes. For instructions whose length is longer than one byte, we also update the address after the value $\mathit{rip}$ until the address reaches the instruction's boundary.
-\item Data Access. For instructions with memory access, we identify all the operands of each instruction. Same as the code address, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory accesses. We all update the bitmap correspondingly.
+\item Code Access. The memory address of the code is the value of the program counter $\mathit{rip}$ register. However, the length of x86 instructions vary from 1 byte to 15 bytes. For instructions whose length is longer than one byte, we also update the address after the value $\mathit{rip}$ until the address reaches the instruction's boundary.
+\item Data Access. For instructions with memory accesses, we identify all the operands of each instruction. Same as the code address, the instruction can read or write multiple bytes one time.  Instructions like \textsf{push} and \textsf{pop} have implicit memory accesses. We all update the bitmap correspondingly.
 \end{itemize}
 
 \subsection{Step 3: Leakage Detection and Quantification}
-In this step, we detect and quantify the side-channel leakage. For each $k \in K$, we have a boolean number ($0$ or $1$) to describe whether the address $l$ is accessed or not during the execution when the input is $k$. For the brevity of description, we use $B^{l}_{k_i}$ to denote the boolean number. 
+In this step, we detect and quantify side-channel leakages. For each $k \in K$, we have a boolean number ($0$ or $1$) to describe whether the address $l$ is accessed or not during the execution. For the brevity of description, we use $B^{l}_{k_i}$ to denote the boolean number. 
 
 
 \subsubsection{Multi-granularity Side-channel Detection}
-\ctool{} can detect side-channel vulnerabilities in different granularities. For each granularity, we calculate a new bitmap that represents access information of each unit. We have the bitmap of the memory access at the byte level. An attacker who has the coarse-grained observation at address space may not be able to distinguish the address difference. For example, modern X64 computer systems use 48-bit virtual memory addresses. The top 36 bit of the virtual address is called Virtual Page Number (VPN), and the bottom 12 bits of the virtual address is called offset. The memory management unit (MMU) transfers the virtual address into the physical address by mapping the Virtual Page Number (VPN) into the Physical Page Number (PPN) while keeping the offset of the address. So two addresses with the same VPN but different offsets are not distinguishable by an attacker who can perform the page-level observation. 
+\ctool{} can detect side-channel vulnerabilities in different granularities. For each granularity, we calculate a new bitmap that represents access information of each unit. We have the bitmap of the memory access at the byte level. An attacker who has the coarse-grained observation at address space may not be able to distinguish the address difference. For example, modern x64 computer systems use 48-bit virtual memory addresses. The top 36 bit of the virtual address is called Virtual Page Number (VPN), and the bottom 12 bits of the virtual address is called offset. The memory management unit (MMU) transfers the virtual address into the physical address by mapping the Virtual Page Number (VPN) into the Physical Page Number (PPN) while keeping the offset of the address. So two addresses with the same VPN but different offsets are not distinguishable by an attacker who can perform the page-level observation. 
 
 Suppose a program reads one byte at memory address
 $\mathtt{0x7ffff7ffd001}$ when the secret is $k_1$, and reads a
-different byte at memory $\mathtt{0x7ffff7ffda01}$ when the secret is
+different byte at address $\mathtt{0x7ffff7ffda01}$ when the secret is
 $k_2$, an attacker who has the page-level observation cannot launch
-the attack but an attacker who launches the cache attack can know the
+the attack, but an attacker who launches the cache attack can know the
 input is $k_1$ or $k_2$. We update the new bitmap of the large unit by
 merging the bitmaps of small units that fall into the large unit. That
 is, $\forall
   l_1, l_2, \dots, l_n \in l_N, B^{l_N}_{k_i} = B^{l_1}_{k_i} \lor,\dots,\lor B^{l_n}_{k_n}$.
 
 
-\subsubsection{Leakage Detection} 
-The access of one address is secret-dependent if $ \exists\, k_{i_1}, k_{i_2} \in K, \, B^{l}_{k_{i_1}} \oplus  B^{l}_{k_{i_2}} =1 $. In this step, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to the side-channel attacks.
+%\subsubsection{Leakage Detection} 
+The access of one address is secret-dependent if $ \exists\, k_{i_1}, k_{i_2} \in K, \, B^{l}_{k_{i_1}} \oplus  B^{l}_{k_{i_2}} =1 $. In this step, we perform the logical exclusive OR operation on every boolearn value in the same address. If the result is $1$, then the address is vulnerable to side-channel attacks.
 
 \begin{myexample}
 Suppose we sample a program from $k_1$ to $k_8$ and record memory accesses at the granularity of one byte from $\mathtt{7ffff7ffd000}$ to $\mathtt{7ffff7ffd03f}$ (one cache line). We perform a bit-wise operation of each address within the range. Because the cache line is always accessed. It is not a leak here.

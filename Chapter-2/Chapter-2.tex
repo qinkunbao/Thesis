@@ -45,7 +45,7 @@ An attacker primes the cache set with its own data and waits until the victim ex
 memory'' from the cache and waits for the victim to access the memory, which may be a load of the sensitive information to the cache line.  In the next phase,
 the attacker reloads the ``monitored memory''. The attacker's process reads all data in the `monitored
 memory''. If the time is relatively fast, it indicates that the data has been accessed by the victim program and the cache has loaded the data. 
-On X86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
+On x86-64 machines, the two steps can be combined by measuring the time differences of the \textsf{clflush} instruction.
 
 Based on the above attacks, some work~\cite{brickell2011technologies} suggests ensuring secret-dependent memory accesses within the size of one cache line should be secure enough. However, recent studies show that having different memory accesses within a cache line is also dangerous. One example is the CacheBleed attack~\cite{yarom2017cachebleed}. It is a cache channel attack that can exploit cache-bank collisions. 
 \subsection{Page-level Channel}
@@ -225,7 +225,7 @@ solving the problem, exact model counting, and approximate model
 counting. Exact model counting for propositional formulas (\#SAT) should determine
 the number of solutions. Intuitively, such a model counter should traverse the whole
 search space to find all the satisfying solutions. Consequently, the exact model counter is very slow. These model counters have difficulty in scaling up to real-world programs.
-On the other hand, the approximate model counter is much faster compared with the exact model counter. The related work focuses on approximate model counting since it is close to our approach. Wei and Selman~\cite{wei2005new} introduce
+On the other hand, the approximate model counter is much faster compared with the exact model counter. We focus on approximate model counting since it is close to our approach. Wei and Selman~\cite{wei2005new} introduce
 ApproxCount, a local search-based method using Markov Chain Monte
 Carlo (MCMC). ApproxCount has better scalability than
 exact model counters. Other approximate model counter includes
@@ -256,6 +256,6 @@ detects crypto algorithms in obfuscated binaries. Ming et al.~\cite{ming2017bins
 There are several well-known binary analysis frameworks that can help users to perform analysis on binary executables. BitBlaze~\cite{brumley2011bap} is a binary analysis platform that provides both static and dynamic analysis. It uses the tracecap plugin to collect execution traces and convert the trace into Vine IR. Binary Analysis Platform (BAP)~\cite{10.1007/978-3-642-22110-1_37}
 is another binary analysis platform. Similar to BitBlaze, it uses a pintrace tool to
 collect execution traces and convert the trace into BAP IRs. Angr~\cite{shoshitaishvili2016state}, the most popular
-binary analysis platform recently, also supports trace-based analysis. It converts X86 instructions into VEX IRs and interprets each IR in Python. 
+binary analysis platform recently, also supports trace-based analysis. It converts x86 instructions into VEX IRs and interprets each IR in Python. 
 
 All above binary analysis frameworks adopt IR layers, which makes it easy to implement the analysis and support multiple architectures. However, it can have very low efficiency and long traces. All IRs must be interpreted no matter symbolic variables are involved or not. As side-channels are low-level problems in general, the IR will lose some information. For example, IR-level branches are not necessarily a super-set or a sub-set of machine-code level branches. Some IR-level branches can be compiled into non-branch instructions like conditional moves. The above limitations motivate us to implement a new trace-based binary analysis framework.
